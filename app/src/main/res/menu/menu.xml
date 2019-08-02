@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_dash"
+        android:icon="@drawable/ic_action_dash"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/nav_send"
+        android:title="Send"
+        android:icon="@drawable/ic_action_send"/>
+
+    <item
+        android:id="@+id/nav_receive"
+        android:icon="@drawable/ic_action_receive"
+        android:title="Receive" />
+    <item
+        android:id="@+id/nav_trans"
+        android:title="Transações"
+        android:icon="@drawable/ic_action_trans"/>
+
+</menu>

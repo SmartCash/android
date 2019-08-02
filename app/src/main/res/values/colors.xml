@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#F2F4F6</color>
+    <color name="colorPrimaryDark">#7F8FA4</color>
+    <color name="colorAccent">#F4B522</color>
+    <color name="colorBackgroud">#C2C4C9</color>
+    <color name="colorBackgroundLight">#F9F9F9</color>
+    <color name="btnYellon">#F2B711</color>
+    <color name="btnGreen">#019788</color>
+    <color name="btnRed">#EA1F62</color>
+    <color name="paidColor">#8bc347</color>
+    <color name="receiveColor">#fe9701</color>
+    <color name="awaitingColor">#5E6871</color>
+</resources>

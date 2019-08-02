@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="#fafafa"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Spinner
+                android:id="@+id/wallet_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/all_transactions_underline"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#fe9701"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_all_transactions"
+            app:layout_constraintEnd_toEndOf="@+id/btn_all_transactions"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/btn_all_transactions" />
+
+        <View
+            android:id="@+id/received_underline"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#fe9701"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_received"
+            app:layout_constraintEnd_toEndOf="@+id/btn_received"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/btn_received" />
+
+        <View
+            android:id="@+id/awaiting_underline"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#fe9701"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_awaiting"
+            app:layout_constraintEnd_toEndOf="@+id/btn_awaiting"
+            app:layout_constraintEnd_toStartOf="@+id/btn_paid"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/btn_awaiting" />
+
+        <View
+            android:id="@+id/paid_underline"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#fe9701"
+            android:elevation="10dp"
+            android:outlineProvider="none"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_paid"
+            app:layout_constraintEnd_toEndOf="@+id/btn_paid"
+            app:layout_constraintStart_toStartOf="@+id/btn_paid" />
+
+        <Button
+            android:id="@+id/btn_all_transactions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="#fafafa"
+            android:stateListAnimator="@null"
+            android:text="@string/btn_all_transactions"
+            android:textAllCaps="false"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_received"
+            app:layout_constraintStart_toEndOf="@+id/btn_att"
+            app:layout_constraintTop_toBottomOf="@+id/relative_layout" />
+
+        <Button
+            android:id="@+id/btn_received"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#fafafa"
+            android:stateListAnimator="@null"
+            android:text="@string/btn_received"
+            android:textAllCaps="false"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_awaiting"
+            app:layout_constraintStart_toEndOf="@+id/btn_all_transactions"
+            app:layout_constraintTop_toBottomOf="@+id/relative_layout" />
+
+        <Button
+            android:id="@+id/btn_awaiting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#fafafa"
+            android:stateListAnimator="@null"
+            android:text="@string/btn_awaiting"
+            android:textAllCaps="false"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toStartOf="@+id/btn_paid"
+            app:layout_constraintStart_toEndOf="@+id/btn_received"
+            app:layout_constraintTop_toBottomOf="@+id/relative_layout" />
+
+        <Button
+            android:id="@+id/btn_paid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="#fafafa"
+            android:stateListAnimator="@null"
+            android:text="@string/btn_paid"
+            android:textAllCaps="false"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_awaiting"
+            app:layout_constraintTop_toBottomOf="@+id/relative_layout" />
+
+        <ImageView
+            android:id="@+id/btn_att"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/reload"
+            android:gravity="center"
+            android:stateListAnimator="@null"
+            app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relative_layout" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_received">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/transaction_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:clipToPadding="false"
+                android:paddingBottom="56dp"
+                android:visibility="visible"
+                tools:listitem="@layout/transaction_item" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

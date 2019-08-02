@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="20dp"
+    android:background="#ffffff">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/round_icon"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
+        android:foregroundGravity="center"
+        app:cardBackgroundColor="@color/btnYellon"
+        app:cardCornerRadius="34dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ic_transaction"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:backgroundTint="@color/colorPrimary"
+            android:background="@drawable/ic_wallet"
+            tools:layout_editor_absoluteX="112dp"
+            tools:layout_editor_absoluteY="171dp" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/txt_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/smartCash"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/img_edit"
+        app:layout_constraintStart_toEndOf="@+id/round_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/smartCash" />
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="SPENDING"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/round_icon"
+        app:layout_constraintTop_toBottomOf="@+id/txt_value"
+
+        />
+
+    <TextView
+        android:id="@+id/txt_to_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
+        android:textSize="12dp"
+        android:layout_marginBottom="20dp"
+        android:text="876kjhy7SEcfkjhiuy34JH6565jhjh76hjg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/img_copy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_label_address" />
+
+
+    <ImageView
+        android:id="@+id/img_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/img_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_action_edit" />
+
+    <ImageView
+        android:id="@+id/img_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/img_copy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_edit"
+        app:srcCompat="@drawable/ic_action_card" />
+
+    <ImageView
+        android:id="@+id/img_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_to_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_label_address"
+        app:srcCompat="@drawable/ic_action_copy" />
+
+    <TextView
+        android:id="@+id/txt_label_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="Address"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/round_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

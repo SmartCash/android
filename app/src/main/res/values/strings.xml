@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name">WalletSmart</string>
+    <string name="smartCash">\u03A3</string>
+
+    <!-- Strings related to login -->
+    <string name="title_activity_login2">Sign in</string>
+    <string name="prompt_user">User</string>
+    <string name="prompt_password">Password </string>
+    <string name="prompt_two_factor">Two Factor </string>
+    <string name="btn_login">Login</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="action_forgetPass">Did you forget your password? Click Here</string>
+    <string name="action_forgetTwo">Reset your two factor autheticantion? Click Here</string>
+
+    <!-- String related to dashboard fragment -->
+    <string name="dashboard_title">Here are your %1$d smartcash addresses. You can use them to receive and send smartcash</string>
+
+    <!-- String related to send fragment -->
+    <string name="first_card_title">Please enter a SmartCash username or a SmartCash address</string>
+    <string name="txt_to_address_label">SmartCash Address / Username</string>
+    <string name="second_card_title">Enter an amount</string>
+    <string name="currency_label">Currency:</string>
+    <string name="amount_in_smart_label">Amount in SMART:</string>
+    <string name="amount_with_fee_in_smart_label">Amount with fee in SMART:</string>
+    <string name="third_card_title">Payment Confirmation</string>
+    <string name="password_label">Password:</string>
+    <string name="send_button">SEND %1$.10f SMART</string>
+
+    <!-- String related to send sms fragment -->
+    <string name="send_sms_first_title">Enter mobile phone number and amount</string>
+    <string name="send_subtitle">(If unclaimed, SmartCash returns to your address after 7 days.)</string>
+    <string name="phone_number_label">Phone number:</string>
+
+    <!-- String related to send email fragment -->
+    <string name="send_email_title">Enter a email and amount</string>
+    <string name="email_label">Email:</string>
+    <string name="message_label">Message:</string>
+
+    <!-- Qr code dialog -->
+    <string name="qr_code_dialog_title">Scan your QR CODE</string>
+    
+    <!-- String related to receive fragment -->
+    <string name="receive_fragment_title">Use the address below to receive SMART</string>
+
+    <!-- String related to transaction fragment -->
+    <string name="btn_all_transactions">All Transactions</string>
+    <string name="btn_received">Received</string>
+    <string name="btn_awaiting">Awaiting</string>
+    <string name="btn_paid">Paid</string>
+
+    <!-- Transaction item -->
+    <string name="label_received">Received</string>
+    <string name="label_awaiting">Awaiting</string>
+    <string name="label_sent">Sent</string>
+    <string name="transaction_id_title">Transaction ID</string>
+
+    <!-- Settings modal -->
+    <string name="settings_title">Settings</string>
+    <string name="btn_close_settings">Close</string>
+
+    <!-- Wallets modal -->
+    <string name="btn_close_wallets_modal">Cancel</string>
+    <string name="wallets_modal_title">Wallets</string>
+
+    <!-- Pin activity -->
+    <string name="pin_label">Enter pin:</string>
+    <string name="confirm_pin_label">Confirm pin:</string>
+    <string name="btn_confirm_pin">Confirm</string>
+    <string name="forgot_pin">I forgot my PIN</string>
+    <string name="create_pin">Create pin</string>
+    <string name="continue_without_pin">Continue without pin</string>
+
+    <!-- Transaction Activity -->
+    <string name="transaction_activity_title">Transaction</string>
+    <string name="transaction_summary_title">Summary</string>
+    <string name="label_size">Size</string>
+    <string name="label_fee_rate">Fee Rate</string>
+    <string name="label_received_time">Received Time</string>
+    <string name="label_mined_time">Mined Time</string>
+    <string name="label_included_in_block">Included in Block</string>
+    <string name="label_details">Details</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
