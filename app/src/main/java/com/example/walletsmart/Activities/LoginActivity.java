@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.walletsmart.Models.Coin;
+import com.example.walletsmart.Models.User;
 import com.example.walletsmart.R;
 import com.example.walletsmart.Utils.DeCryptor;
 import com.example.walletsmart.Utils.EnCryptor;
@@ -61,8 +62,9 @@ public class LoginActivity extends AppCompatActivity {
 
         this.utils = new Utils();
         String token = utils.getToken(this);
+        User user = utils.getUser(this);
 
-        if (token != null && token != "") {
+        if (token != null && token != "" && user != null) {
             Log.e("token", token);
             this.setVisibility();
             getUser(token);

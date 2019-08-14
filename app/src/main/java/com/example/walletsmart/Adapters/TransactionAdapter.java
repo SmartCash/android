@@ -14,11 +14,15 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.walletsmart.Activities.MainActivity;
 import com.example.walletsmart.Activities.TransactionActivity;
+import com.example.walletsmart.Models.Coin;
 import com.example.walletsmart.Models.Transaction;
 import com.example.walletsmart.R;
+import com.example.walletsmart.Utils.Utils;
 import com.example.walletsmart.ViewHolders.TransactionViewHolder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
@@ -48,6 +52,21 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
         transactionViewHolder.direction.setText(this.transactions.get(i).getDirection());
         transactionViewHolder.timestamp.setText(this.transactions.get(i).getTimestamp());
         transactionViewHolder.hash.setText(this.transactions.get(i).getHash());
+
+        Utils utils = new Utils();
+        ArrayList<Coin> coins = utils.getCurrentPrice(context);
+
+        if (utils.getActualSelectedCoin(context).getName().equals("SMART")) {
+            for (Coin item : coins) {
+                if (item.getName().equals("USD")) {
+                    BigDecimal value = utils.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(item.getValue()));
+                    transactionViewHolder.price.setText(String.format("%.2f", value));
+                }
+            }
+        } else {
+            BigDecimal value = utils.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(utils.getActualSelectedCoin(context).getValue()));
+            transactionViewHolder.price.setText(String.format("%.2f", value));
+        }
 
         transactionViewHolder.hash.setOnClickListener(v -> {
             Intent intent = new Intent(context, TransactionActivity.class);

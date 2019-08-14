@@ -46,9 +46,16 @@ public class Utils {
     }
 
     public Coin getActualSelectedCoin(Context context) {
+
+        Coin coin = new Coin("USD", (double) 0);
         mPrefs = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
         String json = getPreferences(context).getString("ActualSelectedCoin", "");
-        Coin coin = gson.fromJson(json, Coin.class);
+
+        if(json != null){
+            Coin coinAux = gson.fromJson(json, Coin.class);
+            if(coinAux != null)
+                coin = coinAux;
+        }
         return coin;
     }
 

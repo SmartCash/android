@@ -21,6 +21,7 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
     public ImageView icon;
     public View contentView;
     public View idView;
+    public TextView price;
 
     public TransactionViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -35,6 +36,7 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
         hashTitle = itemView.findViewById(R.id.transaction_id_title);
         contentView = itemView.findViewById(R.id.content_view);
         idView = itemView.findViewById(R.id.id_view);
+        price = itemView.findViewById(R.id.txt_dolar);
     }
 }
 
