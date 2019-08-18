@@ -1,6 +1,7 @@
 package com.example.walletsmart.Services;
 
 import com.example.walletsmart.Models.ApiResponse;
+import com.example.walletsmart.Models.ContactResponse;
 import com.example.walletsmart.Models.LoginResponse;
 
 import retrofit2.Call;
@@ -25,5 +26,8 @@ public interface WebWalletAPIService {
 
     @GET("user/my")
     Call<ApiResponse> getUser(@Header("Authorization") String auth);
+
+    @GET("contact/my")
+    Call<ContactResponse> getUserContacts(@Header("Authorization") String auth);
 
 }

@@ -55,6 +55,7 @@ public class WalletSpinnerAdapter extends ArrayAdapter<Wallet> {
         TextView textViewHash = convertView.findViewById(R.id.txt_hash);
         Button btnShowHash = convertView.findViewById(R.id.btn_open_details);
         CardView roundIcon = convertView.findViewById(R.id.round_icon);
+
         if (wallets.get(position).getPosition() % 3 == 1) {
             @SuppressLint("ResourceType") String color = convertView.getResources().getString(R.color.btnGreen);
             roundIcon.setCardBackgroundColor(Color.parseColor(color));

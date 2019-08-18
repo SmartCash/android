@@ -1,6 +1,7 @@
 package com.example.walletsmart.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.walletsmart.Models.Coin;
 import com.example.walletsmart.Models.User;
 import com.example.walletsmart.R;
-import com.example.walletsmart.Utils.DeCryptor;
 import com.example.walletsmart.Utils.EnCryptor;
 import com.example.walletsmart.Utils.Utils;
 import com.example.walletsmart.ViewModels.CurrentPriceViewModel;
@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
     private Utils utils;
     private EnCryptor encryptor;
     private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
         UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        model.getToken(username, password, this).observe(   this, token -> {
+        model.getToken(username, password, this).observe(this, token -> {
             if (token != null) {
                 utils.saveToken(LoginActivity.this, token);
                 getUser(token);
@@ -153,5 +152,11 @@ public class LoginActivity extends AppCompatActivity {
             loginContent.setVisibility(View.GONE);
             loader.setVisibility(View.VISIBLE);
         }
+    }
+
+    @OnClick(R.id.txt_forget_your_password)
+    public void onTxtForgetYourPasswordClicked() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wallet.smartcash.cc/change-password"));
+        this.startActivity(browserIntent);
     }
 }

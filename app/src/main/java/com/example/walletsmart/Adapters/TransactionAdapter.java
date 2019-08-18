@@ -56,7 +56,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
         Utils utils = new Utils();
         ArrayList<Coin> coins = utils.getCurrentPrice(context);
 
-        if (utils.getActualSelectedCoin(context).getName().equals("SMART")) {
+        if (utils.getActualSelectedCoin(context) == null || utils.getActualSelectedCoin(context).getName().equals("SMART")) {
             for (Coin item : coins) {
                 if (item.getName().equals("USD")) {
                     BigDecimal value = utils.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(item.getValue()));
