@@ -7,6 +7,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Contact {
 
+    @JsonProperty("contactId")
+    private Integer contactId;
+    @JsonProperty("address")
+    private String address;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("email")
+    private Object email;
+    @JsonProperty("phone")
+    private Object phone;
+
     public Integer getContactId() {
         return contactId;
     }
@@ -46,17 +57,6 @@ public class Contact {
     public void setPhone(Object phone) {
         this.phone = phone;
     }
-
-    @JsonProperty("contactId")
-    private Integer contactId;
-    @JsonProperty("address")
-    private String address;
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("email")
-    private Object email;
-    @JsonProperty("phone")
-    private Object phone;
 
 
 }

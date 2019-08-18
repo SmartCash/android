@@ -2,21 +2,24 @@ package com.example.walletsmart.Models;
 
 import java.io.Serializable;
 
-public class SmartApiLast  implements Serializable {
+public class SmartApiLast implements Serializable {
     private String id;
 
     private String created;
 
-    public void setId(String id){
-        this.id = id;
-    }
-    public String getId(){
+    public String getId() {
         return this.id;
     }
-    public void setCreated(String created){
-        this.created = created;
+
+    public void setId(String id) {
+        this.id = id;
     }
-    public String getCreated(){
+
+    public String getCreated() {
         return this.created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 }

@@ -1,10 +1,8 @@
-
 package com.example.walletsmart.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.walletsmart.Activities.MainActivity;
 import com.example.walletsmart.Activities.TransactionActivity;
 import com.example.walletsmart.Models.Coin;
 import com.example.walletsmart.Models.Transaction;
@@ -96,13 +93,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
             transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_paid);
             Drawable wrappedDrawable = changeIconColor(R.drawable.ic_arrow_up, R.color.paidColor);
             transactionViewHolder.icon.setBackground(wrappedDrawable);
-        }
-        else if (direction.equals("Received")) {
+        } else if (direction.equals("Received")) {
             transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_receive);
             Drawable wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.receiveColor);
             transactionViewHolder.icon.setBackground(wrappedDrawable);
-        }
-        else if (direction.equals("Awaiting")) {
+        } else if (direction.equals("Awaiting")) {
             Drawable wrappedDrawable = changeIconColor(R.drawable.bg_awaiting, R.color.awaitingColor);
             transactionViewHolder.direction.setBackground(wrappedDrawable);
 

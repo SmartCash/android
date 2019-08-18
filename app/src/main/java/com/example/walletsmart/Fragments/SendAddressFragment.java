@@ -66,6 +66,9 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class SendAddressFragment extends Fragment implements QRCodeReaderView.OnQRCodeReadListener {
+    private static final int RC_CAMERA_PERM = 123;
+    private static final String PIN_ALIAS = "AndroidKeyStorePin";
+    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
     @BindView(R.id.txt_to_address)
     EditText txtToAddress;
     @BindView(R.id.currency_spinner)
@@ -94,24 +97,21 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private ArrayList<Coin> coins;
     private CoinSpinnerAdapter adapter;
     private Coin actualSelected;
-    private static final int RC_CAMERA_PERM = 123;
     private AlertDialog dialog;
     private BigDecimal amountConverted = BigDecimal.valueOf(0.0);
     private DeCryptor decryptor;
-    private static final String PIN_ALIAS = "AndroidKeyStorePin";
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
     private boolean withoutPin;
     private boolean isPasswordVisible = false;
+
+    public static SendAddressFragment newInstance() {
+        return new SendAddressFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_send_address, container, false);
         ButterKnife.bind(this, view);
         return view;
-    }
-
-    public static SendAddressFragment newInstance() {
-        return new SendAddressFragment();
     }
 
     @Override
@@ -243,7 +243,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         RecyclerView recycler = walletListView.findViewById(R.id.wallet_list);
         TextView title = walletListView.findViewById(R.id.wallet_dialog_title);
 
-        title.setText(String.valueOf(this.walletList.size() + " Wallets"));
+        title.setText(this.walletList.size() + " Wallets");
 
         walletListDialog.setView(walletListView);
         AlertDialog dialog = walletListDialog.create();
@@ -260,7 +260,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     private void setupRecyclerViewWallets(RecyclerView recyclerView, AlertDialog dialog) {
         RecyclerView recyclerViewWallets = recyclerView;
-        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         walletAdapter = new WalletDialogAdapter(getContext(), new ArrayList<Wallet>(), this.txtToAddress, dialog);
 
         recyclerViewWallets.setLayoutManager(linearLayoutManagerTransactions);

@@ -1,6 +1,5 @@
 package com.example.walletsmart.Services;
 
-import com.example.walletsmart.Models.ApiResponse;
 import com.example.walletsmart.Models.TransactionDetails;
 import com.example.walletsmart.Models.TransactionResponse;
 

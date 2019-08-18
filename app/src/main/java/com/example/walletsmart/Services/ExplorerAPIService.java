@@ -5,9 +5,6 @@ import com.example.walletsmart.Models.ExplorerApiAddressBalance;
 import com.example.walletsmart.Models.ExplorerApiAddressBalanceWithTxs;
 import com.example.walletsmart.Models.ExplorerApiBlock;
 import com.example.walletsmart.Models.ExplorerApiTransactionDetail;
-import com.google.gson.JsonObject;
-
-import java.math.BigInteger;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

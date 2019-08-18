@@ -3,7 +3,6 @@ package com.example.walletsmart.Adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
-import com.example.walletsmart.R;
 import com.example.walletsmart.Models.Wallet;
+import com.example.walletsmart.R;
+
+import java.util.ArrayList;
 
 public class WalletSpinnerAdapter extends ArrayAdapter<Wallet> {
     private Integer count;

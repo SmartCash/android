@@ -1,29 +1,19 @@
 package com.example.walletsmart;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import com.example.walletsmart.Models.ApiResponse;
 import com.example.walletsmart.Models.Contact;
 import com.example.walletsmart.Models.ContactResponse;
-import com.example.walletsmart.Models.ExplorerApiAddressBalance;
-import com.example.walletsmart.Models.ExplorerApiAddressBalanceWithTxs;
-import com.example.walletsmart.Models.ExplorerApiBlock;
-import com.example.walletsmart.Models.ExplorerApiTransactionDetail;
 import com.example.walletsmart.Models.LoginResponse;
 import com.example.walletsmart.Models.User;
-import com.example.walletsmart.Services.ExplorerAPIConfig;
 import com.example.walletsmart.Services.WebWalletAPIConfig;
 import com.example.walletsmart.Utils.Utils;
 
-import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static org.junit.Assert.assertFalse;
@@ -34,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class WebWalletApiUnitTest {
 
     @Test
-    public void getToken(){
+    public void getToken() {
 
         String localIP = Utils.getIPAddress(true);
 
@@ -74,7 +64,7 @@ public class WebWalletApiUnitTest {
 
 
     @Test
-    public void getUserInfo(){
+    public void getUserInfo() {
 
         String localIP = Utils.getIPAddress(true);
 
@@ -133,7 +123,6 @@ public class WebWalletApiUnitTest {
             assertNotNull(user.getUsername());
 
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -141,7 +130,7 @@ public class WebWalletApiUnitTest {
     }
 
     @Test
-    public void getUserContact(){
+    public void getUserContact() {
 
         String localIP = Utils.getIPAddress(true);
 
@@ -206,7 +195,6 @@ public class WebWalletApiUnitTest {
         }
 
     }
-
 
 
 }

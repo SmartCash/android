@@ -18,7 +18,7 @@ public class DashboardWalletListViewHolder extends RecyclerView.ViewHolder {
     public ImageView btnCopy;
     public CardView roundIcon;
 
-    public DashboardWalletListViewHolder (@NonNull View itemView) {
+    public DashboardWalletListViewHolder(@NonNull View itemView) {
         super(itemView);
 
         name = itemView.findViewById(R.id.txt_name);

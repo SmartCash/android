@@ -6,8 +6,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExplorerApiBlock  implements Serializable
-{
+public class ExplorerApiBlock implements Serializable {
+    @JsonProperty("NumberOfTransactions")
+    private String numberOfTransactions;
+    @JsonProperty("Hash")
+    private String hash;
+    @JsonProperty("BlockReward")
+    private String blockReward;
+    @JsonProperty("Timestamp")
+    private String timestamp;
+    @JsonProperty("MerkleRoot")
+    private String merkleRoot;
+    @JsonProperty("Height")
+    private String height;
+    @JsonProperty("Difficulty")
+    private String difficulty;
+    @JsonProperty("Bits")
+    private String bits;
+    @JsonProperty("Version")
+    private String version;
+    @JsonProperty("Nonce")
+    private String nonce;
+    @JsonProperty("PreviousBlockNumber")
+    private String previousBlockNumber;
+    @JsonProperty("PreviousBlockHash")
+    private String previousBlockHash;
+    @JsonProperty("Json")
+    private String json;
+    @JsonProperty("Confirmations")
+    private String confirmations;
+
     public String getNumberOfTransactions() {
         return numberOfTransactions;
     }
@@ -119,47 +147,5 @@ public class ExplorerApiBlock  implements Serializable
     public void setConfirmations(String confirmations) {
         this.confirmations = confirmations;
     }
-
-    @JsonProperty("NumberOfTransactions")
-    private String numberOfTransactions;
-
-    @JsonProperty("Hash")
-    private String hash;
-
-    @JsonProperty("BlockReward")
-    private String blockReward;
-
-    @JsonProperty("Timestamp")
-    private String timestamp;
-
-    @JsonProperty("MerkleRoot")
-    private String merkleRoot;
-
-    @JsonProperty("Height")
-    private String height;
-
-    @JsonProperty("Difficulty")
-    private String difficulty;
-
-    @JsonProperty("Bits")
-    private String bits;
-
-    @JsonProperty("Version")
-    private String version;
-
-    @JsonProperty("Nonce")
-    private String nonce;
-
-    @JsonProperty("PreviousBlockNumber")
-    private String previousBlockNumber;
-
-    @JsonProperty("PreviousBlockHash")
-    private String previousBlockHash;
-
-    @JsonProperty("Json")
-    private String json;
-
-    @JsonProperty("Confirmations")
-    private String confirmations;
 
 }

@@ -7,8 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ExplorerApiTransaction implements Serializable
-{
+public class ExplorerApiTransaction implements Serializable {
     @JsonProperty("Txid")
     private String txId;
 
@@ -20,6 +19,10 @@ public class ExplorerApiTransaction implements Serializable
 
     @JsonProperty("Time")
     private String time;
+    @SerializedName("Json")
+    private String json;
+    @SerializedName("Confirmations")
+    private int confirmations;
 
     public String getTxId() {
         return txId;
@@ -68,11 +71,5 @@ public class ExplorerApiTransaction implements Serializable
     public void setConfirmations(int confirmations) {
         this.confirmations = confirmations;
     }
-
-    @SerializedName("Json")
-    private String json;
-
-    @SerializedName("Confirmations")
-    private int confirmations;
 
 }

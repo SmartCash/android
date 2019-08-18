@@ -45,13 +45,17 @@ public class TransactionFragment extends Fragment {
     View activeUnderline;
     @BindView(R.id.wallet_spinner)
     Spinner walletSpinner;
+    Utils utils = new Utils();
     private String activeFilter = null;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
     private ArrayList<Transaction> filteredTransactions = new ArrayList<Transaction>();
     private ArrayList<Transaction> transactions;
     private TransactionAdapter transactionAdapter;
-    Utils utils = new Utils();
+
+    public static TransactionFragment newInstance() {
+        return new TransactionFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,7 +98,7 @@ public class TransactionFragment extends Fragment {
         Wallet savedWallet = utils.getWallet(getContext());
 
         if (savedWallet != null) {
-            for(int i = 0; i < walletList.size(); i++) {
+            for (int i = 0; i < walletList.size(); i++) {
                 if (savedWallet.getWalletId().equals(walletList.get(i).getWalletId())) {
                     walletSpinner.setSelection(i);
                 }
@@ -102,20 +106,15 @@ public class TransactionFragment extends Fragment {
         }
     }
 
-
     private void setupRecyclerViewTransactions() {
         RecyclerView recyclerViewTransactions = getActivity().findViewById(R.id.transaction_recyclerview);
-        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         transactionAdapter = new TransactionAdapter(getContext(), new ArrayList<Transaction>());
 
         recyclerViewTransactions.setLayoutManager(linearLayoutManagerTransactions);
         recyclerViewTransactions.setAdapter(transactionAdapter);
 
         transactionAdapter.setItems(transactions);
-    }
-
-    public static TransactionFragment newInstance() {
-        return new TransactionFragment();
     }
 
     @OnClick({R.id.btn_all_transactions, R.id.btn_received, R.id.btn_awaiting, R.id.btn_paid, R.id.btn_att})
@@ -150,7 +149,7 @@ public class TransactionFragment extends Fragment {
             if (response != null) {
                 Toast.makeText(getActivity(), "Updated!", Toast.LENGTH_LONG).show();
                 utils.saveUser(getActivity(), response);
-                ((MainActivity)getActivity()).setWalletValue();
+                ((MainActivity) getActivity()).setWalletValue();
             } else {
                 Log.e("Erro", "Erro ao buscar os valores!");
             }

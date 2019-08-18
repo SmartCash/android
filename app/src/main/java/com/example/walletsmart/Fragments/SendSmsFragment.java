@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment;
 import com.example.walletsmart.R;
 
 public class SendSmsFragment extends Fragment {
+    public static SendSmsFragment newInstance() {
+        return new SendSmsFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sms_send, container, false);
         return view;
-    }
-
-    public static SendSmsFragment newInstance() {
-        return new SendSmsFragment();
     }
 }

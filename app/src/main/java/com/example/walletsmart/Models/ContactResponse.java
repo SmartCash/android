@@ -8,6 +8,15 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContactResponse {
+    @JsonProperty("data")
+    private List<Contact> data = null;
+    @JsonProperty("error")
+    private Object error;
+    @JsonProperty("status")
+    private String status;
+    @JsonProperty("isValid")
+    private Boolean isValid;
+
     public List<Contact> getData() {
         return data;
     }
@@ -39,15 +48,6 @@ public class ContactResponse {
     public void setValid(Boolean valid) {
         isValid = valid;
     }
-
-    @JsonProperty("data")
-    private List<Contact> data = null;
-    @JsonProperty("error")
-    private Object error;
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("isValid")
-    private Boolean isValid;
 
 
 }

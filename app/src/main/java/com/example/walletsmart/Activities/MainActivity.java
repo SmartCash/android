@@ -1,25 +1,8 @@
 package com.example.walletsmart.Activities;
 
-import com.example.walletsmart.Adapters.CoinSpinnerAdapter;
-import com.example.walletsmart.Fragments.DashboardFragment;
-import com.example.walletsmart.Fragments.ReceiveFragment;
-import com.example.walletsmart.Fragments.TransactionFragment;
-import com.example.walletsmart.Models.Coin;
-import com.example.walletsmart.Models.Wallet;
-import com.example.walletsmart.R;
-import com.example.walletsmart.Fragments.SendFragment;
-import com.example.walletsmart.Utils.Utils;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +10,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.walletsmart.Adapters.CoinSpinnerAdapter;
+import com.example.walletsmart.Fragments.DashboardFragment;
+import com.example.walletsmart.Fragments.ReceiveFragment;
+import com.example.walletsmart.Fragments.SendFragment;
+import com.example.walletsmart.Fragments.TransactionFragment;
+import com.example.walletsmart.Models.Coin;
+import com.example.walletsmart.Models.Wallet;
+import com.example.walletsmart.R;
+import com.example.walletsmart.Utils.Utils;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             Coin selectedCoin = utils.getActualSelectedCoin(this);
 
             if (selectedCoin != null) {
-                for(int i = 0; i < coins.size(); i++) {
+                for (int i = 0; i < coins.size(); i++) {
                     if (selectedCoin.getValue().equals(coins.get(i).getValue()) && selectedCoin.getName().equals(coins.get(i).getName())) {
                         currentPriceSpinner.setSelection(i);
                     }
@@ -182,13 +182,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         walletTxt.setText(getResources().getString(R.string.smartCash) + String.format("%.8f", amount));
         if (selectedCoin == null) {
             ArrayList<Coin> currentPrice = utils.getCurrentPrice(this);
-        //    walletConverted.setText("$ " + String.format("%.3f", amount / currentPrice.get(0).getValue()));
-               walletConverted.setText("$ "+  utils.converterValue(amount,currentPrice.get(1).getValue()));
+            //    walletConverted.setText("$ " + String.format("%.3f", amount / currentPrice.get(0).getValue()));
+            walletConverted.setText("$ " + utils.converterValue(amount, currentPrice.get(1).getValue()));
 
-        }
-        else {
+        } else {
             //  walletConverted.setText("$ " + String.format("%.3f", amount / selectedCoin.getValue()));
-            walletConverted.setText("$ " + utils.converterValue(amount,selectedCoin.getValue()));
+            walletConverted.setText("$ " + utils.converterValue(amount, selectedCoin.getValue()));
 
         }
     }

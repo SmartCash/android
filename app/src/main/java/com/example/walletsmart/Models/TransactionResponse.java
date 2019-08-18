@@ -8,6 +8,17 @@ import java.io.Serializable;
 @JsonIgnoreProperties({"isValid"})
 public class TransactionResponse implements Serializable {
 
+    @SerializedName("data")
+    private String data;
+    @SerializedName("error")
+    private String error;
+    @SerializedName("status")
+    private String status;
+    @SerializedName("isValid")
+    private Boolean isValid;
+    @SerializedName("error_description")
+    private String errorDescription;
+
     public String getData() {
         return data;
     }
@@ -47,20 +58,5 @@ public class TransactionResponse implements Serializable {
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
     }
-
-    @SerializedName("data")
-    private String data;
-
-    @SerializedName("error")
-    private String error;
-
-    @SerializedName("status")
-    private String status;
-
-    @SerializedName("isValid")
-    private Boolean isValid;
-
-    @SerializedName("error_description")
-    private String errorDescription;
 
 }

@@ -46,7 +46,7 @@
 
     <!-- Qr code dialog -->
     <string name="qr_code_dialog_title">Scan your QR CODE</string>
-    
+
     <!-- String related to receive fragment -->
     <string name="receive_fragment_title">Use the address below to receive SMART</string>
 

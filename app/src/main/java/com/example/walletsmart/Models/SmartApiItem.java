@@ -20,52 +20,67 @@ public class SmartApiItem implements Serializable {
 
     private String name;
 
-    public void setUpdated(String updated){
-        this.updated = updated;
-    }
-    public String getUpdated(){
+    public String getUpdated() {
         return this.updated;
     }
-    public void setCurrencies(SmartApiCurrency currencies){
-        this.currencies = currencies;
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
-    public SmartApiCurrency getCurrencies(){
+
+    public SmartApiCurrency getCurrencies() {
         return this.currencies;
     }
-    public void setTicker(String ticker){
-        this.ticker = ticker;
+
+    public void setCurrencies(SmartApiCurrency currencies) {
+        this.currencies = currencies;
     }
-    public String getTicker(){
+
+    public String getTicker() {
         return this.ticker;
     }
-    public void setObject(String object){
-        this.object = object;
+
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
     }
-    public String getObject(){
+
+    public String getObject() {
         return this.object;
     }
-    public void setCreated(String created){
-        this.created = created;
+
+    public void setObject(String object) {
+        this.object = object;
     }
-    public String getCreated(){
+
+    public String getCreated() {
         return this.created;
     }
-    public void setExchange(String exchange){
-        this.exchange = exchange;
+
+    public void setCreated(String created) {
+        this.created = created;
     }
-    public String getExchange(){
+
+    public String getExchange() {
         return this.exchange;
     }
-    public void setId(String id){
-        this.id = id;
+
+    public void setExchange(String exchange) {
+        this.exchange = exchange;
     }
-    public String getId(){
+
+    public String getId() {
         return this.id;
     }
-    public void setName(String name){
-        this.name = name;
+
+    public void setId(String id) {
+        this.id = id;
     }
-    public String getName(){
+
+    public String getName() {
         return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -23,17 +23,17 @@ public class CoinSpinnerAdapter extends ArrayAdapter<Coin> {
     }
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return coins.size();
     }
 
     @Override
-    public Coin getItem(int position){
+    public Coin getItem(int position) {
         return coins.get(position);
     }
 
     @Override
-    public long getItemId(int position){
+    public long getItemId(int position) {
         return position;
     }
 

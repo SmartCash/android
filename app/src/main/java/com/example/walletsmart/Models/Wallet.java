@@ -33,6 +33,10 @@ public class Wallet {
     @SerializedName("transactions")
     private ArrayList<Transaction> transactions;
 
+    public Wallet() {
+
+    }
+
     public Integer getWalletId() {
         return walletId;
     }
@@ -135,10 +139,6 @@ public class Wallet {
 
     public void setTransactions(ArrayList<Transaction> transactions) {
         this.transactions = transactions;
-    }
-
-    public Wallet() {
-
     }
 
     @Override

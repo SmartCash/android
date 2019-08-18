@@ -6,6 +6,15 @@ import java.io.Serializable;
 
 public class ExplorerApiAddressBalance implements Serializable {
 
+    @SerializedName("address")
+    private String address;
+    @SerializedName("balance")
+    private double balance;
+    @SerializedName("sent")
+    private double sent;
+    @SerializedName("received")
+    private double received;
+
     public String getAddress() {
         return address;
     }
@@ -37,17 +46,5 @@ public class ExplorerApiAddressBalance implements Serializable {
     public void setReceived(double received) {
         this.received = received;
     }
-
-    @SerializedName("address")
-    private String address;
-
-    @SerializedName("balance")
-    private double balance;
-
-    @SerializedName("sent")
-    private double sent;
-
-    @SerializedName("received")
-    private double received;
 
 }

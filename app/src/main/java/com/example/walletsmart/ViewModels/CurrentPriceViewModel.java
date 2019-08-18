@@ -1,7 +1,6 @@
 package com.example.walletsmart.ViewModels;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -36,7 +35,7 @@ public class CurrentPriceViewModel extends ViewModel {
         call.enqueue(new Callback<JsonNode>() {
             @Override
             public void onResponse(Call<JsonNode> call, Response<JsonNode> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     currentPrices.setValue(response.body().toString());
                 } else {
                     try {

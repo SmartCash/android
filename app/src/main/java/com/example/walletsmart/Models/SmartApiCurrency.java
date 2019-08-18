@@ -2,12 +2,11 @@ package com.example.walletsmart.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SmartApiCurrency  implements Serializable {
+public class SmartApiCurrency implements Serializable {
 
     @JsonProperty("FJD")
     private double fjd;

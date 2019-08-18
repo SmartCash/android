@@ -33,6 +33,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PinActivity extends AppCompatActivity {
+    private static final String PIN_ALIAS = "AndroidKeyStorePin";
+    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
     @BindView(R.id.txt_pin)
     EditText txtPin;
     @BindView(R.id.txt_confirm_pin)
@@ -43,11 +45,8 @@ public class PinActivity extends AppCompatActivity {
     TextView forgotPinBtn;
     @BindView(R.id.continue_without_pin)
     TextView continueWithoutToken;
-
     private EnCryptor encryptor;
     private DeCryptor decryptor;
-    private static final String PIN_ALIAS = "AndroidKeyStorePin";
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
     private Utils utils;
     private byte[] pin;
     private boolean withoutPin;

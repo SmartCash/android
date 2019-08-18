@@ -1,6 +1,5 @@
 package com.example.walletsmart.Services;
 
-import com.example.walletsmart.Models.CurrentPrices;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import retrofit2.Call;

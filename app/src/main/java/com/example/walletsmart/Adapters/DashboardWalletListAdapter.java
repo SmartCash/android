@@ -67,6 +67,7 @@ public class DashboardWalletListAdapter extends RecyclerView.Adapter<DashboardWa
             count = 0;
         }
     }
+
     @Override
     public int getItemCount() {
         return wallets.size();

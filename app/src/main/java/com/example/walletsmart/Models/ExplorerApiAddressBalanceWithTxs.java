@@ -1,15 +1,17 @@
 package com.example.walletsmart.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.List;
 
 
-public class ExplorerApiAddressBalanceWithTxs implements Serializable
-{
+public class ExplorerApiAddressBalanceWithTxs implements Serializable {
+    @JsonProperty("AddressBalance")
+    private ExplorerApiAddressBalance addressbalance;
+    @JsonProperty("Txs")
+    private List<ExplorerApiTxs> txs;
+
     public ExplorerApiAddressBalanceWithTxs() {
     }
 
@@ -33,12 +35,6 @@ public class ExplorerApiAddressBalanceWithTxs implements Serializable
     public void setTxs(List<ExplorerApiTxs> txs) {
         this.txs = txs;
     }
-
-    @JsonProperty("AddressBalance")
-    private ExplorerApiAddressBalance addressbalance;
-
-    @JsonProperty("Txs")
-    private List<ExplorerApiTxs> txs;
 
 
 }

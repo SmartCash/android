@@ -25,12 +25,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 public class SendFragment extends Fragment {
 
-//    @BindView(R.id.address_underline)
+    //    @BindView(R.id.address_underline)
 //    View addressUnderline;
 //    @BindView(R.id.sms_underline)
 //    View smsUnderline;
@@ -40,12 +39,16 @@ public class SendFragment extends Fragment {
     FrameLayout frameLayout;
     @BindView(R.id.scroll_view)
     ScrollView scrollView;
-//    private View activeUnderline;
+    @BindView(R.id.wallet_spinner)
+    Spinner walletSpinner;
+    //    private View activeUnderline;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
     private Utils utils = new Utils();
-    @BindView(R.id.wallet_spinner)
-    Spinner walletSpinner;
+
+    public static SendFragment newInstance() {
+        return new SendFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,16 +89,12 @@ public class SendFragment extends Fragment {
         Wallet savedWallet = utils.getWallet(getContext());
 
         if (savedWallet != null) {
-            for(int i = 0; i < walletList.size(); i++) {
+            for (int i = 0; i < walletList.size(); i++) {
                 if (savedWallet.getWalletId().equals(walletList.get(i).getWalletId())) {
                     walletSpinner.setSelection(i);
                 }
             }
         }
-    }
-
-    public static SendFragment newInstance() {
-        return new SendFragment();
     }
 
 
@@ -133,7 +132,6 @@ public class SendFragment extends Fragment {
 //                break;
 //        }
 //    }
-
 
 
 //    @OnClick({R.id.btn_address, R.id.btn_sms, R.id.btn_email})

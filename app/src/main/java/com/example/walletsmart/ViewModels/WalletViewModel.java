@@ -7,11 +7,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.walletsmart.Models.ApiResponse;
 import com.example.walletsmart.Models.SendPayment;
 import com.example.walletsmart.Models.TransactionResponse;
 import com.example.walletsmart.Utils.ApiUtils;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import org.json.JSONObject;
 
@@ -38,7 +36,7 @@ public class WalletViewModel extends ViewModel {
         call.enqueue(new Callback<TransactionResponse>() {
             @Override
             public void onResponse(Call<TransactionResponse> call, Response<TransactionResponse> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     returnResponse.setValue(response.body());
                 } else {
                     try {

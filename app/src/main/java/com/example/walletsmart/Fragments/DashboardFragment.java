@@ -30,6 +30,10 @@ public class DashboardFragment extends Fragment {
     private Utils utils = new Utils();
     private DashboardWalletListAdapter walletAdapter;
 
+    public static DashboardFragment newInstance() {
+        return new DashboardFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,16 +52,12 @@ public class DashboardFragment extends Fragment {
 
     private void setupRecyclerViewWallets() {
         RecyclerView walletRecyclerview = getActivity().findViewById(R.id.wallet_recyclerview);
-        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
         walletAdapter = new DashboardWalletListAdapter(getContext(), new ArrayList<Wallet>());
 
         walletRecyclerview.setLayoutManager(linearLayoutManagerTransactions);
         walletRecyclerview.setAdapter(walletAdapter);
 
         walletAdapter.setItems(walletList);
-    }
-
-    public static DashboardFragment newInstance() {
-        return new DashboardFragment();
     }
 }

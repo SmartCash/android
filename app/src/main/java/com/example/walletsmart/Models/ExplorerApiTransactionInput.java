@@ -2,12 +2,26 @@ package com.example.walletsmart.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ExplorerApiTransactionInput implements Serializable {
+
+    @JsonProperty("TxidIn")
+    private String txidIn;
+    @JsonProperty("IndexIn")
+    private int indexIn;
+    @JsonProperty("TxidOut")
+    private String txIdOut;
+    @JsonProperty("IndexOut")
+    private int indexOut;
+    @JsonProperty("Address")
+    private String address;
+    @JsonProperty("Value")
+    private int value;
+    @JsonProperty("Json")
+    private String json;
 
     public String getTxidIn() {
         return txidIn;
@@ -64,26 +78,5 @@ public class ExplorerApiTransactionInput implements Serializable {
     public void setJson(String json) {
         this.json = json;
     }
-
-    @JsonProperty("TxidIn")
-    private String txidIn;
-
-    @JsonProperty("IndexIn")
-    private int indexIn;
-
-    @JsonProperty("TxidOut")
-    private String txIdOut;
-
-    @JsonProperty("IndexOut")
-    private int indexOut;
-
-    @JsonProperty("Address")
-    private String address;
-
-    @JsonProperty("Value")
-    private int value;
-
-    @JsonProperty("Json")
-    private String json;
 
 }

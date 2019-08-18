@@ -23,9 +23,9 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:backgroundTint="@color/colorPrimary"
             android:background="@drawable/ic_wallet"
+            android:backgroundTint="@color/colorPrimary"
+            android:scaleType="centerCrop"
             tools:layout_editor_absoluteX="112dp"
             tools:layout_editor_absoluteY="171dp" />
     </androidx.cardview.widget.CardView>

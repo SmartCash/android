@@ -16,8 +16,6 @@ import com.example.walletsmart.Utils.Utils;
 
 import org.json.JSONObject;
 
-import java.net.InetAddress;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +51,7 @@ public class UserViewModel extends ViewModel {
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     ApiResponse apiResponse = response.body();
                     user.setValue(apiResponse.getData());
                 } else {
@@ -79,13 +77,13 @@ public class UserViewModel extends ViewModel {
     public void loadToken(String username, String password, Context context) {
 
         String localIP = null;
-        try{
+        try {
             localIP = Utils.getIPAddress(true);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        if(localIP == null || localIP.isEmpty()) localIP = "192.168.0.255";
+        if (localIP == null || localIP.isEmpty()) localIP = "192.168.0.255";
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
                 username,
@@ -101,7 +99,7 @@ public class UserViewModel extends ViewModel {
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     LoginResponse apiResponse = response.body();
                     Log.e("Access token", "" + apiResponse.getAccessToken());
                     token.setValue(apiResponse.getAccessToken());

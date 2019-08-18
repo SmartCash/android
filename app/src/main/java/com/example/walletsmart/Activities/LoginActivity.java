@@ -40,6 +40,7 @@ import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
     @BindView(R.id.txt_user)
     EditText txtUser;
     @BindView(R.id.txt_password)
@@ -50,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     ConstraintLayout loginContent;
     private Utils utils;
     private EnCryptor encryptor;
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

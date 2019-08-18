@@ -8,13 +8,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.walletsmart.Models.ApiResponse;
 import com.example.walletsmart.Models.FullTransaction;
-import com.example.walletsmart.Models.Transaction;
 import com.example.walletsmart.Models.TransactionDetails;
 import com.example.walletsmart.Models.TransactionResponse;
-import com.example.walletsmart.Models.User;
-import com.example.walletsmart.Services.WebWalletAPIConfig;
 import com.example.walletsmart.Utils.ApiUtils;
 
 import org.json.JSONObject;
@@ -43,12 +39,12 @@ public class TransactionViewModel extends ViewModel {
     }
 
     private void loadDetails(String token, TransactionDetails details, Context context) {
-        Call <TransactionResponse> call = new ApiUtils(context).getTransactionDetailsService().getDetails("Bearer " + token, details);
+        Call<TransactionResponse> call = new ApiUtils(context).getTransactionDetailsService().getDetails("Bearer " + token, details);
 
         call.enqueue(new Callback<TransactionResponse>() {
             @Override
             public void onResponse(Call<TransactionResponse> call, Response<TransactionResponse> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     TransactionResponse apiResponse = response.body();
                     transactionDetails.setValue(apiResponse);
                 } else {
@@ -76,7 +72,7 @@ public class TransactionViewModel extends ViewModel {
         call.enqueue(new Callback<FullTransaction>() {
             @Override
             public void onResponse(Call<FullTransaction> call, Response<FullTransaction> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     FullTransaction apiResponse = response.body();
                     transaction.setValue(apiResponse);
                 } else {

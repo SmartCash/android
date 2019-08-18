@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.walletsmart.Models.FullTransaction;
-import com.example.walletsmart.Models.Transaction;
 import com.example.walletsmart.Models.TransactionDetails;
 import com.example.walletsmart.Models.TransactionResponse;
 import com.example.walletsmart.R;

@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class ExplorerApiUnitTest {
 
     @Test
-    public void getAddressBalance(){
+    public void getAddressBalance() {
 
         String address = "SScgRNAofPxYkCxVz3JbsJYX9XbZnvjHhq";
 
@@ -51,7 +51,7 @@ public class ExplorerApiUnitTest {
     }
 
     @Test
-    public void GetAddressBalanceWithTransactions(){
+    public void GetAddressBalanceWithTransactions() {
 
         String address = "SScgRNAofPxYkCxVz3JbsJYX9XbZnvjHhq";
 
@@ -79,7 +79,7 @@ public class ExplorerApiUnitTest {
     }
 
     @Test
-    public void GetLatestBlockHeight(){
+    public void GetLatestBlockHeight() {
 
         String address = "SScgRNAofPxYkCxVz3JbsJYX9XbZnvjHhq";
 
@@ -106,7 +106,7 @@ public class ExplorerApiUnitTest {
 
 
     @Test
-    public void GetTransactionDetail(){
+    public void GetTransactionDetail() {
 
         String txid = "ddf00e20666b40c42017788b076b88f01fac8b5b3990f1df0537d187429377d1";
 
@@ -138,7 +138,7 @@ public class ExplorerApiUnitTest {
     }
 
     @Test
-    public void GetBlockByHash(){
+    public void GetBlockByHash() {
 
         String hash = "00000000000018b6ac47b40024b960913f454cb3044111eb7435deae92422e54";
 
@@ -169,7 +169,7 @@ public class ExplorerApiUnitTest {
     }
 
     @Test
-    public void GetBlockById(){
+    public void GetBlockById() {
 
         String height = "1072000";
 
@@ -197,4 +197,5 @@ public class ExplorerApiUnitTest {
             e.printStackTrace();
         }
 
-    }}
+    }
+}

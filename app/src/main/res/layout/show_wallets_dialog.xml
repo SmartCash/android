@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wallet_dialog_title"/>
+        app:layout_constraintTop_toBottomOf="@+id/wallet_dialog_title" />
 
     <Button
         android:id="@+id/btn_cancel"
@@ -35,8 +35,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:text="@string/btn_close_wallets_modal"
         android:background="@drawable/btn_bg"
+        android:text="@string/btn_close_wallets_modal"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

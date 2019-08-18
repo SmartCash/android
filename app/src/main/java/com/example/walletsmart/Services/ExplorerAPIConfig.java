@@ -18,8 +18,8 @@ public class ExplorerAPIConfig {
                 .build();
     }
 
-    public ExplorerAPIConfig(boolean scalar){
-        if(scalar){
+    public ExplorerAPIConfig(boolean scalar) {
+        if (scalar) {
             this.retrofit = new Retrofit.Builder()
                     .baseUrl(ConstantsURLS.URL_API_EXPLORER)
                     .addConverterFactory(ScalarsConverterFactory.create())

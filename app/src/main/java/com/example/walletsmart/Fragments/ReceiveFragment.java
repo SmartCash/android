@@ -31,11 +31,15 @@ public class ReceiveFragment extends Fragment {
     SimpleDraweeView qrCodeImage;
     @BindView(R.id.wallet_address)
     TextView walletAddress;
+    @BindView(R.id.wallet_spinner)
+    Spinner walletSpinner;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
     private Utils utils = new Utils();
-    @BindView(R.id.wallet_spinner)
-    Spinner walletSpinner;
+
+    public static ReceiveFragment newInstance() {
+        return new ReceiveFragment();
+    }
 
     @Nullable
     @Override
@@ -75,7 +79,7 @@ public class ReceiveFragment extends Fragment {
         Wallet savedWallet = utils.getWallet(getContext());
 
         if (savedWallet != null) {
-            for(int i = 0; i < walletList.size(); i++) {
+            for (int i = 0; i < walletList.size(); i++) {
                 if (savedWallet.getWalletId().equals(walletList.get(i).getWalletId())) {
                     walletSpinner.setSelection(i);
                 }
@@ -88,12 +92,8 @@ public class ReceiveFragment extends Fragment {
         qrCodeImage.setImageURI(uri);
     }
 
-    public static ReceiveFragment newInstance() {
-        return new ReceiveFragment();
-    }
-
     @OnClick(R.id.btn_copy)
     public void onViewClicked() {
-        utils.copyToClipboard(getContext(), walletAddress.getText().toString());
+        Utils.copyToClipboard(getContext(), walletAddress.getText().toString());
     }
 }

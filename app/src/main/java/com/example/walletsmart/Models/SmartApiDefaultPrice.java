@@ -1,8 +1,9 @@
 package com.example.walletsmart.Models;
+
 import java.io.Serializable;
 import java.util.List;
 
-public class SmartApiDefaultPrice  implements Serializable {
+public class SmartApiDefaultPrice implements Serializable {
 
 
     private int count;
@@ -23,58 +24,75 @@ public class SmartApiDefaultPrice  implements Serializable {
 
     private double execution;
 
-    public void setCount(int count){
-        this.count = count;
-    }
-    public int getCount(){
+    public int getCount() {
         return this.count;
     }
-    public void setItems(List<SmartApiItem> items){
-        this.items = items;
+
+    public void setCount(int count) {
+        this.count = count;
     }
-    public List<SmartApiItem> getItems(){
+
+    public List<SmartApiItem> getItems() {
         return this.items;
     }
-    public void setLast(SmartApiLast last){
-        this.last = last;
+
+    public void setItems(List<SmartApiItem> items) {
+        this.items = items;
     }
-    public SmartApiLast getLast(){
+
+    public SmartApiLast getLast() {
         return this.last;
     }
-    public void setIsError(boolean isError){
-        this.isError = isError;
+
+    public void setLast(SmartApiLast last) {
+        this.last = last;
     }
-    public boolean getIsError(){
+
+    public boolean getIsError() {
         return this.isError;
     }
-    public void setRequestId(String requestId){
-        this.requestId = requestId;
+
+    public void setIsError(boolean isError) {
+        this.isError = isError;
     }
-    public String getRequestId(){
+
+    public String getRequestId() {
         return this.requestId;
     }
-    public void setResource(String resource){
-        this.resource = resource;
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
-    public String getResource(){
+
+    public String getResource() {
         return this.resource;
     }
-    public void setStatus(int status){
-        this.status = status;
+
+    public void setResource(String resource) {
+        this.resource = resource;
     }
-    public int getStatus(){
+
+    public int getStatus() {
         return this.status;
     }
-    public void setVersion(String version){
-        this.version = version;
+
+    public void setStatus(int status) {
+        this.status = status;
     }
-    public String getVersion(){
+
+    public String getVersion() {
         return this.version;
     }
-    public void setExecution(double execution){
-        this.execution = execution;
+
+    public void setVersion(String version) {
+        this.version = version;
     }
-    public double getExecution(){
+
+    public double getExecution() {
         return this.execution;
+    }
+
+    public void setExecution(double execution) {
+        this.execution = execution;
     }
 }
