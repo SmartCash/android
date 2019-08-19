@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         selectedCoin = utils.getActualSelectedCoin(this);
 
+
         walletTxt.setText(getResources().getString(R.string.smartCash) + String.format("%.8f", amount));
         if (selectedCoin == null) {
             ArrayList<Coin> currentPrice = utils.getCurrentPrice(this);

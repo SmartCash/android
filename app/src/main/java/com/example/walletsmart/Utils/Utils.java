@@ -46,21 +46,21 @@ public class Utils {
     public static String getIPAddress(boolean useIPv4) {
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface intf : interfaces) {
-                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                for (InetAddress addr : addrs) {
-                    if (!addr.isLoopbackAddress()) {
-                        String sAddr = addr.getHostAddress();
-                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
-                        boolean isIPv4 = sAddr.indexOf(':') < 0;
+            for (NetworkInterface networkInterface : interfaces) {
+                List<InetAddress> networkAddresses = Collections.list(networkInterface.getInetAddresses());
+                for (InetAddress inetAddress : networkAddresses) {
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String stringAddress = inetAddress.getHostAddress();
+
+                        boolean isIPv4 = stringAddress.indexOf(':') < 0;
 
                         if (useIPv4) {
                             if (isIPv4)
-                                return sAddr;
+                                return stringAddress;
                         } else {
                             if (!isIPv4) {
-                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
-                                return delim < 0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                                int delimiter = stringAddress.indexOf('%'); // drop ip6 zone suffix
+                                return delimiter < 0 ? stringAddress.toUpperCase() : stringAddress.substring(0, delimiter).toUpperCase();
                             }
                         }
                     }
@@ -74,7 +74,7 @@ public class Utils {
     public static ArrayList<Coin> convertToArrayList(String string) {
         String newPrices;
         ArrayList<String> arrayListStrings;
-        ArrayList<Coin> coins = new ArrayList<Coin>();
+        ArrayList<Coin> coins = new ArrayList<>();
 
         newPrices = string.replace("{", "").replace("}", "");
 
@@ -196,15 +196,11 @@ public class Utils {
     }
 
     public String converterValue(double amount, double value) {
-        Double valueAmount = amount * value;
-
-        return valueAmount.toString();
+        return String.valueOf((amount * value));
     }
 
     public BigDecimal converterBigDecimal(BigDecimal amount, BigDecimal value) {
-        BigDecimal valueAmount = amount.multiply(value);
-
-        return valueAmount;
+        return amount.multiply(value);
     }
 
     public void savePin(byte[] pin, Context context) {

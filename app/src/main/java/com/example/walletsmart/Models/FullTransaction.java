@@ -3,8 +3,8 @@ package com.example.walletsmart.Models;
 import java.util.ArrayList;
 
 public class FullTransaction {
-    ArrayList<Object> vin = new ArrayList<Object>();
-    ArrayList<Object> vout = new ArrayList<Object>();
+    ArrayList<Object> vin = new ArrayList<>();
+    ArrayList<Object> vout = new ArrayList<>();
     private String txid;
     private float version;
     private float locktime;

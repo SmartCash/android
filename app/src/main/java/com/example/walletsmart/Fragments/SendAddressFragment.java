@@ -166,10 +166,27 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                 if (txtAmount.getText().toString().isEmpty()) {
                     return;
                 } else {
-                    BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
+
                     BigDecimal tax = BigDecimal.valueOf(0.001);
+
+
+                    BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
+
                     BigDecimal finalValue = amount.add(tax);
-                    amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+
+                    if (actualSelected.getName().equals("SMART")) {
+                        amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                    } else {
+
+                        Double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
+                        Double currentPrice = actualSelected.getValue();
+                        Double ruleOfThree = amountInTheField / currentPrice;
+
+                        amountConverted = BigDecimal.valueOf(ruleOfThree).add(tax);
+                    }
+
+
+
                     txtAmountConverted.setText(String.valueOf(amountConverted));
                     sendButton.setText(getContext().getResources().getString(R.string.send_button, amountConverted));
                 }
