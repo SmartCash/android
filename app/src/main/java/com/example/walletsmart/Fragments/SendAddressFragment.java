@@ -163,33 +163,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (txtAmount.getText().toString().isEmpty()) {
-                    return;
-                } else {
-
-                    BigDecimal tax = BigDecimal.valueOf(0.001);
-
-
-                    BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
-
-                    BigDecimal finalValue = amount.add(tax);
-
-                    if (actualSelected.getName().equals("SMART")) {
-                        amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
-                    } else {
-
-                        Double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
-                        Double currentPrice = actualSelected.getValue();
-                        Double ruleOfThree = amountInTheField / currentPrice;
-
-                        amountConverted = BigDecimal.valueOf(ruleOfThree).add(tax);
-                    }
-
-
-
-                    txtAmountConverted.setText(String.valueOf(amountConverted));
-                    sendButton.setText(getContext().getResources().getString(R.string.send_button, amountConverted));
-                }
+                calculateThePriceToBeSent();
             }
 
             @Override
@@ -197,6 +171,35 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
             }
         });
+    }
+
+    private void calculateThePriceToBeSent() {
+        if (txtAmount.getText().toString().isEmpty()) {
+            return;
+        } else {
+
+            BigDecimal tax = BigDecimal.valueOf(0.001);
+
+
+            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
+
+            BigDecimal finalValue = amount.add(tax);
+
+            if (actualSelected.getName().equals("SMART")) {
+                amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+            } else {
+
+                Double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
+                Double currentPrice = actualSelected.getValue();
+                Double ruleOfThree = amountInTheField / currentPrice;
+
+                amountConverted = BigDecimal.valueOf(ruleOfThree).add(tax);
+            }
+
+
+            txtAmountConverted.setText(String.valueOf(amountConverted));
+            sendButton.setText(getContext().getResources().getString(R.string.send_button, amountConverted));
+        }
     }
 
     public void setupCoinSpinner() {
@@ -209,6 +212,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                 Coin coin = adapter.getItem(position);
                 actualSelected = coin;
                 amountLabel.setText("Amount in " + coin.getName() + ":");
+
+                calculateThePriceToBeSent();
             }
 
             @Override
