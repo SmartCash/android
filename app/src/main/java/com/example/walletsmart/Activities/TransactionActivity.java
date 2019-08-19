@@ -20,6 +20,11 @@ import com.example.walletsmart.R;
 import com.example.walletsmart.Utils.Utils;
 import com.example.walletsmart.ViewModels.TransactionViewModel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -112,13 +117,25 @@ public class TransactionActivity extends AppCompatActivity {
     }
 
     public void setData(FullTransaction transaction, TransactionResponse transactionDetails) {
-        transactionHash.setText(transaction.getBlockhash());
+        transactionHash.setText(transaction.getTxid());
         txtSize.setText(String.valueOf(transaction.getSize()));
         txtFeeRate.setText(String.valueOf(transaction.getFees()));
-        txtReceivedTime.setText("Jul 5, 2019 8:38:56 PM");
-        txtMinedTime.setText("Jul 5, 2019 8:38:56 PM");
+
+
+        txtReceivedTime.setText(getDate(transaction.getTime()));
+        txtMinedTime.setText(getDate(transaction.getBlocktime()));
+
+
         txtIncludedInBlock.setText(transaction.getBlockhash());
     }
+
+    private String getDate(long epoch) {
+        Date date = new Date(epoch * 1000L);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        return format.format(date);
+    }
+
 
     public void getTransaction(String hash) {
         TransactionViewModel model = ViewModelProviders.of(this).get(TransactionViewModel.class);

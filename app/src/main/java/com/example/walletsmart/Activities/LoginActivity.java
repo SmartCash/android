@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -68,6 +69,13 @@ public class LoginActivity extends AppCompatActivity {
             Log.e("token", token);
             this.setVisibility();
             getUser(token);
+        } else {
+
+
+            loginContent.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(), "Error to retreive the Token or the user", Toast.LENGTH_SHORT).show();
+
         }
     }
 
