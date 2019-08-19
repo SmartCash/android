@@ -181,15 +181,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
         walletTxt.setText(getResources().getString(R.string.smartCash) + String.format("%.8f", amount));
-        if (selectedCoin == null) {
+        if (selectedCoin == null || selectedCoin.getName().equals("SMART")) {
             ArrayList<Coin> currentPrice = utils.getCurrentPrice(this);
-            //    walletConverted.setText("$ " + String.format("%.3f", amount / currentPrice.get(0).getValue()));
-            walletConverted.setText("$ " + utils.converterValue(amount, currentPrice.get(1).getValue()));
-
+            walletConverted.setText("$ " + utils.converterValue(amount, currentPrice.get(0).getValue()) + " " + currentPrice.get(0).getName());
         } else {
             //  walletConverted.setText("$ " + String.format("%.3f", amount / selectedCoin.getValue()));
-            walletConverted.setText("$ " + utils.converterValue(amount, selectedCoin.getValue()));
-
+            walletConverted.setText("$ " + utils.converterValue(amount, selectedCoin.getValue()) + " " + selectedCoin.getName());
         }
     }
 

@@ -196,7 +196,7 @@ public class Utils {
     }
 
     public String converterValue(double amount, double value) {
-        return String.valueOf((amount * value));
+        return String.format("%f", (amount * value));
     }
 
     public BigDecimal converterBigDecimal(BigDecimal amount, BigDecimal value) {

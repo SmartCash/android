@@ -66,35 +66,16 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class SendAddressFragment extends Fragment implements QRCodeReaderView.OnQRCodeReadListener {
+
     private static final int RC_CAMERA_PERM = 123;
     private static final String PIN_ALIAS = "AndroidKeyStorePin";
     private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
-    @BindView(R.id.txt_to_address)
-    EditText txtToAddress;
-    @BindView(R.id.currency_spinner)
-    Spinner currencySpinner;
-    @BindView(R.id.amount_label)
-    TextView amountLabel;
-    @BindView(R.id.txt_amount_converted)
-    EditText txtAmountConverted;
-    @BindView(R.id.txt_amount)
-    EditText txtAmount;
-    @BindView(R.id.txt_pin)
-    EditText txtPin;
-    @BindView(R.id.send_button)
-    Button sendButton;
-    @BindView(R.id.pin_label)
-    TextView pinLabel;
-    @BindView(R.id.btn_eye)
-    ImageView btnEye;
-    private WalletDialogAdapter walletAdapter;
+
     private ArrayList<Wallet> walletList;
     private Utils utils;
     private String token;
     private String email;
-    private Wallet selectedWallet;
-    private String currentPrices;
-    private ArrayList<Coin> coins;
+    private ArrayList coins;
     private CoinSpinnerAdapter adapter;
     private Coin actualSelected;
     private AlertDialog dialog;
@@ -102,6 +83,33 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private DeCryptor decryptor;
     private boolean withoutPin;
     private boolean isPasswordVisible = false;
+
+    @BindView(R.id.txt_to_address)
+    EditText txtToAddress;
+
+    @BindView(R.id.currency_spinner)
+    Spinner currencySpinner;
+
+    @BindView(R.id.amount_label)
+    TextView amountLabel;
+
+    @BindView(R.id.txt_amount_converted)
+    EditText txtAmountConverted;
+
+    @BindView(R.id.txt_amount)
+    EditText txtAmount;
+
+    @BindView(R.id.txt_pin)
+    EditText txtPin;
+
+    @BindView(R.id.send_button)
+    Button sendButton;
+
+    @BindView(R.id.pin_label)
+    TextView pinLabel;
+
+    @BindView(R.id.btn_eye)
+    ImageView btnEye;
 
     public static SendAddressFragment newInstance() {
         return new SendAddressFragment();
@@ -145,7 +153,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
             if (currentPrices != null) {
-                SendAddressFragment.this.currentPrices = currentPrices;
                 coins = Utils.convertToArrayList(currentPrices);
                 setupCoinSpinner();
             } else {
@@ -189,9 +196,9 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                 amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
             } else {
 
-                Double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
-                Double currentPrice = actualSelected.getValue();
-                Double ruleOfThree = amountInTheField / currentPrice;
+                double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
+                double currentPrice = actualSelected.getValue();
+                double ruleOfThree = amountInTheField / currentPrice;
 
                 amountConverted = BigDecimal.valueOf(ruleOfThree).add(tax);
             }
@@ -281,12 +288,11 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     }
 
     private void setupRecyclerViewWallets(RecyclerView recyclerView, AlertDialog dialog) {
-        RecyclerView recyclerViewWallets = recyclerView;
         LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        walletAdapter = new WalletDialogAdapter(getContext(), new ArrayList<Wallet>(), this.txtToAddress, dialog);
+        WalletDialogAdapter walletAdapter = new WalletDialogAdapter(getContext(), new ArrayList<Wallet>(), this.txtToAddress, dialog);
 
-        recyclerViewWallets.setLayoutManager(linearLayoutManagerTransactions);
-        recyclerViewWallets.setAdapter(walletAdapter);
+        recyclerView.setLayoutManager(linearLayoutManagerTransactions);
+        recyclerView.setAdapter(walletAdapter);
 
         walletAdapter.setItems(walletList);
     }
@@ -302,7 +308,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         }
 
         if (!password.equals("")) {
-            selectedWallet = utils.getWallet(getActivity());
+            Wallet selectedWallet = utils.getWallet(getActivity());
 
             Float amount = Float.parseFloat(txtAmountConverted.getText().toString());
 
@@ -318,11 +324,11 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
             model.sendPayment(getActivity(), token, sendPayment).observe(this, apiResponse -> {
                 if (apiResponse != null) {
-                    Log.e("Sucesso", "Sucesso");
+                    Log.e(getResources().getString(R.string.tag_log_success), "Sucesso");
                     updateData();
                     clearInputs();
                 } else {
-                    Log.e("Erro", "Erro ao buscar os valores!");
+                    Log.e(getResources().getString(R.string.tag_log_error), "Erro ao buscar os valores!");
                     clearInputs();
                 }
             });
@@ -346,7 +352,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                 utils.saveUser(getActivity(), response);
                 ((MainActivity) getActivity()).setWalletValue();
             } else {
-                Log.e("Erro", "Erro ao buscar os valores!");
+                Log.e(getResources().getString(R.string.tag_log_error), "Erro ao buscar os valores!");
             }
         });
     }
@@ -360,13 +366,12 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                     .decryptData(PIN_ALIAS, cryptedPin, utils.getByte(getActivity(), "pinIv"));
             if (decryptedPin.equals(txtPin.getText().toString())) {
                 try {
-                    String decryptedPassword = decryptor
+                    return decryptor
                             .decryptData(PASSWORD_ALIAS, cryptedPassword, utils.getByte(getActivity(), "passwordIv"));
-                    return decryptedPassword;
                 } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
                         KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
                         IOException | InvalidKeyException e) {
-                    Log.e("Error", "on encrypt: " + e.getMessage(), e);
+                    Log.e(getResources().getString(R.string.tag_log_error), "on encrypt: " + e.getMessage(), e);
                 } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
                     e.printStackTrace();
                 }
@@ -374,7 +379,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
                 KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
                 IOException | InvalidKeyException e) {
-            Log.e("Error", "on encrypt: " + e.getMessage(), e);
+            Log.e(getResources().getString(R.string.tag_log_error), "on encrypt: " + e.getMessage(), e);
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
