@@ -11,8 +11,8 @@ public class FullTransaction {
     private String blockhash;
     private float blockheight;
     private float confirmations;
-    private float time;
-    private float blocktime;
+    private long time;
+    private long blocktime;
     private float valueOut;
     private float size;
     private float valueIn;
@@ -71,19 +71,19 @@ public class FullTransaction {
 
     // Setter Methods
 
-    public float getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(float time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
-    public float getBlocktime() {
+    public long getBlocktime() {
         return blocktime;
     }
 
-    public void setBlocktime(float blocktime) {
+    public void setBlocktime(long blocktime) {
         this.blocktime = blocktime;
     }
 
