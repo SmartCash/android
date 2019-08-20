@@ -232,8 +232,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+
                 Coin coin = adapter.getItem(position);
                 actualSelected = coin;
                 amountLabel.setText("Amount in " + coin.getName() + ":");
@@ -317,6 +317,15 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     @OnClick(R.id.send_button)
     public void onViewClicked() {
+
+        Float amount = Float.parseFloat(txtAmountConverted.getText().toString());
+        Wallet selectedWallet = utils.getWallet(getActivity());
+
+        if (selectedWallet.getBalance() < amount) {
+            Toast.makeText(getContext(), "The amount MUST be less than the current balance.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String password;
 
         if (!withoutPin) {
@@ -326,9 +335,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         }
 
         if (!password.equals("")) {
-            Wallet selectedWallet = utils.getWallet(getActivity());
 
-            Float amount = Float.parseFloat(txtAmountConverted.getText().toString());
 
             SendPayment sendPayment = new SendPayment();
             sendPayment.setFromAddress(selectedWallet.getAddress());
