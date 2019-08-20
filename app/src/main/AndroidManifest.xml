@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.walletsmart">
+    package="cc.smartcash.wallet">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -17,11 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activities.MainActivity"
+            android:name="cc.smartcash.wallet.Activities.MainActivity"
             android:theme="@style/noAction"
             android:windowSoftInputMode="adjustPan"></activity>
         <activity
-            android:name=".Activities.LoginActivity"
+            android:name="cc.smartcash.wallet.Activities.LoginActivity"
             android:theme="@style/noAction">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,9 +31,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.PinActivity"
+            android:name="cc.smartcash.wallet.Activities.PinActivity"
             android:theme="@style/noAction"></activity>
-        <activity android:name=".Activities.TransactionActivity"></activity>
+        <activity android:name="cc.smartcash.wallet.Activities.TransactionActivity"></activity>
     </application>
 
 </manifest>
