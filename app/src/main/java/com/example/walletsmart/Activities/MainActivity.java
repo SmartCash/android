@@ -47,13 +47,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
+
         setContentView(R.layout.activity_main);
+
         mToolbar = findViewById(R.id.toolbar);
+
         setSupportActionBar(mToolbar);
+
         utils = new Utils();
         withoutPin = utils.getBoolean(this, "WithoutPin");
+
         mNavigationView = findViewById(R.id.navigationView);
         mNavigationView.setOnNavigationItemSelectedListener(this);
+
         Fragment dashFragment = DashboardFragment.newInstance();
         openFragment(dashFragment);
 

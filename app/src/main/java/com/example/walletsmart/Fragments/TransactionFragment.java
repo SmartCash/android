@@ -109,7 +109,7 @@ public class TransactionFragment extends Fragment {
     private void setupRecyclerViewTransactions() {
         RecyclerView recyclerViewTransactions = getActivity().findViewById(R.id.transaction_recyclerview);
         LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        transactionAdapter = new TransactionAdapter(getContext(), new ArrayList<Transaction>());
+        transactionAdapter = new TransactionAdapter(getContext(), new ArrayList<>());
 
         recyclerViewTransactions.setLayoutManager(linearLayoutManagerTransactions);
         recyclerViewTransactions.setAdapter(transactionAdapter);
@@ -167,7 +167,7 @@ public class TransactionFragment extends Fragment {
     }
 
     public ArrayList<Transaction> filterTransactions(String filtro) {
-        ArrayList<Transaction> filteredT = new ArrayList<Transaction>();
+        ArrayList<Transaction> filteredT = new ArrayList<>();
 
         for (Transaction item : transactions) {
             if (item.getDirection().equals(filtro))

@@ -45,7 +45,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder transactionViewHolder, int i) {
-        transactionViewHolder.amount.setText(String.valueOf(this.transactions.get(i).getAmount()));
+
+        transactionViewHolder.amount.setText(String.format("%f", this.transactions.get(i).getAmount()));
         transactionViewHolder.direction.setText(this.transactions.get(i).getDirection());
         transactionViewHolder.timestamp.setText(this.transactions.get(i).getTimestamp());
         transactionViewHolder.hash.setText(this.transactions.get(i).getHash());
@@ -55,14 +56,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
 
         if (utils.getActualSelectedCoin(context) == null || utils.getActualSelectedCoin(context).getName().equals("SMART")) {
             for (Coin item : coins) {
-                if (item.getName().equals("USD")) {
-                    BigDecimal value = utils.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(item.getValue()));
-                    transactionViewHolder.price.setText(String.format("%.2f", value));
+                if (item.getName().equals("SMART")) {
+                    transactionViewHolder.price.setText(String.format("%f", this.transactions.get(i).getAmount()));
+                    break;
                 }
             }
         } else {
             BigDecimal value = utils.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(utils.getActualSelectedCoin(context).getValue()));
-            transactionViewHolder.price.setText(String.format("%.2f", value));
+            transactionViewHolder.price.setText(String.format("%f", value));
         }
 
         transactionViewHolder.hash.setOnClickListener(v -> {

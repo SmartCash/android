@@ -125,7 +125,9 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         setAmountListener();
+
         txtAmountConverted.setEnabled(false);
         utils = new Utils();
         token = utils.getToken(getActivity());
@@ -210,8 +212,24 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     }
 
     public void setupCoinSpinner() {
+
+        String selectedCurrency = utils.getActualSelectedCoin(getContext()).getName();
+
         adapter = new CoinSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, coins);
+
         currencySpinner.setAdapter(adapter);
+
+        currencySpinner.setSelection(0);
+        if (selectedCurrency != null && !selectedCurrency.isEmpty()) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                String currentCurrency = adapter.getItem(i).getName();
+                if (currentCurrency.equalsIgnoreCase(selectedCurrency)) {
+                    currencySpinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view,
