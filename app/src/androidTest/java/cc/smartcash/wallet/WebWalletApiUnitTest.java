@@ -5,11 +5,10 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-import cc.smartcash.wallet.Models.ApiResponse;
-import cc.smartcash.wallet.Models.Contact;
-import cc.smartcash.wallet.Models.ContactResponse;
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.WebWalletContact;
+import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
 import cc.smartcash.wallet.Utils.Utils;
 import retrofit2.Call;
@@ -107,9 +106,9 @@ public class WebWalletApiUnitTest {
 
         try {
 
-            Call<ApiResponse> callUser = new WebWalletAPIConfig().getWebWalletAPIService().getUser("Bearer " + token);
+            Call<WebWalletRootResponse<User>> callUser = new WebWalletAPIConfig().getWebWalletAPIService().getUser("Bearer " + token);
 
-            Response<ApiResponse> apiResponse = callUser.execute();
+            Response<WebWalletRootResponse<User>> apiResponse = callUser.execute();
 
             assertNull(apiResponse.body().getError());
 
@@ -175,9 +174,9 @@ public class WebWalletApiUnitTest {
 
             //token = "DBBCE3vsTIL-CM8XAVkCd2XNVdaL5QGwn3GdV1pg-GPVrxHGsPKL6K6LDcec6WQvFYlg0jAUuLyaTRSYSJ-JXK1Z29G6x2ktzcLgq9RrCm049s6gVLZLuq1pathUbINPmmOPSVKrtDEBcyc8ypW_j0zERXnkGOHYIFJBAbjfbRxv963DLvv0NZIE9ZyfFFB0CoWH_eCPuBYqmdoWrX7b5-kR9hM3XiSaQeqvtqXSI1CLMebyAZuogMSlKtHHWxmTVMNuV5Ye4rDu6J6Q8KaegXg0ypO63rZ61OWxi9hofG1Ig0Sf98IgsLXSqjIp7pL789qrG2FqtEZXv6qFCDR9RZdbGFk7ZYaAOerIX6EREkG62rxIdWVOfXuqLsQniOwmnHvqwwOmkyC3pA7GUr3Vvw";
 
-            Call<ContactResponse> callUser = new WebWalletAPIConfig().getWebWalletAPIService().getUserContacts("Bearer " + token);
+            Call<WebWalletRootResponse<List<WebWalletContact>>> callUser = new WebWalletAPIConfig().getWebWalletAPIService().getUserContacts("Bearer " + token);
 
-            Response<ContactResponse> apiResponse = callUser.execute();
+            Response<WebWalletRootResponse<List<WebWalletContact>>> apiResponse = callUser.execute();
 
             assertNull(apiResponse.body().getError());
 
@@ -185,7 +184,7 @@ public class WebWalletApiUnitTest {
 
             assertNotNull(apiResponse.body().getData());
 
-            List<Contact> user = apiResponse.body().getData();
+            List<WebWalletContact> user = apiResponse.body().getData();
 
             assertNotNull(user);
 

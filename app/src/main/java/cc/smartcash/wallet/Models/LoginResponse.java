@@ -5,9 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 public class LoginResponse implements Serializable {
+
     private String accessToken;
+
     private String tokenType;
+
     private Long expiresIn;
+
     private String refreshToken;
 
     @JsonProperty("access_token")

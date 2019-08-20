@@ -14,8 +14,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/round_icon"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
         android:foregroundGravity="center"
@@ -26,8 +26,8 @@
 
         <ImageView
             android:id="@+id/ic_transaction"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center"
             android:background="@drawable/ic_wallet"
             android:backgroundTint="@color/colorPrimary"
@@ -35,6 +35,17 @@
             tools:layout_editor_absoluteX="112dp"
             tools:layout_editor_absoluteY="171dp" />
     </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="70dp"
+        android:background="#60747474"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txt_value"
@@ -44,7 +55,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:text="@string/smartCash"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="12dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/img_edit"
         app:layout_constraintStart_toEndOf="@+id/round_icon"
@@ -59,6 +70,7 @@
         android:layout_marginTop="8dp"
         android:text="SPENDING"
         android:textStyle="bold"
+        android:textSize="12dp"
         app:layout_constraintStart_toEndOf="@+id/round_icon"
         app:layout_constraintTop_toBottomOf="@+id/txt_value"
 
@@ -84,9 +96,9 @@
         android:id="@+id/img_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/img_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_action_edit" />
@@ -95,11 +107,11 @@
         android:id="@+id/img_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/img_copy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_edit"
+        app:layout_constraintTop_toBottomOf="@+id/img_edit"
         app:srcCompat="@drawable/ic_action_card" />
 
     <ImageView
@@ -107,9 +119,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_to_address"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txt_label_address"
         app:srcCompat="@drawable/ic_action_copy" />
 
     <TextView
@@ -120,6 +132,7 @@
         android:layout_marginTop="24dp"
         android:text="Address"
         android:textStyle="bold"
+        android:textSize="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/round_icon" />
 

@@ -1,8 +1,11 @@
 package cc.smartcash.wallet.Services;
 
-import cc.smartcash.wallet.Models.ApiResponse;
-import cc.smartcash.wallet.Models.ContactResponse;
+import java.util.List;
+
 import cc.smartcash.wallet.Models.LoginResponse;
+import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.WebWalletContact;
+import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -24,9 +27,9 @@ public interface WebWalletAPIService {
                                  @Field("client_secret") String clientSecret);
 
     @GET("user/my")
-    Call<ApiResponse> getUser(@Header("Authorization") String auth);
+    Call<WebWalletRootResponse<User>> getUser(@Header("Authorization") String auth);
 
     @GET("contact/my")
-    Call<ContactResponse> getUserContacts(@Header("Authorization") String auth);
+    Call<WebWalletRootResponse<List<WebWalletContact>>> getUserContacts(@Header("Authorization") String auth);
 
 }

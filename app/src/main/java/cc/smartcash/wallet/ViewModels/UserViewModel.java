@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel;
 
 import org.json.JSONObject;
 
-import cc.smartcash.wallet.Models.ApiResponse;
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
 import cc.smartcash.wallet.Utils.Utils;
 import retrofit2.Call;
@@ -45,13 +45,13 @@ public class UserViewModel extends ViewModel {
     }
 
     public void loadUser(String token, Context context) {
-        Call<ApiResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getUser("Bearer " + token);
+        Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().getUser("Bearer " + token);
 
-        call.enqueue(new Callback<ApiResponse>() {
+        call.enqueue(new Callback<WebWalletRootResponse<User>>() {
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
                 if (response.isSuccessful()) {
-                    ApiResponse apiResponse = response.body();
+                    WebWalletRootResponse<User> apiResponse = response.body();
                     user.setValue(apiResponse.getData());
                 } else {
                     try {
@@ -65,7 +65,7 @@ public class UserViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(Call<WebWalletRootResponse<User>> call, Throwable t) {
                 Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.getMessage());
                 user.setValue(null);
             }

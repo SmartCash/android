@@ -5,25 +5,29 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-@JsonIgnoreProperties({"isValid"})
-public class ApiResponse implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class WebWalletRootResponse<T> implements Serializable {
 
     @SerializedName("data")
-    private User data;
+    private T data;
+
     @SerializedName("error")
     private String error;
+
     @SerializedName("status")
     private String status;
+
     @SerializedName("isValid")
     private Boolean isValid;
+
     @SerializedName("error_description")
     private String errorDescription;
 
-    public User getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(User data) {
+    public void setData(T data) {
         this.data = data;
     }
 
