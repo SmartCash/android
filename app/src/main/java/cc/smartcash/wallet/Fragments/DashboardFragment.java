@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import cc.smartcash.wallet.Adapters.DashboardWalletListAdapter;
 import cc.smartcash.wallet.Models.Wallet;
@@ -23,8 +21,7 @@ import cc.smartcash.wallet.Utils.Utils;
 
 
 public class DashboardFragment extends Fragment {
-    @BindView(R.id.txt_title)
-    TextView txtTitle;
+
     private ArrayList<Wallet> walletList;
     private Utils utils = new Utils();
     private DashboardWalletListAdapter walletAdapter;
@@ -45,7 +42,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        txtTitle.setText(getResources().getString(R.string.dashboard_title, walletList.size()));
         setupRecyclerViewWallets();
     }
 

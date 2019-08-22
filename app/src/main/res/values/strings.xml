@@ -32,7 +32,7 @@
     <string name="amount_with_fee_in_smart_label">Amount with fee in SMART:</string>
     <string name="third_card_title">Payment Confirmation</string>
     <string name="password_label">Password:</string>
-    <string name="send_button">SEND %1$.10f SMART</string>
+    <string name="send_button">SEND %f SMART</string>
 
     <!-- String related to send sms fragment -->
     <string name="send_sms_first_title">Enter mobile phone number and amount</string>

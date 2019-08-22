@@ -16,11 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,7 +52,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.smartcash.wallet.Activities.MainActivity;
-import cc.smartcash.wallet.Adapters.CoinSpinnerAdapter;
 import cc.smartcash.wallet.Adapters.WalletDialogAdapter;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.SendPayment;
@@ -78,8 +75,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private String token;
     private String email;
     private ArrayList<Coin> coins;
-    private CoinSpinnerAdapter adapter;
-    private Coin actualSelected;
     private AlertDialog dialog;
     private BigDecimal amountConverted = BigDecimal.valueOf(0.0);
     private DeCryptor decryptor;
@@ -88,9 +83,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     @BindView(R.id.txt_to_address)
     EditText txtToAddress;
-
-    @BindView(R.id.currency_spinner)
-    Spinner currencySpinner;
 
     @BindView(R.id.amount_label)
     TextView amountLabel;
@@ -128,9 +120,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setAmountListener();
-
-        txtAmountConverted.setEnabled(false);
         utils = new Utils();
         token = utils.getToken(getActivity());
         email = utils.getUser(getActivity()).getEmail();
@@ -158,15 +147,39 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
             if (currentPrices != null) {
                 coins = Utils.convertToArrayList(currentPrices);
-                setupCoinSpinner();
             } else {
                 Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
             }
         });
+
+        setAmountListener();
     }
 
     private void setAmountListener() {
+
+        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+
         txtAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (txtAmount.isFocused())
+                    calculateFromFiatToSmart();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+            }
+        });
+
+
+        txtAmountConverted.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -174,7 +187,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculateThePriceToBeSent();
+                if (txtAmountConverted.isFocused())
+                    calculateFromSmartToFiat();
             }
 
             @Override
@@ -184,67 +198,83 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         });
     }
 
-    private void calculateThePriceToBeSent() {
+    private void calculateFromFiatToSmart() {
+
+        BigDecimal amountConverted;
+        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+
+        for (int i = 0; i < coins.size(); i++) {
+            if (coins.get(i).getName().equalsIgnoreCase(actualSelected.getName())) {
+                actualSelected = coins.get(i);
+                break;
+            }
+        }
+
         if (!txtAmount.getText().toString().isEmpty()) {
-
-            BigDecimal tax = BigDecimal.valueOf(0.001);
-
 
             BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
 
-            BigDecimal finalValue = amount.add(tax);
+            BigDecimal finalValue = amount;
 
             if (actualSelected.getName().equals("SMART")) {
                 amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
-                double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
                 double currentPrice = actualSelected.getValue();
+                double amountInTheField = Double.parseDouble(txtAmount.getText().toString());
                 double ruleOfThree = amountInTheField / currentPrice;
-
-                amountConverted = BigDecimal.valueOf(ruleOfThree).add(tax);
+                amountConverted = BigDecimal.valueOf(ruleOfThree);
             }
-
 
             txtAmountConverted.setText(String.valueOf(amountConverted));
-            sendButton.setText(Objects.requireNonNull(getContext()).getResources().getString(R.string.send_button, amountConverted));
+
+            BigDecimal amountWithFee = BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())).add(BigDecimal.valueOf(0.001));
+            sendButton.setText(Objects.requireNonNull(getContext()).getResources().getString(R.string.send_button, amountWithFee));
+
         }
+
     }
 
-    private void setupCoinSpinner() {
+    private void calculateFromSmartToFiat() {
 
-        String selectedCurrency = utils.getActualSelectedCoin(getContext()).getName();
+        BigDecimal amountConverted;
+        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
-        adapter = new CoinSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_item, coins);
-
-        currencySpinner.setAdapter(adapter);
-
-        currencySpinner.setSelection(0);
-        if (selectedCurrency != null && !selectedCurrency.isEmpty()) {
-            for (int i = 0; i < adapter.getCount(); i++) {
-                String currentCurrency = Objects.requireNonNull(adapter.getItem(i)).getName();
-                if (currentCurrency.equalsIgnoreCase(selectedCurrency)) {
-                    currencySpinner.setSelection(i);
-                    break;
-                }
+        for (int i = 0; i < coins.size(); i++) {
+            if (coins.get(i).getName().equalsIgnoreCase(actualSelected.getName())) {
+                actualSelected = coins.get(i);
+                break;
             }
         }
 
-        currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        if (!txtAmountConverted.getText().toString().isEmpty()) {
 
-                Coin coin = adapter.getItem(position);
-                actualSelected = coin;
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s:", Objects.requireNonNull(coin).getName()));
+            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString()));
 
-                calculateThePriceToBeSent();
+            BigDecimal finalValue = amount;
+
+            if (actualSelected.getName().equals("SMART")) {
+                amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
+            } else {
+
+                double currentPrice = actualSelected.getValue();
+                double amountInTheField = Double.parseDouble(txtAmountConverted.getText().toString());
+                double ruleOfThree = amountInTheField * currentPrice;
+                amountConverted = BigDecimal.valueOf(ruleOfThree);
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapter) {
-            }
-        });
+            txtAmount.setText(String.valueOf(amountConverted));
+
+            BigDecimal amountWithFee = BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())).add(BigDecimal.valueOf(0.001));
+
+
+            sendButton.setText(Objects.requireNonNull(getContext()).getResources().getString(R.string.send_button, amountWithFee));
+
+        }
     }
 
     @Override
