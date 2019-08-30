@@ -1,6 +1,7 @@
 package cc.smartcash.wallet.Activities;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import cc.smartcash.wallet.Fragments.TransactionFragment;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
+import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.Utils;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -44,25 +46,32 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Coin selectedCoin;
     private boolean withoutPin;
 
+    private BroadcastReceiver networkReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
-
         setContentView(R.layout.activity_main);
+        utils = new Utils();
+
+
+        networkReceiver = new NetworkReceiver();
+        utils.registerNetworkBroadcastForNougat(networkReceiver);
+
 
         mToolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
 
-        utils = new Utils();
+
         withoutPin = utils.getBoolean(this, "WithoutPin");
 
         mNavigationView = findViewById(R.id.navigationView);
         mNavigationView.setOnNavigationItemSelectedListener(this);
 
-        Fragment dashFragment = DashboardFragment.newInstance();
-        openFragment(dashFragment);
+        Fragment dashboardFragment = DashboardFragment.newInstance();
+        openFragment(dashboardFragment);
 
         walletTxt = findViewById(R.id.wallet_txt);
         walletConverted = findViewById(R.id.wallet_converted_txt);
@@ -78,7 +87,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
 
         btnSettings.setOnClickListener(v2 -> {
+
             AlertDialog.Builder settingsDialog = new AlertDialog.Builder(this);
+
             View settingsView = getLayoutInflater().inflate(R.layout.settings_modal, null);
 
             Button btnClose = settingsView.findViewById(R.id.button_close);
@@ -202,5 +213,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        utils.unregisterNetworkChanges(networkReceiver);
     }
 }

@@ -350,6 +350,18 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         if (selectedWallet.getBalance() < amount) {
             Toast.makeText(getContext(), "The amount MUST be less than the current balance.", Toast.LENGTH_LONG).show();
             return;
+        } else if (txtToAddress.getText().length() == 0) {
+            Toast.makeText(getContext(), "The address to send can't be empty.", Toast.LENGTH_LONG).show();
+            return;
+        } else if (txtAmount.getText().length() == 0 || txtAmount.getText().equals("0")) {
+            Toast.makeText(getContext(), "The amount to send can't be empty or ZERO.", Toast.LENGTH_LONG).show();
+            return;
+        } else if (txtAmountConverted.getText().length() == 0 || txtAmountConverted.getText().equals("0")) {
+            Toast.makeText(getContext(), "The amount to send can't be empty or ZERO.", Toast.LENGTH_LONG).show();
+            return;
+        } else if (txtPin.getText().length() == 0) {
+            Toast.makeText(getContext(), "The PIN can't be empty.", Toast.LENGTH_LONG).show();
+            return;
         }
 
         String password;

@@ -1,12 +1,15 @@
 package cc.smartcash.wallet.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,17 +36,24 @@ import butterknife.OnClick;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.R;
+import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.EnCryptor;
+import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.Utils;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String TAG = LoginActivity.class.getSimpleName();
+
     private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
 
     private Utils utils;
     private EnCryptor encryptor;
+    @BindView(R.id.network_status)
+    Switch networkSwitch;
+    private NetworkReceiver networkReceiver;
 
     @BindView(R.id.txt_user)
     EditText txtUser;
@@ -64,8 +74,25 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         encryptor = new EnCryptor();
-
         this.utils = new Utils();
+
+        networkReceiver = new NetworkReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                Log.i(TAG, "The status of the network has changed");
+                String status = NetworkUtil.getConnectivityStatusString(context);
+                //Toast.makeText(context, "Receiver | " + intent.getAction() + " | " + status, Toast.LENGTH_LONG).show();
+
+
+                boolean internetAvailable = NetworkUtil.getInternetStatus(context);
+                networkSwitch.setChecked(internetAvailable);
+                networkSwitch.setText(status);
+
+
+            }
+        };
+
         String token = utils.getToken(this);
         User user = utils.getUser(this);
 
@@ -81,6 +108,24 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error to retreive the Token or the user", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.STATE_CHANGE");
+
+        registerReceiver(networkReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(networkReceiver);
     }
 
     @OnClick(R.id.btn_login)
@@ -172,4 +217,5 @@ public class LoginActivity extends AppCompatActivity {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wallet.smartcash.cc/change-password"));
         this.startActivity(browserIntent);
     }
+
 }
