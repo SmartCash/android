@@ -1,14 +1,10 @@
 package cc.smartcash.wallet.Utils;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -277,24 +273,4 @@ public class Utils extends Application {
         byte[] iv = stringIv.getBytes(Charset.forName("ISO-8859-1"));
         return iv;
     }
-
-    public void registerNetworkBroadcastForNougat(BroadcastReceiver networkReceiver) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-    }
-
-    public void unregisterNetworkChanges(BroadcastReceiver networkReceiver) {
-        try {
-            unregisterReceiver(networkReceiver);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
 }

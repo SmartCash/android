@@ -3,7 +3,6 @@ package cc.smartcash.wallet.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
-import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,50 +32,55 @@ import javax.crypto.NoSuchPaddingException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.EnCryptor;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.Utils;
-import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
-    public static final String TAG = LoginActivity.class.getSimpleName();
+    public static final String TAG = RegisterActivity.class.getSimpleName();
 
     private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
-
-    private Utils utils;
-    private EnCryptor encryptor;
-
     @BindView(R.id.network_status)
     Switch networkSwitch;
-
-    private NetworkReceiver networkReceiver;
-
     @BindView(R.id.txt_user)
     EditText txtUser;
-
     @BindView(R.id.txt_password)
     EditText txtPassword;
-
+    @BindView(R.id.txt_confirm_password)
+    EditText txtConfirmPassword;
+    @BindView(R.id.txt_pin)
+    EditText txtPin;
+    @BindView(R.id.txt_confirm_pin)
+    EditText txtConfirmPin;
     @BindView(R.id.loader)
     ProgressBar loader;
-
     @BindView(R.id.login_content)
     ConstraintLayout loginContent;
+    private Utils utils;
+    private EnCryptor encryptor;
+    private NetworkReceiver networkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_main);
+        setContentView(R.layout.register_main);
         ButterKnife.bind(this);
 
         encryptor = new EnCryptor();
         this.utils = new Utils();
+
+        String useruuid = UUID.randomUUID().toString();
+        txtUser.setText(useruuid + "@testeandroidmobile.com");
+        txtPassword.setText("123456");
+        txtConfirmPassword.setText("123456");
+        txtPin.setText("1234");
+        txtConfirmPin.setText("1234");
 
         networkReceiver = new NetworkReceiver() {
 
@@ -100,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
         if (token != null && token != "" && user != null) {
 
             Log.e("token", token);
+
             this.setVisibility();
-            getUser(token);
 
         } else {
 
@@ -131,31 +135,80 @@ public class LoginActivity extends AppCompatActivity {
         unregisterReceiver(networkReceiver);
     }
 
-    @OnClick(R.id.btn_login)
+    @OnClick(R.id.btn_save)
     public void onViewClicked() {
 
-        String password = txtPassword.getText().toString();
         String username = txtUser.getText().toString();
+        String password = txtPassword.getText().toString();
+        String confirm_password = txtConfirmPassword.getText().toString();
+        String pin = txtPin.getText().toString();
+        String confirm_pin = txtConfirmPin.getText().toString();
 
-        if (password.isEmpty() || username.isEmpty()) {
+        boolean hasError = false;
 
-            txtUser.setError("The username can't be empty");
-            txtPassword.setError("The password can't be empty");
-
-            return;
+        if (username.isEmpty()) {
+            txtUser.setError("The USERNAME can't be empty");
+            hasError = true;
         }
+        if (password.isEmpty()) {
+            txtPassword.setError("The PASSWORD can't be empty");
+            hasError = true;
+        }
+        if (confirm_password.isEmpty()) {
+            txtConfirmPassword.setError("The confirmation of the PASSWORD can't be empty");
+            hasError = true;
+        }
+        if (pin.isEmpty()) {
+            txtPin.setError("The PIN can't be empty");
+            hasError = true;
+        }
+        if (confirm_pin.isEmpty()) {
+            txtConfirmPin.setError("The confirmation of the PIN can't be empty");
+            hasError = true;
+        }
+        if (!pin.equalsIgnoreCase(confirm_pin)) {
+            txtConfirmPin.setError("The PIN does not match");
+            hasError = true;
+        }
+        if (!password.equalsIgnoreCase(confirm_password)) {
+            txtPassword.setError("The PASSWORD does not match");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        UserRegisterRequest newUser = new UserRegisterRequest();
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        newUser.setEmail(username);
 
         this.setVisibility();
 
         UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        model.getToken(username, password, this).observe(this, token -> {
-            if (token != null) {
-                utils.saveToken(LoginActivity.this, token);
-                getUser(token);
+        model.setUser(newUser, this).observe(this, user -> {
+            if (user != null) {
+
+                if (user.getWallet() == null) {
+
+                    model.getToken(user.getUsername(), user.getPassword(), this).observe(this, t -> {
+
+                        model.getUser(t, this).observe(this, user1 -> {
+                            user1.setRecoveryKey(user.getRecoveryKey());
+                            utils.saveUser(RegisterActivity.this, user1);
+                            savePassword();
+                        });
+
+                    });
+
+                } else {
+                    setVisibility();
+                    Log.e(TAG, "It was not possible to register the user");
+                }
+
             } else {
                 setVisibility();
-                Log.e("Erro", "Não foi possível buscar o token!");
+                Log.e(TAG, "It was not possible to register the user");
             }
         });
     }
@@ -166,6 +219,7 @@ public class LoginActivity extends AppCompatActivity {
                 final byte[] encryptedText = encryptor
                         .encryptText(PASSWORD_ALIAS, txtPassword.getText().toString(), this, "passwordIv");
                 Intent intent = new Intent(getApplicationContext(), PinActivity.class);
+                intent.putExtra("PIN", txtPin.getText().toString());
                 startActivity(intent);
                 utils.saveByte(encryptedText, this, "password");
             } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
@@ -181,35 +235,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void getUser(String token) {
-        UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
-
-        model.getUser(token, LoginActivity.this).observe(LoginActivity.this, user -> {
-            if (user != null) {
-                utils.saveUser(LoginActivity.this, user);
-                getCurrentPrices();
-            } else {
-                utils.deleteSharedPreferences(LoginActivity.this);
-                setVisibility();
-                Log.e(TAG, "Error to getUser");
-            }
-        });
-    }
-
-    public void getCurrentPrices() {
-        CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
-
-        model.getCurrentPrices(LoginActivity.this).observe(this, currentPrices -> {
-            if (currentPrices != null) {
-                ArrayList<Coin> coins = Utils.convertToArrayList(currentPrices);
-                utils.saveCurrentPrice(this, coins);
-                savePassword();
-            } else {
-                Log.e(TAG, "Error to get current prices!");
-            }
-        });
-    }
-
     public void setVisibility() {
         if (loader.getVisibility() == View.VISIBLE) {
             loginContent.setVisibility(View.VISIBLE);
@@ -220,19 +245,5 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
-    @OnClick(R.id.btn_register)
-    public void register() {
-
-        Intent myIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        LoginActivity.this.startActivity(myIntent);
-
-    }
-
-    @OnClick(R.id.btn_forgot_password)
-    public void onTxtForgetYourPasswordClicked() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wallet.smartcash.cc/change-password"));
-        this.startActivity(browserIntent);
-    }
 
 }

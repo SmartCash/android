@@ -4,9 +4,12 @@ import java.util.List;
 
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserRecoveryKey;
+import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -31,5 +34,11 @@ public interface WebWalletAPIService {
 
     @GET("contact/my")
     Call<WebWalletRootResponse<List<WebWalletContact>>> getUserContacts(@Header("Authorization") String auth);
+
+    @POST("user")
+    Call<WebWalletRootResponse<User>> setUser(@Body UserRegisterRequest auth);
+
+    @GET("user/newkey")
+    Call<WebWalletRootResponse<UserRecoveryKey>> getNewMasterSecurityKey();
 
 }

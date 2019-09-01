@@ -12,6 +12,8 @@ import org.json.JSONObject;
 
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserRecoveryKey;
+import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
 import cc.smartcash.wallet.Utils.Utils;
@@ -21,8 +23,13 @@ import retrofit2.Response;
 
 public class UserViewModel extends ViewModel {
 
+    public static final String TAG = UserViewModel.class.getSimpleName();
+
     private MutableLiveData<String> token;
+
     private MutableLiveData<User> user;
+
+    private MutableLiveData<UserRecoveryKey> userRecoveryKey;
 
     public LiveData<String> getToken(String username, String password, Context context) {
         token = new MutableLiveData<String>();
@@ -40,6 +47,15 @@ public class UserViewModel extends ViewModel {
     public LiveData<User> getUser(String token, Context context) {
         user = new MutableLiveData<User>();
         loadUser(token, context);
+
+        return user;
+    }
+
+    public LiveData<User> setUser(UserRegisterRequest newUser, Context context) {
+
+        user = new MutableLiveData<User>();
+
+        createUser(newUser, context);
 
         return user;
     }
@@ -72,6 +88,48 @@ public class UserViewModel extends ViewModel {
         });
     }
 
+    public void saveUser(UserRegisterRequest newUser, UserRecoveryKey userRecoveryKey, Context context) {
+
+        newUser.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+
+        Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().setUser(newUser);
+
+        call.enqueue(new Callback<WebWalletRootResponse<User>>() {
+            @Override
+            public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
+                if (response.isSuccessful()) {
+
+                    WebWalletRootResponse<User> apiResponse = response.body();
+
+                    User userResponse = apiResponse.getData();
+
+                    userResponse.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+                    userResponse.setPassword(newUser.getPassword());
+
+                    user.setValue(userResponse);
+
+                    Log.i(TAG, userResponse.getUsername());
+
+                    Toast.makeText(context, apiResponse.getData().getUsername(), Toast.LENGTH_LONG).show();
+
+                } else {
+                    try {
+                        user.setValue(null);
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WebWalletRootResponse<User>> call, Throwable t) {
+                Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.getMessage());
+                user.setValue(null);
+            }
+        });
+    }
 
     public void loadToken(String username, String password, Context context) {
 
@@ -120,4 +178,51 @@ public class UserViewModel extends ViewModel {
             }
         });
     }
+
+    public void createUser(UserRegisterRequest newUser, Context context) {
+
+        try {
+
+            userRecoveryKey = new MutableLiveData<UserRecoveryKey>();
+
+            Call<WebWalletRootResponse<UserRecoveryKey>> callUserRecoveryKey = new WebWalletAPIConfig().getWebWalletAPIService().getNewMasterSecurityKey();
+
+            callUserRecoveryKey.enqueue(new Callback<WebWalletRootResponse<UserRecoveryKey>>() {
+                @Override
+                public void onResponse(Call<WebWalletRootResponse<UserRecoveryKey>> call, Response<WebWalletRootResponse<UserRecoveryKey>> response) {
+                    if (response.isSuccessful()) {
+                        WebWalletRootResponse<UserRecoveryKey> apiResponse = response.body();
+                        userRecoveryKey.setValue(apiResponse.getData());
+
+
+                        saveUser(newUser, apiResponse.getData(), context);
+
+
+                        Toast.makeText(context, apiResponse.getData().getRecoveryKey(), Toast.LENGTH_LONG).show();
+                    } else {
+                        try {
+                            userRecoveryKey.setValue(null);
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<WebWalletRootResponse<UserRecoveryKey>> call, Throwable t) {
+                    Log.e("WebWalletAPIService", "Erreor while getting the recovery key" + t.getMessage());
+                    user.setValue(null);
+                }
+            });
+
+
+        } catch (Exception e) {
+            this.user.setValue(null);
+            e.printStackTrace();
+        }
+
+    }
+
 }

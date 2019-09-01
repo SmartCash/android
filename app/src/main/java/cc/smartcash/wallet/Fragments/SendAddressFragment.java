@@ -93,7 +93,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     @BindView(R.id.txt_amount)
     EditText txtAmount;
 
-    @BindView(R.id.txt_pin)
+    @BindView(R.id.txt_password)
     EditText txtPin;
 
     @BindView(R.id.send_button)
@@ -421,16 +421,19 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     }
 
     private String verifyPin() {
+
         byte[] encryptedPin = utils.getByte(getActivity(), "pin");
         byte[] encryptedPassword = utils.getByte(getActivity(), "password");
 
         try {
-            String decryptedPin = decryptor
-                    .decryptData(PIN_ALIAS, encryptedPin, utils.getByte(getActivity(), "pinIv"));
+            String decryptedPin = decryptor.decryptData(PIN_ALIAS, encryptedPin, utils.getByte(getActivity(), "pinIv"));
+
             if (decryptedPin.equals(txtPin.getText().toString())) {
+
                 try {
-                    return decryptor
-                            .decryptData(PASSWORD_ALIAS, encryptedPassword, utils.getByte(getActivity(), "passwordIv"));
+
+                    return decryptor.decryptData(PASSWORD_ALIAS, encryptedPassword, utils.getByte(getActivity(), "passwordIv"));
+
                 } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
                         KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
                         IOException | InvalidKeyException e) {
@@ -439,6 +442,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                     e.printStackTrace();
                 }
             }
+
         } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
                 KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
                 IOException | InvalidKeyException e) {

@@ -45,7 +45,6 @@ public class NetworkUtil {
         int conn = NetworkUtil.getConnectivityStatus(context);
         boolean status = false;
 
-
         if (conn == NetworkUtil.TYPE_WIFI && isInternetAvailable()) {
             status = true;
         } else if (conn == NetworkUtil.TYPE_MOBILE && isInternetAvailable()) {

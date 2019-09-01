@@ -34,9 +34,9 @@ import cc.smartcash.wallet.Utils.Utils;
 public class PinActivity extends AppCompatActivity {
     private static final String PIN_ALIAS = "AndroidKeyStorePin";
     private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
-    @BindView(R.id.txt_pin)
+    @BindView(R.id.txt_password)
     EditText txtPin;
-    @BindView(R.id.txt_confirm_pin)
+    @BindView(R.id.txt_pin)
     EditText txtConfirmPin;
     @BindView(R.id.confirm_pin_label)
     TextView confirmPinLabel;
@@ -59,10 +59,16 @@ public class PinActivity extends AppCompatActivity {
         encryptor = new EnCryptor();
         utils = new Utils();
 
+        Intent intent = getIntent();
+        String extraPIN = intent.getStringExtra("PIN");
+
+        if (extraPIN != null && !extraPIN.isEmpty())
+            encryptAndSavePIN(extraPIN);
+
         withoutPin = utils.getBoolean(this, "WithoutPin");
 
         if (withoutPin) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }
 
@@ -87,36 +93,54 @@ public class PinActivity extends AppCompatActivity {
     @OnClick(R.id.btn_confirm)
     public void onViewClicked() {
         if (pin != null) {
-            try {
-                String decryptedPin = decryptor
-                        .decryptData(PIN_ALIAS, pin, utils.getByte(this, "pinIv"));
-                if (decryptedPin.equals(txtPin.getText().toString())) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                }
-            } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
-                    KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
-                    IOException | InvalidKeyException e) {
-                Log.e("Error", "on dencrypt: " + e.getMessage(), e);
-            } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            }
-        } else if (txtPin.getText().toString().equals(txtConfirmPin.getText().toString())) {
-            try {
-                final byte[] encryptedText = encryptor
-                        .encryptText(PIN_ALIAS, txtPin.getText().toString(), this, "pinIv");
-
-                utils.saveByte(encryptedText, this, "pin");
+            String decryptedPin = decryptPIN(pin);
+            if (decryptedPin.equals(txtPin.getText().toString())) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
-            } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                    KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
-                Log.e("Error", "on encrypt: " + e.getMessage(), e);
-            } catch (InvalidAlgorithmParameterException | SignatureException |
-                    IllegalBlockSizeException | BadPaddingException e) {
-                e.printStackTrace();
             }
+        } else if (txtPin.getText().toString().equals(txtConfirmPin.getText().toString())) {
+            encryptAndSavePIN(txtPin.getText().toString());
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
+    }
+
+    private byte[] encryptAndSavePIN(String decryptedPin) {
+
+        try {
+
+            final byte[] encryptedText = encryptor
+                    .encryptText(PIN_ALIAS, decryptedPin, this, "pinIv");
+
+            utils.saveByte(encryptedText, this, "pin");
+
+            return encryptedText;
+
+
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
+                KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
+            Log.e("Error", "on encrypt: " + e.getMessage(), e);
+        } catch (InvalidAlgorithmParameterException | SignatureException |
+                IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String decryptPIN(byte[] encryptedPin) {
+        try {
+            String decryptedPin = decryptor
+                    .decryptData(PIN_ALIAS, encryptedPin, utils.getByte(this, "pinIv"));
+
+            return decryptedPin;
+        } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
+                KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
+                IOException | InvalidKeyException e) {
+            Log.e("Error", "on dencrypt: " + e.getMessage(), e);
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @OnClick(R.id.forgot_pin_btn)

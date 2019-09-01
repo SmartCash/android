@@ -30,10 +30,10 @@ import cc.smartcash.wallet.Fragments.TransactionFragment;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.Utils;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
     private Toolbar mToolbar;
     private BottomNavigationView mNavigationView;
     private ImageView btnExit;
@@ -53,12 +53,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         setContentView(R.layout.activity_main);
+
         utils = new Utils();
-
-
-        networkReceiver = new NetworkReceiver();
-        utils.registerNetworkBroadcastForNougat(networkReceiver);
-
 
         mToolbar = findViewById(R.id.toolbar);
 
@@ -215,9 +211,4 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         transaction.commit();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        utils.unregisterNetworkChanges(networkReceiver);
-    }
 }

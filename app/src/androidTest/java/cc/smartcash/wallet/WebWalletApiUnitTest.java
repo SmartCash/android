@@ -1,12 +1,17 @@
 package cc.smartcash.wallet;
 
+import android.util.Log;
+
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserRecoveryKey;
+import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
@@ -20,6 +25,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class WebWalletApiUnitTest {
+
+    public static final String TAG = WebWalletApiUnitTest.class.getSimpleName();
 
     @Test
     public void getToken() {
@@ -194,5 +201,75 @@ public class WebWalletApiUnitTest {
 
     }
 
+    @Test
+    public void getNewMasterSecurityKey() {
+
+        try {
+
+            Call<WebWalletRootResponse<UserRecoveryKey>> callUser = new WebWalletAPIConfig().getWebWalletAPIService().getNewMasterSecurityKey();
+
+            Response<WebWalletRootResponse<UserRecoveryKey>> apiResponse = callUser.execute();
+
+            assertNull(apiResponse.body().getError());
+
+            assertNotNull(apiResponse.body());
+
+            assertNotNull(apiResponse.body().getData());
+
+            UserRecoveryKey user = apiResponse.body().getData();
+
+            assertNotNull(user.getRecoveryKey());
+
+            Log.i(TAG, user.getRecoveryKey());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void createNewUser() {
+
+        try {
+
+            Call<WebWalletRootResponse<UserRecoveryKey>> callUserRecoveryKey = new WebWalletAPIConfig().getWebWalletAPIService().getNewMasterSecurityKey();
+
+            Response<WebWalletRootResponse<UserRecoveryKey>> apiResponseUserRecoveryKey = callUserRecoveryKey.execute();
+
+            UserRecoveryKey userRecoveryKey = apiResponseUserRecoveryKey.body().getData();
+
+            Log.i(TAG, userRecoveryKey.getRecoveryKey());
+
+            String useruuid = UUID.randomUUID().toString();
+
+            UserRegisterRequest newUser = new UserRegisterRequest();
+
+            newUser.setEmail(useruuid + "@testeandroidmobile.com");
+            newUser.setUsername(useruuid + "@testeandroidmobile.com");
+            newUser.setPassword("123456");
+            newUser.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+
+            Log.i(TAG, useruuid);
+
+            Call<WebWalletRootResponse<User>> callUser = new WebWalletAPIConfig().getWebWalletAPIService().setUser(newUser);
+
+            Response<WebWalletRootResponse<User>> apiResponse = callUser.execute();
+
+            assertNull(apiResponse.body().getError());
+
+            assertNotNull(apiResponse.body());
+
+            assertNotNull(apiResponse.body().getData());
+
+            User user = apiResponse.body().getData();
+
+            assertNotNull(user.getUsername());
+
+            Log.i(TAG, user.getUsername());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
