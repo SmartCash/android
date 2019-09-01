@@ -1,11 +1,14 @@
 package cc.smartcash.wallet.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -143,16 +146,54 @@ public class PinActivity extends AppCompatActivity {
         return null;
     }
 
+
     @OnClick(R.id.forgot_pin_btn)
     public void onForgotPinClicked() {
-        utils.deleteSharedPreferences(this);
-        startActivity(new Intent(this, LoginActivity.class));
+
+
+        new AlertDialog.Builder(this)
+                .setTitle("Forgot the PIN?")
+                .setMessage("Are you sure you want to redefine your PIN?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+
+
+                        utils.deleteSharedPreferences(PinActivity.this);
+                        startActivity(new Intent(PinActivity.this, LoginActivity.class));
+
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
+
+
     }
 
     @OnClick(R.id.continue_without_pin)
     public void onContinueWithoutPinClicked() {
-        utils.saveBoolean(this, true, "WithoutPin");
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+
+
+        new AlertDialog.Builder(this)
+                .setTitle("Forgot the PIN?")
+                .setMessage("Are you sure you want to proceed without PIN? You won't be able to use it off-line.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        Toast.makeText(PinActivity.this, "Redirecting to dashboard...", Toast.LENGTH_SHORT).show();
+
+                        utils.saveBoolean(PinActivity.this, true, "WithoutPin");
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
+
     }
 }

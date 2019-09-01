@@ -2,6 +2,7 @@ package cc.smartcash.wallet.Activities;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -78,8 +80,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         btnSettings = findViewById(R.id.button_settings);
 
         btnExit.setOnClickListener(v -> {
-            utils.deleteSharedPreferences(this);
-            startActivity(new Intent(this, LoginActivity.class));
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Logout?")
+                    .setMessage("Are you sure you want to logout?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                            Toast.makeText(MainActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+
+                            utils.deleteSharedPreferences(MainActivity.this);
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+
         });
 
         btnSettings.setOnClickListener(v2 -> {
@@ -105,8 +124,24 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             });
 
             forgotPinBtn.setOnClickListener(v3 -> {
-                utils.deleteSharedPreferences(this);
-                startActivity(new Intent(this, LoginActivity.class));
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Forgot the PIN?")
+                        .setMessage("Are you sure you want to redefine your PIN?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                Toast.makeText(MainActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+                                utils.deleteSharedPreferences(MainActivity.this);
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+
+
             });
 
             ArrayList<Coin> coins = utils.getCurrentPrice(this);
