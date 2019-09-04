@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     private Utils utils;
     private EnCryptor encryptor;
 
+    boolean internetAvailable;
+
     @BindView(R.id.network_status)
     Switch networkSwitch;
 
@@ -77,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
         encryptor = new EnCryptor();
         this.utils = new Utils();
+        internetAvailable = NetworkUtil.getInternetStatus(this);
 
         networkReceiver = new NetworkReceiver() {
 
@@ -86,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "The status of the network has changed");
                 String status = NetworkUtil.getConnectivityStatusString(context);
 
-                boolean internetAvailable = NetworkUtil.getInternetStatus(context);
+                internetAvailable = NetworkUtil.getInternetStatus(context);
                 networkSwitch.setChecked(internetAvailable);
                 networkSwitch.setText(status);
 
@@ -95,13 +98,25 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         String token = utils.getToken(this);
+
         User user = utils.getUser(this);
 
-        if (token != null && token != "" && user != null) {
+        if (token != null && !token.isEmpty() && user != null) {
 
-            Log.e("token", token);
-            this.setVisibility();
-            getUser(token);
+
+            if (isOnLocalDB()) {
+
+                loginContent.setVisibility(View.GONE);
+                loader.setVisibility(View.VISIBLE);
+
+                Intent intent = new Intent(getApplicationContext(), PinActivity.class);
+                startActivity(intent);
+
+            } else {
+                Log.e("token", token);
+                this.setVisibility();
+                getUser(token);
+            }
 
         } else {
 
@@ -110,6 +125,18 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error to retreive the Token or the user", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    private boolean isOnLocalDB() {
+
+
+        String token = utils.getToken(this);
+
+        User user = utils.getUser(this);
+
+        byte[] pin = utils.getByte(this, "pin");
+
+        return (token != null && !token.isEmpty() && user != null && pin != null);
     }
 
     @Override
@@ -134,6 +161,11 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.btn_login)
     public void onViewClicked() {
 
+        if (!internetAvailable) {
+            Toast.makeText(getApplicationContext(), "You must be on-line to log-in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String password = txtPassword.getText().toString();
         String username = txtUser.getText().toString();
 
@@ -155,7 +187,8 @@ public class LoginActivity extends AppCompatActivity {
                 getUser(token);
             } else {
                 setVisibility();
-                Log.e("Erro", "Não foi possível buscar o token!");
+                Toast.makeText(getApplicationContext(), "Error to get the token", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Error to get the token!");
             }
         });
     }
@@ -191,6 +224,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 utils.deleteSharedPreferences(LoginActivity.this);
                 setVisibility();
+                Toast.makeText(getApplicationContext(), "Error to get the user", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Error to getUser");
             }
         });
@@ -205,6 +239,7 @@ public class LoginActivity extends AppCompatActivity {
                 utils.saveCurrentPrice(this, coins);
                 savePassword();
             } else {
+                Toast.makeText(getApplicationContext(), "Error to get the current prices!", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Error to get current prices!");
             }
         });
@@ -220,9 +255,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
     @OnClick(R.id.btn_register)
     public void register() {
+
+        if (!internetAvailable) {
+            Toast.makeText(getApplicationContext(), "You must be on-line to register.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         Intent myIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         LoginActivity.this.startActivity(myIntent);
@@ -231,6 +271,13 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_forgot_password)
     public void onTxtForgetYourPasswordClicked() {
+
+        if (!internetAvailable) {
+            Toast.makeText(getApplicationContext(), "You must be on-line to change your password.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wallet.smartcash.cc/change-password"));
         this.startActivity(browserIntent);
     }

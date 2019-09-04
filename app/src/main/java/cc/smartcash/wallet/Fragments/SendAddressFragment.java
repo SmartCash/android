@@ -58,6 +58,7 @@ import cc.smartcash.wallet.Models.SendPayment;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.DeCryptor;
+import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.Utils;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
@@ -142,15 +143,19 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             e.printStackTrace();
         }
 
-        CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
+        if (NetworkUtil.getInternetStatus(getContext())) {
+            CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
 
-        model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
-            if (currentPrices != null) {
-                coins = Utils.convertToArrayList(currentPrices);
-            } else {
-                Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
-            }
-        });
+            model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
+                if (currentPrices != null) {
+                    coins = Utils.convertToArrayList(currentPrices);
+                } else {
+                    Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
+                }
+            });
+        } else {
+            coins = utils.getCurrentPrice(getActivity());
+        }
 
         setAmountListener();
     }
@@ -343,6 +348,12 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     @OnClick(R.id.send_button)
     public void onViewClicked() {
+
+        if (!NetworkUtil.getInternetStatus(getActivity())) {
+            Toast.makeText(getActivity(), "You must be on-line to send.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
 
         Float amount = Float.parseFloat(txtAmountConverted.getText().toString());
         Wallet selectedWallet = utils.getWallet(getActivity());

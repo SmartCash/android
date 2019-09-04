@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.json.JSONObject;
 
 import cc.smartcash.wallet.Utils.ApiUtils;
+import cc.smartcash.wallet.Utils.NetworkUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,28 +31,34 @@ public class CurrentPriceViewModel extends ViewModel {
     }
 
     private void loadCurrentPrices(Context context) {
-        Call<JsonNode> call = new ApiUtils(context).getCurrentPricesService().getCurrentPrices();
 
-        call.enqueue(new Callback<JsonNode>() {
-            @Override
-            public void onResponse(Call<JsonNode> call, Response<JsonNode> response) {
-                if (response.isSuccessful()) {
-                    currentPrices.setValue(response.body().toString());
-                } else {
-                    try {
-                        currentPrices.setValue(null);
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        boolean isInternetOn = NetworkUtil.getInternetStatus(context);
+
+        if (isInternetOn) {
+
+            Call<JsonNode> call = new ApiUtils(context).getCurrentPricesService().getCurrentPrices();
+
+            call.enqueue(new Callback<JsonNode>() {
+                @Override
+                public void onResponse(Call<JsonNode> call, Response<JsonNode> response) {
+                    if (response.isSuccessful()) {
+                        currentPrices.setValue(response.body().toString());
+                    } else {
+                        try {
+                            currentPrices.setValue(null);
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonNode> call, Throwable t) {
-                currentPrices.setValue(null);
-            }
-        });
+                @Override
+                public void onFailure(Call<JsonNode> call, Throwable t) {
+                    currentPrices.setValue(null);
+                }
+            });
+        }
     }
 }

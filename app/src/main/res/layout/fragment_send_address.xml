@@ -107,12 +107,16 @@
 
         <EditText
             android:id="@+id/txt_amount"
-            android:layout_width="150dp"
+
+            android:layout_width="0dp"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent=".35"
+
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             android:inputType="numberDecimal"
-            android:text="0"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -132,11 +136,17 @@
 
         <EditText
             android:id="@+id/txt_amount_converted"
-            android:layout_width="150dp"
+
+            android:layout_width="0dp"
+            android:inputType="numberDecimal"
+            app:layout_constraintWidth_default="percent"
+
+            app:layout_constraintWidth_percent=".35"
+
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
-            android:text="0"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

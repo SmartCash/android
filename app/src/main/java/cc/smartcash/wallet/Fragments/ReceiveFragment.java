@@ -32,6 +32,7 @@ import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
+import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.Utils;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 
@@ -123,16 +124,19 @@ public class ReceiveFragment extends Fragment {
             }
         }
 
-        CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
+        if (NetworkUtil.getInternetStatus(getContext())) {
+            CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
 
-        model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
-            if (currentPrices != null) {
-                coins = Utils.convertToArrayList(currentPrices);
-            } else {
-                Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
-            }
-        });
-
+            model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
+                if (currentPrices != null) {
+                    coins = Utils.convertToArrayList(currentPrices);
+                } else {
+                    Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
+                }
+            });
+        } else {
+            coins = utils.getCurrentPrice(getActivity());
+        }
         setAmountListener();
     }
 

@@ -16,6 +16,7 @@ import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
+import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,122 +62,147 @@ public class UserViewModel extends ViewModel {
     }
 
     public void loadUser(String token, Context context) {
-        Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().getUser("Bearer " + token);
 
-        call.enqueue(new Callback<WebWalletRootResponse<User>>() {
-            @Override
-            public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
-                if (response.isSuccessful()) {
-                    WebWalletRootResponse<User> apiResponse = response.body();
-                    user.setValue(apiResponse.getData());
-                } else {
-                    try {
-                        user.setValue(null);
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        boolean isInternetOn = NetworkUtil.getInternetStatus(context);
+
+        if (isInternetOn) {
+
+            Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().getUser("Bearer " + token);
+
+            call.enqueue(new Callback<WebWalletRootResponse<User>>() {
+                @Override
+                public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
+                    if (response.isSuccessful()) {
+                        WebWalletRootResponse<User> apiResponse = response.body();
+                        user.setValue(apiResponse.getData());
+                    } else {
+                        try {
+                            user.setValue(null);
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<WebWalletRootResponse<User>> call, Throwable t) {
-                Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.getMessage());
-                user.setValue(null);
-            }
-        });
+                @Override
+                public void onFailure(Call<WebWalletRootResponse<User>> call, Throwable t) {
+                    Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.getMessage());
+                    user.setValue(null);
+                }
+
+
+            });
+        } else {
+
+        }
+
     }
 
     public void saveUser(UserRegisterRequest newUser, UserRecoveryKey userRecoveryKey, Context context) {
 
-        newUser.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+        boolean isInternetOn = NetworkUtil.getInternetStatus(context);
 
-        Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().setUser(newUser);
+        if (isInternetOn) {
 
-        call.enqueue(new Callback<WebWalletRootResponse<User>>() {
-            @Override
-            public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
-                if (response.isSuccessful()) {
+            newUser.setRecoveryKey(userRecoveryKey.getRecoveryKey());
 
-                    WebWalletRootResponse<User> apiResponse = response.body();
+            Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().setUser(newUser);
 
-                    User userResponse = apiResponse.getData();
+            call.enqueue(new Callback<WebWalletRootResponse<User>>() {
+                @Override
+                public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
+                    if (response.isSuccessful()) {
 
-                    userResponse.setRecoveryKey(userRecoveryKey.getRecoveryKey());
-                    userResponse.setPassword(newUser.getPassword());
+                        WebWalletRootResponse<User> apiResponse = response.body();
 
-                    user.setValue(userResponse);
+                        User userResponse = apiResponse.getData();
 
-                    Log.i(TAG, userResponse.getUsername());
+                        userResponse.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+                        userResponse.setPassword(newUser.getPassword());
 
-                    Toast.makeText(context, apiResponse.getData().getUsername(), Toast.LENGTH_LONG).show();
+                        user.setValue(userResponse);
 
-                } else {
-                    try {
-                        user.setValue(null);
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.i(TAG, userResponse.getUsername());
+
+                        Toast.makeText(context, apiResponse.getData().getUsername(), Toast.LENGTH_LONG).show();
+
+                    } else {
+                        try {
+                            user.setValue(null);
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<WebWalletRootResponse<User>> call, Throwable t) {
-                Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.getMessage());
-                user.setValue(null);
-            }
-        });
+                @Override
+                public void onFailure(Call<WebWalletRootResponse<User>> call, Throwable t) {
+
+                    Toast.makeText(context, "Error to try to retreive the user: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Error to try to retreive the user" + t.getMessage());
+                    user.setValue(null);
+                }
+            });
+        }
     }
 
     public void loadToken(String username, String password, Context context) {
 
-        String localIP = null;
-        try {
-            localIP = Utils.getIPAddress(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        boolean isInternetOn = NetworkUtil.getInternetStatus(context);
 
-        if (localIP == null || localIP.isEmpty()) localIP = "192.168.0.255";
+        if (isInternetOn) {
 
-        Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                username,
-                password,
-                "password",
-                "81d46070-686b-4975-9c29-9ebc867a3c4e",
-                "",
-                "mobile",
-                "100.003.102.100",
-                "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
-        );
+            String localIP = null;
+            try {
+                localIP = Utils.getIPAddress(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
-        call.enqueue(new Callback<LoginResponse>() {
-            @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (response.isSuccessful()) {
-                    LoginResponse apiResponse = response.body();
-                    Log.e("Access token", "" + apiResponse.getAccessToken());
-                    token.setValue(apiResponse.getAccessToken());
-                } else {
-                    try {
-                        token.setValue(null);
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(context, jObjError.getString("error_description"), Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            if (localIP == null || localIP.isEmpty()) localIP = "192.168.0.255";
+
+            Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
+                    username,
+                    password,
+                    "password",
+                    "81d46070-686b-4975-9c29-9ebc867a3c4e",
+                    "",
+                    "mobile",
+                    "100.003.102.100",
+                    "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
+            );
+
+            call.enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if (response.isSuccessful()) {
+                        LoginResponse apiResponse = response.body();
+                        Log.e("Access token", "" + apiResponse.getAccessToken());
+                        token.setValue(apiResponse.getAccessToken());
+                    } else {
+                        try {
+                            token.setValue(null);
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(context, jObjError.getString("error_description"), Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Log.e("WebWalletAPIService", "Erro ao buscar o token:" + t.getMessage());
-                token.setValue(null);
-            }
-        });
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+
+                    Toast.makeText(context, "Error to try to retreive the TOKEN: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Error to try to retreive the TOKEN:" + t.getMessage());
+                    token.setValue(null);
+                }
+            });
+        }
     }
 
     public void createUser(UserRegisterRequest newUser, Context context) {
