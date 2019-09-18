@@ -8,16 +8,15 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class RetrofitConfig {
 
-    final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES)
-            .readTimeout(3, TimeUnit.MINUTES)
-            .build();
+    public static Retrofit getClient(String url) {
 
-    private Retrofit retrofit = null;
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .build();
 
-    public Retrofit getClient(String url) {
-        this.retrofit = new Retrofit
+        Retrofit retrofit = new Retrofit
                 .Builder()
                 .client(okHttpClient)
                 .baseUrl(url)

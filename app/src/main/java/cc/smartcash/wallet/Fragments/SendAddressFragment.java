@@ -2,10 +2,12 @@ package cc.smartcash.wallet.Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -25,28 +27,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,9 +48,9 @@ import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.SendPayment;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.DeCryptor;
+import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 import cc.smartcash.wallet.ViewModels.WalletViewModel;
@@ -67,20 +58,20 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class SendAddressFragment extends Fragment implements QRCodeReaderView.OnQRCodeReadListener {
 
+    public static final String TAG = SendAddressFragment.class.getSimpleName();
+
     private static final int RC_CAMERA_PERM = 123;
-    private static final String PIN_ALIAS = "AndroidKeyStorePin";
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
 
     private ArrayList<Wallet> walletList;
-    private Utils utils;
+    String[] perms = {Manifest.permission.CAMERA, Manifest.permission.CAMERA};
     private String token;
     private String email;
     private ArrayList<Coin> coins;
     private AlertDialog dialog;
     private BigDecimal amountConverted = BigDecimal.valueOf(0.0);
-    private DeCryptor decryptor;
     private boolean withoutPin;
     private boolean isPasswordVisible = false;
+    private SmartCashApplication smartCashApplication;
 
     @BindView(R.id.txt_to_address)
     EditText txtToAddress;
@@ -121,14 +112,17 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        utils = new Utils();
-        token = utils.getToken(getActivity());
-        email = utils.getUser(getActivity()).getEmail();
-        walletList = utils.getUser(getActivity()).getWallet();
+        EasyPermissions.requestPermissions(this, "Need access to your camera",
+                RC_CAMERA_PERM, perms);
+
+        smartCashApplication = new SmartCashApplication(getContext());
+        token = smartCashApplication.getToken(getActivity());
+        email = smartCashApplication.getUser(getActivity()).getEmail();
+        walletList = smartCashApplication.getUser(getActivity()).getWallet();
         coins = new ArrayList<>();
         sendButton.setText(Objects.requireNonNull(getContext()).getResources().getString(R.string.send_button, amountConverted));
 
-        withoutPin = utils.getBoolean(getActivity(), "WithoutPin");
+        withoutPin = smartCashApplication.getBoolean(getActivity(), Keys.KEY_WITHOUT_PIN);
 
         if (withoutPin) {
             pinLabel.setText(getResources().getString(R.string.password_label));
@@ -136,25 +130,27 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             txtPin.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         }
 
+        //TODO remove it
+        /*
         try {
             decryptor = new DeCryptor();
         } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException |
                 IOException e) {
             e.printStackTrace();
         }
-
+*/
         if (NetworkUtil.getInternetStatus(getContext())) {
             CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
 
             model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
                 if (currentPrices != null) {
-                    coins = Utils.convertToArrayList(currentPrices);
+                    coins = SmartCashApplication.convertToArrayList(currentPrices);
                 } else {
                     Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
                 }
             });
         } else {
-            coins = utils.getCurrentPrice(getActivity());
+            coins = smartCashApplication.getCurrentPrice(getActivity());
         }
 
         setAmountListener();
@@ -162,7 +158,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     private void setAmountListener() {
 
-        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
         amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
         txtAmount.addTextChangedListener(new TextWatcher() {
@@ -206,7 +202,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private void calculateFromFiatToSmart() {
 
         BigDecimal amountConverted;
-        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
         amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
         for (int i = 0; i < coins.size(); i++) {
@@ -223,7 +219,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             BigDecimal finalValue = amount;
 
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
@@ -245,7 +241,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private void calculateFromSmartToFiat() {
 
         BigDecimal amountConverted;
-        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
         amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
         for (int i = 0; i < coins.size(); i++) {
@@ -262,7 +258,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             BigDecimal finalValue = amount;
 
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
@@ -290,28 +286,39 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     @OnClick(R.id.btn_qr_code)
     public void onBtnQrCodeClicked() {
-        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.CAMERA};
+
         if (EasyPermissions.hasPermissions(Objects.requireNonNull(getActivity()), perms)) {
             AlertDialog.Builder scanQrCodeDialog = new AlertDialog.Builder(getContext());
             View scanQrCodeView = LayoutInflater.from(getContext()).inflate(R.layout.scan_qrcode_dialog, null);
 
             Button btnCancel = scanQrCodeView.findViewById(R.id.btn_cancel);
+            btnCancel.setOnClickListener(v1 -> {
+                dialog.dismiss();
+                dialog.hide();
+            });
+
             QRCodeReaderView qrCodeLayout = scanQrCodeView.findViewById(R.id.qr_code_scan);
             qrCodeLayout.setBackCamera();
             qrCodeLayout.startCamera();
             qrCodeLayout.setOnQRCodeReadListener(this);
 
             scanQrCodeDialog.setView(scanQrCodeView);
+
             dialog = scanQrCodeDialog.create();
+
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-            btnCancel.setOnClickListener(v1 -> dialog.hide());
-
             dialog.show();
+
         } else {
             EasyPermissions.requestPermissions(this, "Need access to your camera",
                     RC_CAMERA_PERM, perms);
         }
+    }
+
+    private void openQrCodeIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, RC_CAMERA_PERM);
     }
 
     @OnClick(R.id.btn_wallet)
@@ -354,14 +361,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             return;
         }
 
-
-        Float amount = Float.parseFloat(txtAmountConverted.getText().toString());
-        Wallet selectedWallet = utils.getWallet(getActivity());
-
-        if (selectedWallet.getBalance() < amount) {
-            Toast.makeText(getContext(), "The amount MUST be less than the current balance.", Toast.LENGTH_LONG).show();
-            return;
-        } else if (txtToAddress.getText().length() == 0) {
+        if (txtToAddress.getText().length() == 0) {
             Toast.makeText(getContext(), "The address to send can't be empty.", Toast.LENGTH_LONG).show();
             return;
         } else if (txtAmount.getText().length() == 0 || txtAmount.getText().equals("0")) {
@@ -375,6 +375,18 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             return;
         }
 
+        Double amount = Double.parseDouble(txtAmountConverted.getText().toString());
+        Wallet selectedWallet = smartCashApplication.getWallet(getActivity());
+
+        if (selectedWallet.getBalance() < amount) {
+            Toast.makeText(getContext(), "The amount MUST be less than the current balance.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (amount == 0) {
+            Toast.makeText(getContext(), "The amount MUST be greater than ZERO.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String password;
 
         if (!withoutPin) {
@@ -385,6 +397,10 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         if (!password.equals("")) {
 
+            if (selectedWallet.getAddress().equalsIgnoreCase(txtToAddress.getText().toString())) {
+                Toast.makeText(getContext(), "The address from MUST be different of the destination address.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             SendPayment sendPayment = new SendPayment();
             sendPayment.setFromAddress(selectedWallet.getAddress());
@@ -395,20 +411,34 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             sendPayment.setUserKey(password);
 
             WalletViewModel model = ViewModelProviders.of(this).get(WalletViewModel.class);
-
             model.sendPayment(getActivity(), token, sendPayment).observe(this, apiResponse -> {
                 if (apiResponse != null) {
-                    Log.e(getResources().getString(R.string.tag_log_success), "Success");
-                    updateData();
-                    clearInputs();
+
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("SmartCash sent.")
+                            .setMessage("Your SmartCash was sent with success.")
+                            .setPositiveButton("OK", (dialog, id) -> {
+                                Log.d(getResources().getString(R.string.tag_log_success), "Success");
+                                updateData();
+                                clearInputs();
+                                Fragment transactionFragment = TransactionFragment.newInstance();
+                                openFragment(transactionFragment);
+                                dialog.cancel();
+                            }).show();
+
                 } else {
                     Log.e(getResources().getString(R.string.tag_log_error), "Error to send the payment.");
-                    clearInputs();
                 }
             });
         }
     }
 
+    public void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
     private void clearInputs() {
         txtToAddress.setText("");
         txtAmount.setText("");
@@ -420,10 +450,10 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private void updateData() {
         UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        model.getUser(utils.getToken(getActivity()), getActivity()).observe(this, response -> {
+        model.getUser(smartCashApplication.getToken(getActivity()), getActivity()).observe(this, response -> {
             if (response != null) {
                 Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
-                utils.saveUser(getActivity(), response);
+                smartCashApplication.saveUser(getActivity(), response);
                 ((MainActivity) Objects.requireNonNull(getActivity())).setWalletValue();
             } else {
                 Log.e(getResources().getString(R.string.tag_log_error), "Error to get the user.");
@@ -432,37 +462,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     }
 
     private String verifyPin() {
-
-        byte[] encryptedPin = utils.getByte(getActivity(), "pin");
-        byte[] encryptedPassword = utils.getByte(getActivity(), "password");
-
-        try {
-            String decryptedPin = decryptor.decryptData(PIN_ALIAS, encryptedPin, utils.getByte(getActivity(), "pinIv"));
-
-            if (decryptedPin.equals(txtPin.getText().toString())) {
-
-                try {
-
-                    return decryptor.decryptData(PASSWORD_ALIAS, encryptedPassword, utils.getByte(getActivity(), "passwordIv"));
-
-                } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
-                        KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
-                        IOException | InvalidKeyException e) {
-                    Log.e(getResources().getString(R.string.tag_log_error), "on encrypt: " + e.getMessage(), e);
-                } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
-                KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
-                IOException | InvalidKeyException e) {
-            Log.e(getResources().getString(R.string.tag_log_error), "on encrypt: " + e.getMessage(), e);
-        } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-
-        return "";
+        return this.smartCashApplication.getDecryptedPassword(getActivity(), txtPin.getText().toString());
     }
 
     @Override

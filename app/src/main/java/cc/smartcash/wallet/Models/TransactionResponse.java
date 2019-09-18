@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-@JsonIgnoreProperties({"isValid"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionResponse implements Serializable {
 
     @SerializedName("data")

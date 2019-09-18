@@ -1,7 +1,10 @@
 package cc.smartcash.wallet.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FullTransaction {
     ArrayList<Object> vin = new ArrayList<>();
     ArrayList<Object> vout = new ArrayList<>();

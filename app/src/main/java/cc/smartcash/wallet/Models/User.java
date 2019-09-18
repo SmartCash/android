@@ -3,9 +3,12 @@ package cc.smartcash.wallet.Models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.annotations.SerializedName;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
-@JsonIgnoreProperties({"password", "confirmPassword", "recoveryKey", "orderData", "cardId"})
+//@JsonIgnoreProperties({"password", "confirmPassword", "recoveryKey", "orderData", "cardId"})
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     @SerializedName("password")
     private String password;
@@ -22,7 +25,7 @@ public class User {
     @SerializedName("is2FAEnabled")
     private Boolean is2FAEnabled;
     @SerializedName("userId")
-    private Integer userId;
+    private BigInteger userId;
     @SerializedName("firstName")
     private String firstName;
     @SerializedName("lastName")
@@ -101,11 +104,11 @@ public class User {
         this.is2FAEnabled = is2FAEnabled;
     }
 
-    public Integer getUserId() {
+    public BigInteger getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(BigInteger userId) {
         this.userId = userId;
     }
 

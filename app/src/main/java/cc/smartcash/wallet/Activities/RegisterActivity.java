@@ -13,21 +13,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.UnrecoverableEntryException;
 import java.util.UUID;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,16 +24,14 @@ import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
-import cc.smartcash.wallet.Utils.EnCryptor;
 import cc.smartcash.wallet.Utils.NetworkUtil;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
 
     public static final String TAG = RegisterActivity.class.getSimpleName();
 
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
     @BindView(R.id.network_status)
     Switch networkSwitch;
     @BindView(R.id.txt_user)
@@ -62,8 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
     ProgressBar loader;
     @BindView(R.id.login_content)
     ConstraintLayout loginContent;
-    private Utils utils;
-    private EnCryptor encryptor;
+    private SmartCashApplication smartCashApplication;
     private NetworkReceiver networkReceiver;
 
     @Override
@@ -72,8 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.register_main);
         ButterKnife.bind(this);
 
-        encryptor = new EnCryptor();
-        this.utils = new Utils();
+        this.smartCashApplication = new SmartCashApplication(getApplicationContext());
 
         String useruuid = UUID.randomUUID().toString();
         txtUser.setText(useruuid + "@testeandroidmobile.com");
@@ -98,8 +82,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         };
 
-        String token = utils.getToken(this);
-        User user = utils.getUser(this);
+        String token = smartCashApplication.getToken(this);
+        User user = smartCashApplication.getUser(this);
 
         if (token != null && token != "" && user != null) {
 
@@ -184,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         this.setVisibility();
 
-        UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
+        UserViewModel model = new ViewModelProvider(this).get(UserViewModel.class);
 
         model.setUser(newUser, this).observe(this, user -> {
             if (user != null) {
@@ -195,7 +179,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         model.getUser(t, this).observe(this, user1 -> {
                             user1.setRecoveryKey(user.getRecoveryKey());
-                            utils.saveUser(RegisterActivity.this, user1);
+                            smartCashApplication.saveUser(RegisterActivity.this, user1);
                             savePassword();
                         });
 
@@ -214,14 +198,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void savePassword() {
-        if (utils.getByte(getApplicationContext(), "password") == null) {
+        //TODO encrypt the password correctly
+
+        /*
+        if (smartCashApplication.getByte(getApplicationContext(), "password") == null) {
             try {
                 final byte[] encryptedText = encryptor
                         .encryptText(PASSWORD_ALIAS, txtPassword.getText().toString(), this, "passwordIv");
                 Intent intent = new Intent(getApplicationContext(), PinActivity.class);
                 intent.putExtra("PIN", txtPin.getText().toString());
                 startActivity(intent);
-                utils.saveByte(encryptedText, this, "password");
+                smartCashApplication.saveByte(encryptedText, this, "password");
             } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
                     KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
                 Log.e("Error", "on encrypt: " + e.getMessage(), e);
@@ -233,6 +220,9 @@ public class RegisterActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), PinActivity.class);
             startActivity(intent);
         }
+
+
+         */
     }
 
     public void setVisibility() {

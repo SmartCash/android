@@ -17,14 +17,13 @@ import butterknife.ButterKnife;
 import cc.smartcash.wallet.Adapters.DashboardWalletListAdapter;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 
 public class DashboardFragment extends Fragment {
 
     private ArrayList<Wallet> walletList;
-    private Utils utils = new Utils();
-    private DashboardWalletListAdapter walletAdapter;
+    private SmartCashApplication smartCashApplication;
 
     public static DashboardFragment newInstance() {
         return new DashboardFragment();
@@ -33,7 +32,8 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        walletList = utils.getUser(getContext()).getWallet();
+        this.smartCashApplication = new SmartCashApplication(getContext());
+        walletList = smartCashApplication.getUser(getContext()).getWallet();
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -48,7 +48,7 @@ public class DashboardFragment extends Fragment {
     private void setupRecyclerViewWallets() {
         RecyclerView walletRecyclerview = getActivity().findViewById(R.id.wallet_recyclerview);
         LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        walletAdapter = new DashboardWalletListAdapter(getContext(), new ArrayList<Wallet>());
+        DashboardWalletListAdapter walletAdapter = new DashboardWalletListAdapter(getContext(), new ArrayList<Wallet>());
 
         walletRecyclerview.setLayoutManager(linearLayoutManagerTransactions);
         walletRecyclerview.setAdapter(walletAdapter);

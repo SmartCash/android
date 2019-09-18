@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -12,31 +13,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.UnrecoverableEntryException;
-import java.security.cert.CertificateException;
+import com.google.crypto.tink.Aead;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import java.nio.charset.StandardCharsets;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.DeCryptor;
-import cc.smartcash.wallet.Utils.EnCryptor;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 public class PinActivity extends AppCompatActivity {
-    private static final String PIN_ALIAS = "AndroidKeyStorePin";
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
+
+    public static final String TAG = PinActivity.class.getSimpleName();
+
     @BindView(R.id.txt_password)
     EditText txtPin;
     @BindView(R.id.txt_pin)
@@ -47,11 +38,10 @@ public class PinActivity extends AppCompatActivity {
     TextView forgotPinBtn;
     @BindView(R.id.continue_without_pin)
     TextView continueWithoutToken;
-    private EnCryptor encryptor;
-    private DeCryptor decryptor;
-    private Utils utils;
-    private byte[] pin;
-    private boolean withoutPin;
+
+    private SmartCashApplication smartCashApplication;
+    private String currentPassword;
+    private byte[] encryptedPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,97 +49,89 @@ public class PinActivity extends AppCompatActivity {
         setContentView(R.layout.pin_activity);
         ButterKnife.bind(this);
 
-        encryptor = new EnCryptor();
-        utils = new Utils();
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getApplicationContext());
 
         Intent intent = getIntent();
-        String extraPIN = intent.getStringExtra("PIN");
+        String extraPASSWORD = intent.getStringExtra(Keys.KEY_PASSWORD);
 
-        if (extraPIN != null && !extraPIN.isEmpty())
-            encryptAndSavePIN(extraPIN);
+        if (extraPASSWORD != null && !extraPASSWORD.isEmpty()) {
+            this.currentPassword = extraPASSWORD;
+        } else {
 
-        withoutPin = utils.getBoolean(this, "WithoutPin");
+            encryptedPassword = this.smartCashApplication.getByte(getApplicationContext(), Keys.KEY_PASSWORD);
 
-        if (withoutPin) {
-            intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
         }
 
-
-        pin = utils.getByte(this, "pin");
-
-        if (pin != null) {
+        if (encryptedPassword != null) {
             txtConfirmPin.setVisibility(View.GONE);
             confirmPinLabel.setVisibility(View.GONE);
             forgotPinBtn.setVisibility(View.VISIBLE);
             continueWithoutToken.setVisibility(View.GONE);
         }
 
-        try {
-            decryptor = new DeCryptor();
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException |
-                IOException e) {
-            e.printStackTrace();
+
+        boolean withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
+
+        if (withoutPin) {
+            intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
     }
 
     @OnClick(R.id.btn_confirm)
     public void onViewClicked() {
-        if (pin != null) {
-            String decryptedPin = decryptPIN(pin);
-            if (decryptedPin.equals(txtPin.getText().toString())) {
+
+        if (encryptedPassword != null) {
+
+            try {
+
+                smartCashApplication.aead = smartCashApplication.getOrGenerateNewKeysetHandle(getApplicationContext()).getPrimitive(Aead.class);
+
+                byte[] decryptedPin = smartCashApplication.aead.decrypt(encryptedPassword, txtPin.getText().toString().getBytes(StandardCharsets.UTF_8));
+
+                String decryptedText = new String(decryptedPin, StandardCharsets.UTF_8);
+
+                Log.i(TAG, "The decrypted text is: " + decryptedText);
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+
+            } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
             }
         } else if (txtPin.getText().toString().equals(txtConfirmPin.getText().toString())) {
-            encryptAndSavePIN(txtPin.getText().toString());
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
+
+            //ENCRYPT THE PASSWORD
+
+            try {
+
+                if (smartCashApplication == null)
+                    smartCashApplication = new SmartCashApplication(getApplicationContext());
+
+                byte[] plainTextToEncrypt = this.currentPassword.getBytes(StandardCharsets.UTF_8);
+                byte[] pin = this.txtConfirmPin.getText().toString().getBytes(StandardCharsets.UTF_8);
+                byte[] cipherTextToEncrypt = smartCashApplication.aead.encrypt(plainTextToEncrypt, pin);
+                smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), Keys.KEY_PASSWORD);
+
+                String encryptedText = Base64.encodeToString(cipherTextToEncrypt, Base64.DEFAULT);
+                Log.i(TAG, "The encrypted text is: " + encryptedText);
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+
+            } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
+            }
+
+
         }
+
+
     }
-
-    private byte[] encryptAndSavePIN(String decryptedPin) {
-
-        try {
-
-            final byte[] encryptedText = encryptor
-                    .encryptText(PIN_ALIAS, decryptedPin, this, "pinIv");
-
-            utils.saveByte(encryptedText, this, "pin");
-
-            return encryptedText;
-
-
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
-            Log.e("Error", "on encrypt: " + e.getMessage(), e);
-        } catch (InvalidAlgorithmParameterException | SignatureException |
-                IllegalBlockSizeException | BadPaddingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private String decryptPIN(byte[] encryptedPin) {
-        try {
-            String decryptedPin = decryptor
-                    .decryptData(PIN_ALIAS, encryptedPin, utils.getByte(this, "pinIv"));
-
-            return decryptedPin;
-        } catch (UnrecoverableEntryException | NoSuchAlgorithmException |
-                KeyStoreException | NoSuchPaddingException | NoSuchProviderException |
-                IOException | InvalidKeyException e) {
-            Log.e("Error", "on dencrypt: " + e.getMessage(), e);
-        } catch (IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     @OnClick(R.id.forgot_pin_btn)
     public void onForgotPinClicked() {
-
 
         new AlertDialog.Builder(this)
                 .setTitle("Forgot the PIN?")
@@ -162,20 +144,17 @@ public class PinActivity extends AppCompatActivity {
                         Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
 
 
-                        utils.deleteSharedPreferences(PinActivity.this);
+                        smartCashApplication.deleteSharedPreferences(PinActivity.this);
                         startActivity(new Intent(PinActivity.this, LoginActivity.class));
 
 
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
-
-
     }
 
     @OnClick(R.id.continue_without_pin)
     public void onContinueWithoutPinClicked() {
-
 
         new AlertDialog.Builder(this)
                 .setTitle("Forgot the PIN?")
@@ -187,13 +166,12 @@ public class PinActivity extends AppCompatActivity {
 
                         Toast.makeText(PinActivity.this, "Redirecting to dashboard...", Toast.LENGTH_SHORT).show();
 
-                        utils.saveBoolean(PinActivity.this, true, "WithoutPin");
+                        smartCashApplication.saveBoolean(PinActivity.this, true, "WithoutPin");
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
 
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
-
     }
 }

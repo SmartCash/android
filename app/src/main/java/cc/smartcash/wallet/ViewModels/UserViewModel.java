@@ -17,7 +17,7 @@ import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
 import cc.smartcash.wallet.Utils.NetworkUtil;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +46,7 @@ public class UserViewModel extends ViewModel {
     }
 
     public LiveData<User> getUser(String token, Context context) {
-        user = new MutableLiveData<User>();
+        user = new MutableLiveData<>();
         loadUser(token, context);
 
         return user;
@@ -54,7 +54,7 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<User> setUser(UserRegisterRequest newUser, Context context) {
 
-        user = new MutableLiveData<User>();
+        user = new MutableLiveData<>();
 
         createUser(newUser, context);
 
@@ -95,6 +95,7 @@ public class UserViewModel extends ViewModel {
 
             });
         } else {
+
 
         }
 
@@ -158,12 +159,12 @@ public class UserViewModel extends ViewModel {
 
             String localIP = null;
             try {
-                localIP = Utils.getIPAddress(true);
+                localIP = SmartCashApplication.getIPAddress(true);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-            if (localIP == null || localIP.isEmpty()) localIP = "192.168.0.255";
+            if (localIP == null || localIP.isEmpty()) localIP = "100.003.102.100";
 
             Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
                     username,
@@ -172,7 +173,7 @@ public class UserViewModel extends ViewModel {
                     "81d46070-686b-4975-9c29-9ebc867a3c4e",
                     "",
                     "mobile",
-                    "100.003.102.100",
+                    localIP,
                     "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
             );
 

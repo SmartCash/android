@@ -17,7 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -33,7 +33,7 @@ import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.NetworkUtil;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 
 public class ReceiveFragment extends Fragment {
@@ -61,9 +61,7 @@ public class ReceiveFragment extends Fragment {
 
     private ArrayList<Wallet> walletList;
 
-    private WalletSpinnerAdapter walletAdapter;
-
-    private Utils utils = new Utils();
+    private SmartCashApplication smartCashApplication;
 
     private ArrayList<Coin> coins;
 
@@ -75,7 +73,10 @@ public class ReceiveFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        walletList = utils.getUser(getContext()).getWallet();
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getContext());
+
+        walletList = smartCashApplication.getUser(getContext()).getWallet();
 
         View view = inflater.inflate(R.layout.fragment_receive, container, false);
 
@@ -90,13 +91,16 @@ public class ReceiveFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getContext());
+
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
 
         walletSpinner.setDropDownWidth(displayMetrics.widthPixels);
 
         Spinner walletSpinner = getView().findViewById(R.id.wallet_spinner);
 
-        walletAdapter = new WalletSpinnerAdapter(getContext(), walletList);
+        WalletSpinnerAdapter walletAdapter = new WalletSpinnerAdapter(getContext(), walletList);
 
         walletSpinner.setAdapter(walletAdapter);
 
@@ -105,7 +109,7 @@ public class ReceiveFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 setImage(walletList.get(position).getQrCode());
                 walletAddress.setText(walletList.get(position).getAddress());
-                utils.saveWallet(getContext(), walletList.get(position));
+                smartCashApplication.saveWallet(getContext(), walletList.get(position));
             }
 
             @Override
@@ -114,7 +118,7 @@ public class ReceiveFragment extends Fragment {
             }
         });
 
-        Wallet savedWallet = utils.getWallet(getContext());
+        Wallet savedWallet = smartCashApplication.getWallet(getContext());
 
         if (savedWallet != null) {
             for (int i = 0; i < walletList.size(); i++) {
@@ -125,17 +129,18 @@ public class ReceiveFragment extends Fragment {
         }
 
         if (NetworkUtil.getInternetStatus(getContext())) {
-            CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
+
+            CurrentPriceViewModel model = new ViewModelProvider(this).get(CurrentPriceViewModel.class);
 
             model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
                 if (currentPrices != null) {
-                    coins = Utils.convertToArrayList(currentPrices);
+                    coins = SmartCashApplication.convertToArrayList(currentPrices);
                 } else {
                     Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
                 }
             });
         } else {
-            coins = utils.getCurrentPrice(getActivity());
+            coins = smartCashApplication.getCurrentPrice(getActivity());
         }
         setAmountListener();
     }
@@ -147,12 +152,12 @@ public class ReceiveFragment extends Fragment {
 
     @OnClick(R.id.btn_copy)
     public void onViewClicked() {
-        Utils.copyToClipboard(getContext(), walletAddress.getText().toString());
+        SmartCashApplication.copyToClipboard(getContext(), walletAddress.getText().toString());
     }
 
     private void setAmountListener() {
 
-        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
         amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
         txtAmount.addTextChangedListener(new TextWatcher() {
@@ -196,7 +201,7 @@ public class ReceiveFragment extends Fragment {
     private void calculateFromFiatToSmart() {
 
         BigDecimal amountConverted;
-        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
         amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
         for (int i = 0; i < coins.size(); i++) {
@@ -213,7 +218,7 @@ public class ReceiveFragment extends Fragment {
             BigDecimal finalValue = amount;
 
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
@@ -231,7 +236,7 @@ public class ReceiveFragment extends Fragment {
     private void calculateFromSmartToFiat() {
 
         BigDecimal amountConverted;
-        Coin actualSelected = utils.getActualSelectedCoin(getContext());
+        Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
         amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
 
         for (int i = 0; i < coins.size(); i++) {
@@ -248,7 +253,7 @@ public class ReceiveFragment extends Fragment {
             BigDecimal finalValue = amount;
 
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = utils.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 

@@ -13,12 +13,10 @@ import cc.smartcash.wallet.Models.Coin;
 
 public class CoinSpinnerAdapter extends ArrayAdapter<Coin> {
 
-    private Context context;
     private ArrayList<Coin> coins;
 
     public CoinSpinnerAdapter(Context context, int position, ArrayList<Coin> coins) {
         super(context, position, coins);
-        this.context = context;
         this.coins = coins;
     }
 

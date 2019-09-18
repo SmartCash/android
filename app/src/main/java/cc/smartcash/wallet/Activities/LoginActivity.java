@@ -16,19 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.UnrecoverableEntryException;
 import java.util.ArrayList;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,9 +25,9 @@ import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
-import cc.smartcash.wallet.Utils.EnCryptor;
+import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 
@@ -47,10 +35,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 
-    private static final String PASSWORD_ALIAS = "AndroidKeyStorePassword";
-
-    private Utils utils;
-    private EnCryptor encryptor;
+    private SmartCashApplication smartCashApplication;
 
     boolean internetAvailable;
 
@@ -77,64 +62,86 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_main);
         ButterKnife.bind(this);
 
-        encryptor = new EnCryptor();
-        this.utils = new Utils();
-        internetAvailable = NetworkUtil.getInternetStatus(this);
+        try {
+            startProcess();
 
-        networkReceiver = new NetworkReceiver() {
+            if (smartCashApplication == null)
+                smartCashApplication = new SmartCashApplication(getApplicationContext());
 
-            @Override
-            public void onReceive(Context context, Intent intent) {
+            internetAvailable = NetworkUtil.getInternetStatus(this);
 
-                Log.i(TAG, "The status of the network has changed");
-                String status = NetworkUtil.getConnectivityStatusString(context);
-
-                internetAvailable = NetworkUtil.getInternetStatus(context);
-                networkSwitch.setChecked(internetAvailable);
-                networkSwitch.setText(status);
-
+            if (internetAvailable) {
+                loader.setVisibility(View.VISIBLE);
+                loginContent.setVisibility(View.GONE);
+            } else {
+                loader.setVisibility(View.GONE);
+                loginContent.setVisibility(View.VISIBLE);
             }
 
-        };
+            networkReceiver = new NetworkReceiver() {
 
-        String token = utils.getToken(this);
+                @Override
+                public void onReceive(Context context, Intent intent) {
 
-        User user = utils.getUser(this);
+                    Log.i(TAG, "The status of the network has changed");
+                    String status = NetworkUtil.getConnectivityStatusString(context);
 
-        if (token != null && !token.isEmpty() && user != null) {
+                    internetAvailable = NetworkUtil.getInternetStatus(context);
+                    networkSwitch.setChecked(internetAvailable);
+                    networkSwitch.setText(status);
+
+                }
+
+            };
+
+            String token = smartCashApplication.getToken(this);
+
+            User user = smartCashApplication.getUser(this);
+
+            if (token != null && !token.isEmpty() && user != null) {
 
 
-            if (isOnLocalDB()) {
+                if (isOnLocalDB()) {
 
-                loginContent.setVisibility(View.GONE);
-                loader.setVisibility(View.VISIBLE);
+                    loginContent.setVisibility(View.GONE);
+                    loader.setVisibility(View.VISIBLE);
 
-                Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-                startActivity(intent);
+                    Intent intent = new Intent(getApplicationContext(), PinActivity.class);
+                    startActivity(intent);
+
+                } else {
+                    Log.e("token", token);
+                    this.setVisibility();
+                    getUser(token);
+                }
 
             } else {
-                Log.e("token", token);
-                this.setVisibility();
-                getUser(token);
+
+                loginContent.setVisibility(View.VISIBLE);
+                loader.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Error to retreive the Token or the user", Toast.LENGTH_SHORT).show();
+
             }
+        } catch (Exception e) {
 
-        } else {
+            endProcess();
 
-            loginContent.setVisibility(View.VISIBLE);
-            loader.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(), "Error to retreive the Token or the user", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, e.getMessage());
 
+        } finally {
+            endProcess();
         }
     }
 
     private boolean isOnLocalDB() {
 
 
-        String token = utils.getToken(this);
+        String token = smartCashApplication.getToken(this);
 
-        User user = utils.getUser(this);
+        User user = smartCashApplication.getUser(this);
 
-        byte[] pin = utils.getByte(this, "pin");
+        byte[] pin = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
 
         return (token != null && !token.isEmpty() && user != null && pin != null);
     }
@@ -161,69 +168,72 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.btn_login)
     public void onViewClicked() {
 
-        if (!internetAvailable) {
-            Toast.makeText(getApplicationContext(), "You must be on-line to log-in.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        try {
+            startProcess();
 
-        String password = txtPassword.getText().toString();
-        String username = txtUser.getText().toString();
-
-        if (password.isEmpty() || username.isEmpty()) {
-
-            txtUser.setError("The username can't be empty");
-            txtPassword.setError("The password can't be empty");
-
-            return;
-        }
-
-        this.setVisibility();
-
-        UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
-
-        model.getToken(username, password, this).observe(this, token -> {
-            if (token != null) {
-                utils.saveToken(LoginActivity.this, token);
-                getUser(token);
-            } else {
-                setVisibility();
-                Toast.makeText(getApplicationContext(), "Error to get the token", Toast.LENGTH_LONG).show();
-                Log.e(TAG, "Error to get the token!");
+            if (!internetAvailable) {
+                Toast.makeText(getApplicationContext(), "You must be on-line to log-in.", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
+
+            String password = txtPassword.getText().toString();
+            String username = txtUser.getText().toString();
+
+            if (password.isEmpty() || username.isEmpty()) {
+
+                txtUser.setError("The username can't be empty");
+                txtPassword.setError("The password can't be empty");
+
+                return;
+            }
+
+            UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
+
+
+            model.getToken(username, password, this).observe(this, token -> {
+                if (token != null) {
+                    smartCashApplication.saveToken(LoginActivity.this, token);
+                    Log.i(TAG, "TOKEN OK");
+                    getUser(token);
+                } else {
+                    endProcess();
+                    Toast.makeText(getApplicationContext(), "Error to get the token", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Error to get the token!");
+                }
+            });
+        } catch (Exception e) {
+
+            endProcess();
+
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, e.getMessage());
+
+        } finally {
+            endProcess();
+        }
+
     }
 
-    private void savePassword() {
-        if (utils.getByte(getApplicationContext(), "password") == null) {
-            try {
-                final byte[] encryptedText = encryptor
-                        .encryptText(PASSWORD_ALIAS, txtPassword.getText().toString(), this, "passwordIv");
-                Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-                startActivity(intent);
-                utils.saveByte(encryptedText, this, "password");
-            } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                    KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
-                Log.e("Error", "on encrypt: " + e.getMessage(), e);
-            } catch (InvalidAlgorithmParameterException | SignatureException |
-                    IllegalBlockSizeException | BadPaddingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-            startActivity(intent);
-        }
+    private void navigateToPinActivity() {
+
+        Intent intent = new Intent(getApplicationContext(), PinActivity.class);
+        intent.putExtra(Keys.KEY_PASSWORD, txtPassword.getText().toString());
+
+        startActivity(intent);
     }
 
     public void getUser(String token) {
+        startProcess();
         UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
 
         model.getUser(token, LoginActivity.this).observe(LoginActivity.this, user -> {
             if (user != null) {
-                utils.saveUser(LoginActivity.this, user);
+                smartCashApplication.saveUser(LoginActivity.this, user);
+                Log.i(TAG, "Users OK");
                 getCurrentPrices();
             } else {
-                utils.deleteSharedPreferences(LoginActivity.this);
-                setVisibility();
+                smartCashApplication.deleteSharedPreferences(LoginActivity.this);
+                endProcess();
                 Toast.makeText(getApplicationContext(), "Error to get the user", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Error to getUser");
             }
@@ -231,27 +241,38 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void getCurrentPrices() {
+        startProcess();
         CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
 
         model.getCurrentPrices(LoginActivity.this).observe(this, currentPrices -> {
             if (currentPrices != null) {
-                ArrayList<Coin> coins = Utils.convertToArrayList(currentPrices);
-                utils.saveCurrentPrice(this, coins);
-                savePassword();
+                ArrayList<Coin> coins = SmartCashApplication.convertToArrayList(currentPrices);
+                smartCashApplication.saveCurrentPrice(this, coins);
+                Log.i(TAG, "Prices OK");
+                navigateToPinActivity();
             } else {
+                endProcess();
                 Toast.makeText(getApplicationContext(), "Error to get the current prices!", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Error to get current prices!");
             }
         });
     }
 
+    private void startProcess() {
+        loginContent.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
+    }
+
+    private void endProcess() {
+        loginContent.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.GONE);
+    }
+
     public void setVisibility() {
         if (loader.getVisibility() == View.VISIBLE) {
-            loginContent.setVisibility(View.VISIBLE);
-            loader.setVisibility(View.GONE);
+            endProcess();
         } else {
-            loginContent.setVisibility(View.GONE);
-            loader.setVisibility(View.VISIBLE);
+            startProcess();
         }
     }
 

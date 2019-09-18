@@ -28,7 +28,7 @@ import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter;
 import cc.smartcash.wallet.Models.Transaction;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 
 public class TransactionFragment extends Fragment {
@@ -44,7 +44,7 @@ public class TransactionFragment extends Fragment {
     View activeUnderline;
     @BindView(R.id.wallet_spinner)
     Spinner walletSpinner;
-    Utils utils = new Utils();
+    SmartCashApplication smartCashApplication;
     private String activeFilter = null;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
@@ -58,7 +58,9 @@ public class TransactionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        walletList = utils.getUser(getContext()).getWallet();
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getContext());
+        walletList = smartCashApplication.getUser(getContext()).getWallet();
         transactions = walletList.get(0).getTransactions();
         View view = inflater.inflate(R.layout.fragment_transaction, container, false);
         ButterKnife.bind(this, view);
@@ -68,6 +70,8 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getContext());
         setupRecyclerViewTransactions();
 
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
@@ -84,7 +88,7 @@ public class TransactionFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Wallet clickedItem = (Wallet) parent.getItemAtPosition(position);
                 transactions = clickedItem.getTransactions();
-                utils.saveWallet(getContext(), walletList.get(position));
+                smartCashApplication.saveWallet(getContext(), walletList.get(position));
                 setTransactions(activeFilter);
             }
 
@@ -94,7 +98,7 @@ public class TransactionFragment extends Fragment {
             }
         });
 
-        Wallet savedWallet = utils.getWallet(getContext());
+        Wallet savedWallet = smartCashApplication.getWallet(getContext());
 
         if (savedWallet != null) {
             for (int i = 0; i < walletList.size(); i++) {
@@ -144,10 +148,10 @@ public class TransactionFragment extends Fragment {
     private void updateData() {
         UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        model.getUser(utils.getToken(getActivity()), getActivity()).observe(this, response -> {
+        model.getUser(smartCashApplication.getToken(getActivity()), getActivity()).observe(this, response -> {
             if (response != null) {
                 Toast.makeText(getActivity(), "Updated!", Toast.LENGTH_LONG).show();
-                utils.saveUser(getActivity(), response);
+                smartCashApplication.saveUser(getActivity(), response);
                 ((MainActivity) getActivity()).setWalletValue();
             } else {
                 Log.e("Erro", "Erro ao buscar os valores!");

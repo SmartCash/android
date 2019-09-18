@@ -25,7 +25,7 @@ import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.TransactionDetails;
 import cc.smartcash.wallet.Models.TransactionResponse;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.TransactionViewModel;
 
 public class TransactionActivity extends AppCompatActivity {
@@ -61,7 +61,7 @@ public class TransactionActivity extends AppCompatActivity {
     Button btnDetails;
     private String hash;
     private String token;
-    private Utils utils;
+    private SmartCashApplication smartCashApplication;
     private TransactionDetails details;
 
     @Override
@@ -74,15 +74,15 @@ public class TransactionActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getColor(R.color.colorAccent)));
 
-        utils = new Utils();
+        smartCashApplication = new SmartCashApplication(getApplicationContext());
 
-        token = utils.getToken(this);
+        token = smartCashApplication.getToken(this);
 
         details = new TransactionDetails();
 
         hash = getIntent().getStringExtra("TransactionHash");
         details.setAmount(getIntent().getDoubleExtra("Amount", 0.0));
-        details.setFromAddress(utils.getWallet(this).getAddress());
+        details.setFromAddress(smartCashApplication.getWallet(this).getAddress());
         details.setToAddress(getIntent().getStringExtra("ToAddress"));
 
         if (hash != null)

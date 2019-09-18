@@ -15,7 +15,7 @@ import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -31,7 +31,7 @@ public class WebWalletApiUnitTest {
     @Test
     public void getToken() {
 
-        String localIP = Utils.getIPAddress(true);
+        String localIP = SmartCashApplication.getIPAddress(true);
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
                 "enriquesouza6",
@@ -71,7 +71,7 @@ public class WebWalletApiUnitTest {
     @Test
     public void getUserInfo() {
 
-        String localIP = Utils.getIPAddress(true);
+        String localIP = SmartCashApplication.getIPAddress(true);
 
         LoginResponse body = null;
 
@@ -137,7 +137,7 @@ public class WebWalletApiUnitTest {
     @Test
     public void getUserContact() {
 
-        String localIP = Utils.getIPAddress(true);
+        String localIP = SmartCashApplication.getIPAddress(true);
 
         LoginResponse body = null;
 

@@ -1,7 +1,9 @@
 package cc.smartcash.wallet.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.annotations.SerializedName;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionDetails {
     @SerializedName("fromAddress")
     private String fromAddress;

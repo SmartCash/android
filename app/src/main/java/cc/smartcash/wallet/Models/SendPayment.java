@@ -1,14 +1,16 @@
 package cc.smartcash.wallet.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.annotations.SerializedName;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SendPayment {
     @SerializedName("FromAddress")
     private String fromAddress;
     @SerializedName("ToAddress")
     private String toAddress;
     @SerializedName("Amount")
-    private Float amount;
+    private Double amount;
     @SerializedName("UserKey")
     private String userKey;
     @SerializedName("code")
@@ -32,11 +34,11 @@ public class SendPayment {
         this.toAddress = toAddress;
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

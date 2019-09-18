@@ -19,7 +19,7 @@ import cc.smartcash.wallet.Activities.TransactionActivity;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Transaction;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewHolders.TransactionViewHolder;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
@@ -51,10 +51,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
         transactionViewHolder.timestamp.setText(this.transactions.get(i).getTimestamp());
         transactionViewHolder.hash.setText(this.transactions.get(i).getHash());
 
-        Utils utils = new Utils();
-        ArrayList<Coin> coins = utils.getCurrentPrice(context);
+        SmartCashApplication smartCashApplication = new SmartCashApplication(context);
+        ArrayList<Coin> coins = smartCashApplication.getCurrentPrice(context);
 
-        if (utils.getActualSelectedCoin(context) == null || utils.getActualSelectedCoin(context).getName().equals("SMART")) {
+        if (smartCashApplication.getActualSelectedCoin(context) == null || smartCashApplication.getActualSelectedCoin(context).getName().equals("SMART")) {
             for (Coin item : coins) {
                 if (item.getName().equals("SMART")) {
                     transactionViewHolder.price.setText(String.format("%f", this.transactions.get(i).getAmount()));
@@ -62,7 +62,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
                 }
             }
         } else {
-            BigDecimal value = utils.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(utils.getActualSelectedCoin(context).getValue()));
+            BigDecimal value = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(smartCashApplication.getActualSelectedCoin(context).getValue()));
             transactionViewHolder.price.setText(String.format("%f", value));
         }
 

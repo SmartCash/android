@@ -14,6 +14,7 @@ import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.TransactionDetails;
 import cc.smartcash.wallet.Models.TransactionResponse;
 import cc.smartcash.wallet.Utils.ApiUtils;
+import cc.smartcash.wallet.Utils.ConstantsURLS;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +67,7 @@ public class TransactionViewModel extends ViewModel {
     }
 
     public void loadTransaction(String hash, Context context) {
-        Call<FullTransaction> call = new ApiUtils(context).getTransactionService().getTransaction(ApiUtils.TRANSACTION_API + hash);
+        Call<FullTransaction> call = new ApiUtils(context).getTransactionService().getTransaction(ConstantsURLS.URL_INSIGHT_EXPLORER + hash);
 
         call.enqueue(new Callback<FullTransaction>() {
             @Override

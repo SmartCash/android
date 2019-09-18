@@ -3,8 +3,11 @@ package cc.smartcash.wallet.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Transaction implements Parcelable, Serializable {
     public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
         @Override

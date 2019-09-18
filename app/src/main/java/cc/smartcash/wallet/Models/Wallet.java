@@ -1,10 +1,13 @@
 package cc.smartcash.wallet.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.gson.annotations.SerializedName;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Wallet {
     @SerializedName("walletId")
     private Integer walletId;
@@ -29,7 +32,7 @@ public class Wallet {
     @SerializedName("isScheduled")
     private Boolean isScheduled;
     @SerializedName("cardId")
-    private Integer cardId;
+    private BigInteger cardId;
     @SerializedName("transactions")
     private ArrayList<Transaction> transactions;
 
@@ -125,11 +128,11 @@ public class Wallet {
         isScheduled = isScheduled;
     }
 
-    public Integer getCardId() {
+    public BigInteger getCardId() {
         return cardId;
     }
 
-    public void setCardId(Integer cardId) {
+    public void setCardId(BigInteger cardId) {
         this.cardId = cardId;
     }
 

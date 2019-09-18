@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewHolders.DashboardWalletListViewHolder;
 
 public class DashboardWalletListAdapter extends RecyclerView.Adapter<DashboardWalletListViewHolder> {
@@ -47,7 +47,7 @@ public class DashboardWalletListAdapter extends RecyclerView.Adapter<DashboardWa
         walletViewHolder.value.setText(String.valueOf(this.wallets.get(i).getBalance()));
         walletViewHolder.address.setText(this.wallets.get(i).getAddress());
         walletViewHolder.btnCopy.setOnClickListener(v -> {
-            Utils.copyToClipboard(context, this.wallets.get(i).getAddress());
+            SmartCashApplication.copyToClipboard(context, this.wallets.get(i).getAddress());
         });
 
         if (count == 0) {

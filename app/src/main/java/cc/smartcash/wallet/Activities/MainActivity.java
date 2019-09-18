@@ -32,7 +32,8 @@ import cc.smartcash.wallet.Fragments.TransactionFragment;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -42,11 +43,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private ImageView btnSettings;
     private TextView walletTxt;
     private TextView walletConverted;
-    private Utils utils;
+    ArrayList<Coin> coins;
     private CoinSpinnerAdapter adapter;
     private Wallet wallet;
     private Coin selectedCoin;
     private boolean withoutPin;
+    private SmartCashApplication smartCashApplication;
 
     private BroadcastReceiver networkReceiver;
 
@@ -56,14 +58,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Fresco.initialize(this);
         setContentView(R.layout.activity_main);
 
-        utils = new Utils();
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getApplicationContext());
+
+        coins = smartCashApplication.getCurrentPrice(this);
 
         mToolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(mToolbar);
 
-
-        withoutPin = utils.getBoolean(this, "WithoutPin");
+        withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
 
         mNavigationView = findViewById(R.id.navigationView);
         mNavigationView.setOnNavigationItemSelectedListener(this);
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                             Toast.makeText(MainActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
 
-                            utils.deleteSharedPreferences(MainActivity.this);
+                            smartCashApplication.deleteSharedPreferences(MainActivity.this);
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
 
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
 
             createPinBtn.setOnClickListener(v4 -> {
-                utils.saveBoolean(this, false, "WithoutPin");
+                smartCashApplication.saveBoolean(this, false, Keys.KEY_WITHOUT_PIN);
                 startActivity(new Intent(this, PinActivity.class));
             });
 
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             public void onClick(DialogInterface dialog, int whichButton) {
 
                                 Toast.makeText(MainActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
-                                utils.deleteSharedPreferences(MainActivity.this);
+                                smartCashApplication.deleteSharedPreferences(MainActivity.this);
                                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
                             }
@@ -144,35 +147,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             });
 
-            ArrayList<Coin> coins = utils.getCurrentPrice(this);
-
-            adapter = new CoinSpinnerAdapter(this, android.R.layout.simple_spinner_item, coins);
-
-            currentPriceSpinner.setAdapter(adapter);
-
-            Coin selectedCoin = utils.getActualSelectedCoin(this);
-
-            if (selectedCoin != null) {
-                for (int i = 0; i < coins.size(); i++) {
-                    if (selectedCoin.getValue().equals(coins.get(i).getValue()) && selectedCoin.getName().equals(coins.get(i).getName())) {
-                        currentPriceSpinner.setSelection(i);
-                    }
-                }
-            }
-
-            currentPriceSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view,
-                                           int position, long id) {
-                    Coin coin = adapter.getItem(position);
-                    utils.saveActualSelectedCoin(MainActivity.this, coin);
-                    setWalletValue();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapter) {
-                }
-            });
+            setSpinner(currentPriceSpinner);
 
             settingsDialog.setView(settingsView);
             AlertDialog dialog = settingsDialog.create();
@@ -184,6 +159,44 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             dialog.show();
         });
+    }
+
+    private void setSpinner(Spinner currentPriceSpinner) {
+
+        adapter = new CoinSpinnerAdapter(this, android.R.layout.simple_spinner_item, coins);
+        currentPriceSpinner.setAdapter(adapter);
+
+        setSelectedCoinOnSpinner(currentPriceSpinner, coins);
+
+        currentPriceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int position, long id) {
+                Coin coin = adapter.getItem(position);
+                saveSelectedCoin(coin);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapter) {
+            }
+        });
+    }
+
+    private void saveSelectedCoin(Coin coin) {
+        smartCashApplication.saveActualSelectedCoin(MainActivity.this, coin);
+        setWalletValue();
+    }
+
+    private void setSelectedCoinOnSpinner(Spinner currentPriceSpinner, ArrayList<Coin> coins) {
+        Coin selectedCoin = smartCashApplication.getActualSelectedCoin(this);
+        if (selectedCoin != null) {
+            for (int i = 0; i < coins.size(); i++) {
+                if (selectedCoin.getValue().equals(coins.get(i).getValue()) && selectedCoin.getName().equals(coins.get(i).getName())) {
+                    currentPriceSpinner.setSelection(i);
+                }
+            }
+        }
+        setWalletValue();
     }
 
     @Override
@@ -219,23 +232,32 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void setWalletValue() {
-        ArrayList<Wallet> wallets = utils.getUser(this).getWallet();
+        ArrayList<Wallet> wallets = smartCashApplication.getUser(this).getWallet();
         Double amount = 0.0;
 
         for (Wallet wallet : wallets) {
             amount += wallet.getBalance();
         }
 
-        selectedCoin = utils.getActualSelectedCoin(this);
+        selectedCoin = smartCashApplication.getActualSelectedCoin(this);
 
+        if (selectedCoin.getName().equalsIgnoreCase("USD")) {
+            for (Coin auxcoin : coins) {
+                if (auxcoin.getName().equalsIgnoreCase(selectedCoin.getName())) {
+                    selectedCoin.setValue(auxcoin.getValue());
+                    smartCashApplication.saveActualSelectedCoin(this, auxcoin);
+                    break;
+                }
+            }
+        }
 
         walletTxt.setText(getResources().getString(R.string.smartCash) + String.format("%.8f", amount));
         if (selectedCoin == null || selectedCoin.getName().equals("SMART")) {
-            ArrayList<Coin> currentPrice = utils.getCurrentPrice(this);
-            walletConverted.setText("$ " + utils.converterValue(amount, currentPrice.get(0).getValue()) + " " + currentPrice.get(0).getName());
+            ArrayList<Coin> currentPrice = smartCashApplication.getCurrentPrice(this);
+            walletConverted.setText("$ " + smartCashApplication.converterValue(amount, currentPrice.get(0).getValue()) + " " + currentPrice.get(0).getName());
         } else {
             //  walletConverted.setText("$ " + String.format("%.3f", amount / selectedCoin.getValue()));
-            walletConverted.setText("$ " + utils.converterValue(amount, selectedCoin.getValue()) + " " + selectedCoin.getName());
+            walletConverted.setText("$ " + smartCashApplication.converterValue(amount, selectedCoin.getValue()) + " " + selectedCoin.getName());
         }
     }
 

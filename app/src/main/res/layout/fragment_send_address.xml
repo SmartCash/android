@@ -47,6 +47,8 @@
             app:layout_constraintEnd_toEndOf="@+id/first_card"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/first_card"
+            android:autofillHints=""
+            android:inputType="text"
             app:layout_constraintTop_toBottomOf="@+id/first_title" />
 
         <ImageView
@@ -61,6 +63,7 @@
             app:layout_constraintEnd_toStartOf="@+id/btn_wallet"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_to_address"
+            android:contentDescription="Scan your QRCode"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
@@ -76,6 +79,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_qr_code"
             app:layout_constraintTop_toBottomOf="@+id/txt_to_address"
+            android:contentDescription="Select your wallet address"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -118,6 +122,11 @@
             android:inputType="numberDecimal"
 
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_weight="1"
+
+            android:autofillHints="0"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -148,7 +157,14 @@
             android:layout_marginTop="20dp"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_weight="1"
+
+            android:autofillHints="0"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -210,7 +226,7 @@
                 android:id="@+id/btn_eye"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"

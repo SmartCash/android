@@ -23,7 +23,7 @@ public class CurrentPriceViewModel extends ViewModel {
 
     public LiveData<String> getCurrentPrices(Context context) {
         if (currentPrices == null) {
-            currentPrices = new MutableLiveData<String>();
+            currentPrices = new MutableLiveData<>();
             loadCurrentPrices(context);
         }
 

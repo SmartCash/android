@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Utils;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 
 public class SendFragment extends Fragment {
@@ -43,7 +43,7 @@ public class SendFragment extends Fragment {
     //    private View activeUnderline;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
-    private Utils utils = new Utils();
+    private SmartCashApplication smartCashApplication;
 
     public static SendFragment newInstance() {
         return new SendFragment();
@@ -52,7 +52,10 @@ public class SendFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        walletList = utils.getUser(getContext()).getWallet();
+
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getContext());
+        walletList = smartCashApplication.getUser(getContext()).getWallet();
         View view = inflater.inflate(R.layout.fragment_send, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -61,6 +64,8 @@ public class SendFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getContext());
 //        activeUnderline = getView().findViewById(R.id.address_underline);
         Fragment addressFrament = SendAddressFragment.newInstance();
         openFragment(addressFrament);
@@ -75,7 +80,7 @@ public class SendFragment extends Fragment {
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                utils.saveWallet(getContext(), walletList.get(position));
+                smartCashApplication.saveWallet(getContext(), walletList.get(position));
                 Log.e("ATUAL", walletList.get(position).getAddress());
             }
 
@@ -85,7 +90,7 @@ public class SendFragment extends Fragment {
             }
         });
 
-        Wallet savedWallet = utils.getWallet(getContext());
+        Wallet savedWallet = smartCashApplication.getWallet(getContext());
 
         if (savedWallet != null) {
             for (int i = 0; i < walletList.size(); i++) {

@@ -6,16 +6,26 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.Config;
+import com.google.crypto.tink.KeysetHandle;
+import com.google.crypto.tink.aead.AeadKeyTemplates;
+import com.google.crypto.tink.config.TinkConfig;
+import com.google.crypto.tink.integration.android.AndroidKeysetManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,18 +35,17 @@ import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.Wallet;
 
-public class Utils extends Application {
+public class SmartCashApplication extends Application {
 
-
-    private static final String FILE_NAME = "Smartcash";
     private static SharedPreferences mPrefs;
     private static ClipboardManager clipboardManager;
     private Gson gson = new Gson();
+    private static final String TAG = SmartCashApplication.class.toString();
+    private static final String PREF_FILE_NAME = "smartcash_wallet";
 
     static SharedPreferences getPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
-
 
     public static void copyToClipboard(Context context, String text) {
         clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -99,103 +108,86 @@ public class Utils extends Application {
         return coins;
     }
 
+    private static final String TINK_KEYSET_NAME = "smartcash_wallet_keyset";
+    private static final String MASTER_KEY_URI = "android-keystore://smartcash_wallet_master_key";
+    public Aead aead;
+    private Context context;
+
+    public SmartCashApplication(Context context) {
+        try {
+            Config.register(TinkConfig.LATEST);
+            aead = getOrGenerateNewKeysetHandle(context).getPrimitive(Aead.class);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void saveActualSelectedCoin(Context context, Coin coin) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(coin);
-        prefsEditor.putString("ActualSelectedCoin", json);
+        prefsEditor.putString(Keys.KEY_CURRENT_SELECTED_COIN, json);
         prefsEditor.apply();
     }
 
     public Coin getActualSelectedCoin(Context context) {
 
         Coin coin = new Coin("USD", (double) 0);
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString("ActualSelectedCoin", "");
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(Keys.KEY_CURRENT_SELECTED_COIN, "");
 
         if (json != null) {
             Coin coinAux = gson.fromJson(json, Coin.class);
             if (coinAux != null)
                 coin = coinAux;
+            else
+                saveActualSelectedCoin(context, coin);
         }
         return coin;
     }
 
     public void saveCurrentPrice(Context context, ArrayList<Coin> coins) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(coins);
-        prefsEditor.putString("CurrentPrices", json);
+        prefsEditor.putString(Keys.KEY_CURRENT_PRICES, json);
         prefsEditor.apply();
     }
 
     public ArrayList<Coin> getCurrentPrice(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString("CurrentPrices", "");
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(Keys.KEY_CURRENT_PRICES, "");
         Type type = new TypeToken<ArrayList<Coin>>() {
         }.getType();
         return gson.fromJson(json, type);
     }
 
     public void saveUser(Context context, User user) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(user);
-        prefsEditor.putString("User", json);
+        prefsEditor.putString(Keys.KEY_USER, json);
         prefsEditor.apply();
     }
 
     public User getUser(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString("User", "");
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(Keys.KEY_USER, "");
         User user = gson.fromJson(json, User.class);
         return user;
     }
 
     public void saveBoolean(Context context, Boolean bool, String key) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         prefsEditor.putBoolean(key, bool);
         prefsEditor.apply();
     }
 
     public Boolean getBoolean(Context context, String key) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         Boolean bool = getPreferences(context).getBoolean(key, false);
         return bool;
-    }
-
-    public void saveWallet(Context context, Wallet wallet) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
-        String json = gson.toJson(wallet);
-        prefsEditor.putString("Wallet", json);
-        prefsEditor.apply();
-    }
-
-    public Wallet getWallet(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString("Wallet", "");
-        Wallet wallet = gson.fromJson(json, Wallet.class);
-        return wallet;
-    }
-
-    public void saveToken(Context context, String token) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
-        prefsEditor.putString("Token", token);
-        prefsEditor.apply();
-    }
-
-    public String getToken(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        String token = getPreferences(context).getString("Token", "");
-        return token;
-    }
-
-    public void deleteSharedPreferences(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        getPreferences(context).edit().clear().apply();
     }
 
     public String converterValue(double amount, double value) {
@@ -206,18 +198,51 @@ public class Utils extends Application {
         return amount.multiply(value);
     }
 
+    public void saveWallet(Context context, Wallet wallet) {
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
+        String json = gson.toJson(wallet);
+        prefsEditor.putString(Keys.KEY_WALLET, json);
+        prefsEditor.apply();
+    }
+
+    public Wallet getWallet(Context context) {
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(Keys.KEY_WALLET, "");
+        Wallet wallet = gson.fromJson(json, Wallet.class);
+        return wallet;
+    }
+
+    public void saveToken(Context context, String token) {
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
+        prefsEditor.putString(Keys.KEY_TOKEN, token);
+        prefsEditor.apply();
+    }
+
+    public String getToken(Context context) {
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String token = getPreferences(context).getString(Keys.KEY_TOKEN, "");
+        return token;
+    }
+
+    public void deleteSharedPreferences(Context context) {
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        getPreferences(context).edit().clear().apply();
+    }
+
     public void savePin(byte[] pin, Context context) {
         String stringPin = new String(pin, Charset.forName("ISO-8859-1"));
 
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
-        prefsEditor.putString("PIN", stringPin);
+        prefsEditor.putString(Keys.KEY_PIN, stringPin);
         prefsEditor.apply();
     }
 
     public byte[] getPin(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
-        String stringPin = getPreferences(context).getString("PIN", "");
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String stringPin = getPreferences(context).getString(Keys.KEY_PIN, "");
 
         byte[] pin;
 
@@ -229,24 +254,27 @@ public class Utils extends Application {
         }
     }
 
+
+    /* TINK Encrypton */
+
     public void deleteUser(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mPrefs.edit();
-        editor.remove("Token");
+        editor.remove(Keys.KEY_TOKEN);
         editor.commit();
     }
 
     public void saveByte(byte[] bytes, Context context, String key) {
         String string = new String(bytes, Charset.forName("ISO-8859-1"));
 
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         prefsEditor.putString(key, string);
         prefsEditor.apply();
     }
 
     public byte[] getByte(Context context, String key) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         String string = getPreferences(context).getString(key, "");
 
         byte[] bytes;
@@ -261,16 +289,63 @@ public class Utils extends Application {
 
     public void saveIv(byte[] iv, Context context) {
         String stringIv = new String(iv, Charset.forName("ISO-8859-1"));
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         prefsEditor.putString("iv", stringIv);
         prefsEditor.apply();
     }
 
     public byte[] getIv(Context context) {
-        mPrefs = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         String stringIv = getPreferences(context).getString("iv", "");
         byte[] iv = stringIv.getBytes(Charset.forName("ISO-8859-1"));
         return iv;
+    }
+
+    @Override
+    public final void onCreate() {
+        super.onCreate();
+        try {
+            Config.register(TinkConfig.LATEST);
+            aead = getOrGenerateNewKeysetHandle(this.context).getPrimitive(Aead.class);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public KeysetHandle getOrGenerateNewKeysetHandle(Context context) throws IOException, GeneralSecurityException {
+        return new AndroidKeysetManager.Builder()
+                .withSharedPref(context, TINK_KEYSET_NAME, PREF_FILE_NAME)
+                .withKeyTemplate(AeadKeyTemplates.AES256_GCM)
+                .withMasterKeyUri(MASTER_KEY_URI)
+                .build()
+                .getKeysetHandle();
+    }
+
+
+    public String getDecryptedPassword(Context context, String pin) {
+
+        String decryptedText = "";
+        byte[] encryptedPassword = this.getByte(context, Keys.KEY_PASSWORD);
+
+        if (encryptedPassword != null) {
+
+            try {
+
+                aead = getOrGenerateNewKeysetHandle(context).getPrimitive(Aead.class);
+
+                byte[] decryptedPin = aead.decrypt(encryptedPassword, pin.getBytes(StandardCharsets.UTF_8));
+
+                decryptedText = new String(decryptedPin, StandardCharsets.UTF_8);
+
+                Log.i(TAG, "The decrypted text is: " + decryptedText);
+
+
+            } catch (Exception ex) {
+                decryptedText = "";
+                Log.e(TAG, ex.getMessage());
+            }
+        }
+        return decryptedText;
     }
 }
