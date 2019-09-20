@@ -43,6 +43,11 @@ public class SmartCashApplication extends Application {
     private static final String TAG = SmartCashApplication.class.toString();
     private static final String PREF_FILE_NAME = "smartcash_wallet";
 
+    private static final String TINK_KEYSET_NAME = "smartcash_wallet_keyset";
+    private static final String MASTER_KEY_URI = "android-keystore://smartcash_wallet_master_key";
+    public Aead aead;
+    private Context context;
+
     static SharedPreferences getPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -107,11 +112,6 @@ public class SmartCashApplication extends Application {
 
         return coins;
     }
-
-    private static final String TINK_KEYSET_NAME = "smartcash_wallet_keyset";
-    private static final String MASTER_KEY_URI = "android-keystore://smartcash_wallet_master_key";
-    public Aead aead;
-    private Context context;
 
     public SmartCashApplication(Context context) {
         try {
@@ -231,39 +231,6 @@ public class SmartCashApplication extends Application {
         getPreferences(context).edit().clear().apply();
     }
 
-    public void savePin(byte[] pin, Context context) {
-        String stringPin = new String(pin, Charset.forName("ISO-8859-1"));
-
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
-        prefsEditor.putString(Keys.KEY_PIN, stringPin);
-        prefsEditor.apply();
-    }
-
-    public byte[] getPin(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String stringPin = getPreferences(context).getString(Keys.KEY_PIN, "");
-
-        byte[] pin;
-
-        if (stringPin == null || stringPin == "")
-            return null;
-        else {
-            pin = stringPin.getBytes(Charset.forName("ISO-8859-1"));
-            return pin;
-        }
-    }
-
-
-    /* TINK Encrypton */
-
-    public void deleteUser(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mPrefs.edit();
-        editor.remove(Keys.KEY_TOKEN);
-        editor.commit();
-    }
-
     public void saveByte(byte[] bytes, Context context, String key) {
         String string = new String(bytes, Charset.forName("ISO-8859-1"));
 
@@ -287,32 +254,6 @@ public class SmartCashApplication extends Application {
         }
     }
 
-    public void saveIv(byte[] iv, Context context) {
-        String stringIv = new String(iv, Charset.forName("ISO-8859-1"));
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
-        prefsEditor.putString("iv", stringIv);
-        prefsEditor.apply();
-    }
-
-    public byte[] getIv(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String stringIv = getPreferences(context).getString("iv", "");
-        byte[] iv = stringIv.getBytes(Charset.forName("ISO-8859-1"));
-        return iv;
-    }
-
-    @Override
-    public final void onCreate() {
-        super.onCreate();
-        try {
-            Config.register(TinkConfig.LATEST);
-            aead = getOrGenerateNewKeysetHandle(this.context).getPrimitive(Aead.class);
-        } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public KeysetHandle getOrGenerateNewKeysetHandle(Context context) throws IOException, GeneralSecurityException {
         return new AndroidKeysetManager.Builder()
                 .withSharedPref(context, TINK_KEYSET_NAME, PREF_FILE_NAME)
@@ -321,7 +262,6 @@ public class SmartCashApplication extends Application {
                 .build()
                 .getKeysetHandle();
     }
-
 
     public String getDecryptedPassword(Context context, String pin) {
 
@@ -337,8 +277,6 @@ public class SmartCashApplication extends Application {
                 byte[] decryptedPin = aead.decrypt(encryptedPassword, pin.getBytes(StandardCharsets.UTF_8));
 
                 decryptedText = new String(decryptedPin, StandardCharsets.UTF_8);
-
-                Log.i(TAG, "The decrypted text is: " + decryptedText);
 
 
             } catch (Exception ex) {

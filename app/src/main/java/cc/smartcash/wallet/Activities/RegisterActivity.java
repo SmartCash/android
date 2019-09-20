@@ -14,18 +14,23 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
+import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -56,6 +61,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_main);
         ButterKnife.bind(this);
+
+        getCurrentPrices();
 
         this.smartCashApplication = new SmartCashApplication(getApplicationContext());
 
@@ -180,7 +187,7 @@ public class RegisterActivity extends AppCompatActivity {
                         model.getUser(t, this).observe(this, user1 -> {
                             user1.setRecoveryKey(user.getRecoveryKey());
                             smartCashApplication.saveUser(RegisterActivity.this, user1);
-                            savePassword();
+                            navigateToPinActivity();
                         });
 
                     });
@@ -197,34 +204,12 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void savePassword() {
-        //TODO encrypt the password correctly
-
-        /*
-        if (smartCashApplication.getByte(getApplicationContext(), "password") == null) {
-            try {
-                final byte[] encryptedText = encryptor
-                        .encryptText(PASSWORD_ALIAS, txtPassword.getText().toString(), this, "passwordIv");
-                Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-                intent.putExtra("PIN", txtPin.getText().toString());
-                startActivity(intent);
-                smartCashApplication.saveByte(encryptedText, this, "password");
-            } catch (UnrecoverableEntryException | NoSuchAlgorithmException | NoSuchProviderException |
-                    KeyStoreException | IOException | NoSuchPaddingException | InvalidKeyException e) {
-                Log.e("Error", "on encrypt: " + e.getMessage(), e);
-            } catch (InvalidAlgorithmParameterException | SignatureException |
-                    IllegalBlockSizeException | BadPaddingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-            startActivity(intent);
-        }
-
-
-         */
+    private void navigateToPinActivity() {
+        Intent intent = new Intent(getApplicationContext(), PinActivity.class);
+        intent.putExtra(Keys.KEY_PASSWORD, txtPassword.getText().toString());
+        intent.putExtra(Keys.KEY_PIN, txtPin.getText().toString());
+        startActivity(intent);
     }
-
     public void setVisibility() {
         if (loader.getVisibility() == View.VISIBLE) {
             loginContent.setVisibility(View.VISIBLE);
@@ -235,5 +220,20 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    public void getCurrentPrices() {
+        CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
+        model.getCurrentPrices(RegisterActivity.this).observe(this, currentPrices -> {
+            if (currentPrices != null) {
+                ArrayList<Coin> coins = SmartCashApplication.convertToArrayList(currentPrices);
+                smartCashApplication.saveCurrentPrice(this, coins);
+                Log.i(TAG, "Prices OK");
+
+            } else {
+
+                Toast.makeText(getApplicationContext(), "Error to get the current prices!", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Error to get current prices!");
+            }
+        });
+    }
 
 }

@@ -32,6 +32,7 @@ import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
+import cc.smartcash.wallet.Utils.ConstantsURLS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
@@ -231,6 +232,25 @@ public class ReceiveFragment extends Fragment {
             txtAmountConverted.setText(String.valueOf(amountConverted));
 
         }
+
+        setQRCodeByAmount();
+
+
+    }
+
+    private void setQRCodeByAmount() {
+
+        String qr = "";
+        String amountInSmartCash = txtAmountConverted.getText().toString();
+
+        if (amountInSmartCash.isEmpty() || amountInSmartCash.equalsIgnoreCase("0")) {
+            qr = String.format(ConstantsURLS.URL_QRCODE, walletAddress.getText().toString());
+        } else {
+            qr = String.format(ConstantsURLS.URL_QRCODE_AMOUNT, walletAddress.getText().toString(), Float.parseFloat(amountInSmartCash));
+        }
+
+        setImage(qr);
+
     }
 
     private void calculateFromSmartToFiat() {
@@ -266,5 +286,8 @@ public class ReceiveFragment extends Fragment {
             txtAmount.setText(String.valueOf(amountConverted));
 
         }
+
+        setQRCodeByAmount();
+
     }
 }

@@ -2,12 +2,10 @@ package cc.smartcash.wallet.Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -51,6 +49,7 @@ import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
 import cc.smartcash.wallet.ViewModels.WalletViewModel;
@@ -105,6 +104,14 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_send_address, container, false);
         ButterKnife.bind(this, view);
+
+        this.smartCashApplication = new SmartCashApplication(getContext());
+        this.token = smartCashApplication.getToken(getContext());
+        this.email = smartCashApplication.getUser(getContext()).getEmail();
+        this.walletList = smartCashApplication.getUser(getContext()).getWallet();
+        this.withoutPin = smartCashApplication.getBoolean(getContext(), Keys.KEY_WITHOUT_PIN);
+        this.coins = smartCashApplication.getCurrentPrice(getContext());
+
         return view;
     }
 
@@ -115,14 +122,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         EasyPermissions.requestPermissions(this, "Need access to your camera",
                 RC_CAMERA_PERM, perms);
 
-        smartCashApplication = new SmartCashApplication(getContext());
-        token = smartCashApplication.getToken(getActivity());
-        email = smartCashApplication.getUser(getActivity()).getEmail();
-        walletList = smartCashApplication.getUser(getActivity()).getWallet();
-        coins = new ArrayList<>();
         sendButton.setText(Objects.requireNonNull(getContext()).getResources().getString(R.string.send_button, amountConverted));
-
-        withoutPin = smartCashApplication.getBoolean(getActivity(), Keys.KEY_WITHOUT_PIN);
 
         if (withoutPin) {
             pinLabel.setText(getResources().getString(R.string.password_label));
@@ -130,18 +130,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             txtPin.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         }
 
-        //TODO remove it
-        /*
-        try {
-            decryptor = new DeCryptor();
-        } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException |
-                IOException e) {
-            e.printStackTrace();
-        }
-*/
         if (NetworkUtil.getInternetStatus(getContext())) {
             CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
-
             model.getCurrentPrices(getActivity()).observe(this, currentPrices -> {
                 if (currentPrices != null) {
                     coins = SmartCashApplication.convertToArrayList(currentPrices);
@@ -150,7 +140,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                 }
             });
         } else {
-            coins = smartCashApplication.getCurrentPrice(getActivity());
+            sendButton.setText("You are off line!");
+            sendButton.setActivated(false);
         }
 
         setAmountListener();
@@ -316,11 +307,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         }
     }
 
-    private void openQrCodeIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, RC_CAMERA_PERM);
-    }
-
     @OnClick(R.id.btn_wallet)
     public void onBtnWalletClicked() {
         AlertDialog.Builder walletListDialog = new AlertDialog.Builder(getContext());
@@ -439,6 +425,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
     private void clearInputs() {
         txtToAddress.setText("");
         txtAmount.setText("");
@@ -462,12 +449,35 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     }
 
     private String verifyPin() {
+
+        if (withoutPin) {
+            return txtPin.getText().toString();
+        }
+
         return this.smartCashApplication.getDecryptedPassword(getActivity(), txtPin.getText().toString());
     }
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        txtToAddress.setText(text);
+
+        if (text == null || text.isEmpty()) return;
+
+        String parsedQr = Util.parseQrCode(text);
+
+        if (parsedQr == null) return;
+        if (parsedQr.length() == 0) return;
+
+        if (parsedQr.indexOf("-") == -1) {
+            txtToAddress.setText(text);
+            txtAmount.setText(0);
+            txtAmountConverted.setText(0);
+        } else {
+            String[] parts = parsedQr.split("-");
+            txtToAddress.setText(parts[0]);
+            txtAmountConverted.setText(parts[1]);
+        }
+        calculateFromSmartToFiat();
+
         dialog.hide();
     }
 

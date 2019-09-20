@@ -20,5 +20,8 @@ public final class ConstantsURLS {
 
     public static final String URL_CURRENT_PRICE_API = "https://wallet.smartcash.cc/api/";
 
+    public static final String URL_QRCODE_AMOUNT = "https://qr.smartcash.cc/?address=%s&amount=%f";
+
+    public static final String URL_QRCODE = "https://qr.smartcash.cc/?address=%s";
 
 }

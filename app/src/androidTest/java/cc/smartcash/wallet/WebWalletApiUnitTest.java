@@ -220,7 +220,7 @@ public class WebWalletApiUnitTest {
 
             assertNotNull(user.getRecoveryKey());
 
-            Log.i(TAG, user.getRecoveryKey());
+            Log.d(TAG, user.getRecoveryKey());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -238,7 +238,7 @@ public class WebWalletApiUnitTest {
 
             UserRecoveryKey userRecoveryKey = apiResponseUserRecoveryKey.body().getData();
 
-            Log.i(TAG, userRecoveryKey.getRecoveryKey());
+            Log.d(TAG, userRecoveryKey.getRecoveryKey());
 
             String useruuid = UUID.randomUUID().toString();
 
@@ -249,7 +249,7 @@ public class WebWalletApiUnitTest {
             newUser.setPassword("123456");
             newUser.setRecoveryKey(userRecoveryKey.getRecoveryKey());
 
-            Log.i(TAG, useruuid);
+            Log.d(TAG, useruuid);
 
             Call<WebWalletRootResponse<User>> callUser = new WebWalletAPIConfig().getWebWalletAPIService().setUser(newUser);
 
@@ -265,7 +265,7 @@ public class WebWalletApiUnitTest {
 
             assertNotNull(user.getUsername());
 
-            Log.i(TAG, user.getUsername());
+            Log.d(TAG, user.getUsername());
 
         } catch (IOException e) {
             e.printStackTrace();
