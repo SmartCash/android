@@ -39,6 +39,12 @@ import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 
 public class ReceiveFragment extends Fragment {
 
+    public static final String TAG = ReceiveFragment.class.getSimpleName();
+
+    private ArrayList<Wallet> walletList;
+    private SmartCashApplication smartCashApplication;
+    private ArrayList<Coin> coins;
+
     @BindView(R.id.qrcode_image)
     SimpleDraweeView qrCodeImage;
 
@@ -59,12 +65,6 @@ public class ReceiveFragment extends Fragment {
 
     @BindView(R.id.amount_with_label)
     TextView amount_with_label;
-
-    private ArrayList<Wallet> walletList;
-
-    private SmartCashApplication smartCashApplication;
-
-    private ArrayList<Coin> coins;
 
     public static ReceiveFragment newInstance() {
         return new ReceiveFragment();
@@ -146,14 +146,14 @@ public class ReceiveFragment extends Fragment {
         setAmountListener();
     }
 
-    public void setImage(String url) {
-        Uri uri = Uri.parse(url);
-        qrCodeImage.setImageURI(uri);
-    }
-
     @OnClick(R.id.btn_copy)
     public void onViewClicked() {
         SmartCashApplication.copyToClipboard(getContext(), walletAddress.getText().toString());
+    }
+
+    private void setImage(String url) {
+        Uri uri = Uri.parse(url);
+        qrCodeImage.setImageURI(uri);
     }
 
     private void setAmountListener() {

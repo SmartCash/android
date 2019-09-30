@@ -103,7 +103,6 @@ public class ExplorerApiUnitTest {
 
     }
 
-
     @Test
     public void GetTransactionDetail() {
 

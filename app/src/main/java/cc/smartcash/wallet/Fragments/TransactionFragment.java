@@ -33,24 +33,32 @@ import cc.smartcash.wallet.ViewModels.UserViewModel;
 
 public class TransactionFragment extends Fragment {
 
-    @BindView(R.id.all_transactions_underline)
-    View allTransactionsUnderline;
-    @BindView(R.id.received_underline)
-    View receivedUnderline;
-    @BindView(R.id.awaiting_underline)
-    View awaitingUnderline;
-    @BindView(R.id.paid_underline)
-    View paidUnderline;
-    View activeUnderline;
-    @BindView(R.id.wallet_spinner)
-    Spinner walletSpinner;
-    SmartCashApplication smartCashApplication;
+    public static final String TAG = TransactionFragment.class.getSimpleName();
+
+    private SmartCashApplication smartCashApplication;
     private String activeFilter = null;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
     private ArrayList<Transaction> filteredTransactions = new ArrayList<Transaction>();
     private ArrayList<Transaction> transactions;
     private TransactionAdapter transactionAdapter;
+
+    @BindView(R.id.all_transactions_underline)
+    View allTransactionsUnderline;
+
+    @BindView(R.id.received_underline)
+    View receivedUnderline;
+
+    @BindView(R.id.awaiting_underline)
+    View awaitingUnderline;
+
+    @BindView(R.id.paid_underline)
+    View paidUnderline;
+
+    @BindView(R.id.wallet_spinner)
+    Spinner walletSpinner;
+
+    View activeUnderline;
 
     public static TransactionFragment newInstance() {
         return new TransactionFragment();
@@ -109,17 +117,6 @@ public class TransactionFragment extends Fragment {
         }
     }
 
-    private void setupRecyclerViewTransactions() {
-        RecyclerView recyclerViewTransactions = getActivity().findViewById(R.id.transaction_recyclerview);
-        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        transactionAdapter = new TransactionAdapter(getContext(), new ArrayList<>());
-
-        recyclerViewTransactions.setLayoutManager(linearLayoutManagerTransactions);
-        recyclerViewTransactions.setAdapter(transactionAdapter);
-
-        transactionAdapter.setItems(transactions);
-    }
-
     @OnClick({R.id.btn_all_transactions, R.id.btn_received, R.id.btn_awaiting, R.id.btn_paid, R.id.btn_att})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -143,6 +140,17 @@ public class TransactionFragment extends Fragment {
                 updateData();
                 break;
         }
+    }
+
+    private void setupRecyclerViewTransactions() {
+        RecyclerView recyclerViewTransactions = getActivity().findViewById(R.id.transaction_recyclerview);
+        LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+        transactionAdapter = new TransactionAdapter(getContext(), new ArrayList<>());
+
+        recyclerViewTransactions.setLayoutManager(linearLayoutManagerTransactions);
+        recyclerViewTransactions.setAdapter(transactionAdapter);
+
+        transactionAdapter.setItems(transactions);
     }
 
     private void updateData() {

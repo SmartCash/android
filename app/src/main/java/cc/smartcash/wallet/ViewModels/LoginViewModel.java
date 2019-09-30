@@ -2,24 +2,24 @@ package cc.smartcash.wallet.ViewModels;
 
 import android.content.Context;
 
-import androidx.lifecycle.ViewModel;
-
 import java.io.IOException;
 
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
+import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class LoginViewModel extends ViewModel {
+public class LoginViewModel {
 
     public static final String TAG = LoginViewModel.class.getSimpleName();
 
-    public String getSyncToken(String username, String password, Context context) {
+    public static String getSyncToken(String username, String password, Context context) {
 
         String localIP = SmartCashApplication.getIPAddress(true);
 
@@ -27,11 +27,11 @@ public class LoginViewModel extends ViewModel {
                 username,
                 password,
                 "password",
-                "81d46070-686b-4975-9c29-9ebc867a3c4e",
+                Util.getProperty(Keys.CONFIG_CLIENT_ID, context),
                 "",
                 "mobile",
                 localIP,
-                "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
+                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, context)
         );
 
         try {
@@ -45,7 +45,8 @@ public class LoginViewModel extends ViewModel {
         return null;
     }
 
-    public User getSyncUser(String token, Context context) {
+    public static User getSyncUser(String token, Context context) {
+
         boolean isInternetOn = NetworkUtil.getInternetStatus(context);
 
         if (isInternetOn) {
@@ -62,9 +63,8 @@ public class LoginViewModel extends ViewModel {
             }
 
 
-        } else {
-
         }
+
         return null;
     }
 

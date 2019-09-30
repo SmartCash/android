@@ -24,6 +24,7 @@ import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewHolders.TransactionViewHolder;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
+
     private Context context;
     private ArrayList<Transaction> transactions;
 

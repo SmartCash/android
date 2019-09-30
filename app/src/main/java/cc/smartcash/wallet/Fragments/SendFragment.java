@@ -28,6 +28,9 @@ import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 public class SendFragment extends Fragment {
 
+    public static final String TAG = SendFragment.class.getSimpleName();
+
+
     //    @BindView(R.id.address_underline)
 //    View addressUnderline;
 //    @BindView(R.id.sms_underline)

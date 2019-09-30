@@ -19,6 +19,7 @@ import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewHolders.DashboardWalletListViewHolder;
 
 public class DashboardWalletListAdapter extends RecyclerView.Adapter<DashboardWalletListViewHolder> {
+
     private Context context;
     private ArrayList<Wallet> wallets;
     private Integer count;
@@ -72,4 +73,5 @@ public class DashboardWalletListAdapter extends RecyclerView.Adapter<DashboardWa
     public int getItemCount() {
         return wallets.size();
     }
+
 }

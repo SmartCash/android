@@ -34,6 +34,12 @@ public class PinActivity extends AppCompatActivity {
 
     public static final String TAG = PinActivity.class.getSimpleName();
 
+    private SmartCashApplication smartCashApplication;
+    private String currentPassword;
+    private byte[] encryptedPassword;
+    private boolean internetAvailable;
+    private boolean isPasswordVisible = false;
+
     @BindView(R.id.txt_password)
     EditText txtPin;
 
@@ -52,12 +58,6 @@ public class PinActivity extends AppCompatActivity {
     @BindView(R.id.btn_eye)
     ImageView btnEye;
 
-    private SmartCashApplication smartCashApplication;
-    private String currentPassword;
-    private byte[] encryptedPassword;
-    private boolean internetAvailable;
-    private boolean isPasswordVisible = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,84 +73,6 @@ public class PinActivity extends AppCompatActivity {
         setConfirmationTextsInvisible();
 
         setNavigationWithoutPin();
-    }
-
-    private void setSmartCashApplication() {
-        if (smartCashApplication == null)
-            smartCashApplication = new SmartCashApplication(getApplicationContext());
-    }
-
-    private void getPassword() {
-        Intent intent = getIntent();
-        String extraPASSWORD = intent.getStringExtra(Keys.KEY_PASSWORD);
-        if (extraPASSWORD != null && !extraPASSWORD.isEmpty()) {
-            this.currentPassword = extraPASSWORD;
-        } else {
-            encryptedPassword = this.smartCashApplication.getByte(getApplicationContext(), Keys.KEY_PASSWORD);
-        }
-    }
-
-    private void setConfirmationTextsInvisible() {
-        if (encryptedPassword != null) {
-            txtConfirmPin.setVisibility(View.GONE);
-            confirmPinLabel.setVisibility(View.GONE);
-            forgotPinBtn.setVisibility(View.VISIBLE);
-            continueWithoutToken.setVisibility(View.GONE);
-        }
-    }
-
-    private void setNavigationWithoutPin() {
-        boolean withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
-        if (withoutPin) {
-            internetAvailable = NetworkUtil.getInternetStatus(this);
-            if (!internetAvailable) navigateToLogin();
-            if (isOnLocalDB(withoutPin)) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            } else {
-                navigateToLogin();
-            }
-        }
-    }
-
-    private void setNetworkBroadCastReceiver() {
-
-        new NetworkReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                internetAvailable = NetworkUtil.getInternetStatus(context);
-
-                Log.d(TAG, "The status of the network has changed");
-            }
-        };
-    }
-
-    private boolean isOnLocalDB(boolean withoutPin) {
-
-        String token = smartCashApplication.getToken(this);
-
-        User user = smartCashApplication.getUser(this);
-        if (!withoutPin) {
-            byte[] pin = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
-
-            return (token != null && !token.isEmpty() && user != null && pin != null);
-        } else {
-            return (token != null && !token.isEmpty() && user != null);
-        }
-    }
-
-    private void navigateToLogin() {
-        Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
-        smartCashApplication.deleteSharedPreferences(PinActivity.this);
-        startActivity(new Intent(PinActivity.this, LoginActivity.class));
-    }
-
-    private void navigateToMain() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
-        startActivity(intent);
-
     }
 
     @OnClick(R.id.btn_confirm)
@@ -241,4 +163,83 @@ public class PinActivity extends AppCompatActivity {
         txtPin.setSelection(txtPin.getText().length());
         txtConfirmPin.setSelection(txtConfirmPin.getText().length());
     }
+
+    private void setSmartCashApplication() {
+        if (smartCashApplication == null)
+            smartCashApplication = new SmartCashApplication(getApplicationContext());
+    }
+
+    private void getPassword() {
+        Intent intent = getIntent();
+        String extraPASSWORD = intent.getStringExtra(Keys.KEY_PASSWORD);
+        if (extraPASSWORD != null && !extraPASSWORD.isEmpty()) {
+            this.currentPassword = extraPASSWORD;
+        } else {
+            encryptedPassword = this.smartCashApplication.getByte(getApplicationContext(), Keys.KEY_PASSWORD);
+        }
+    }
+
+    private void setConfirmationTextsInvisible() {
+        if (encryptedPassword != null) {
+            txtConfirmPin.setVisibility(View.GONE);
+            confirmPinLabel.setVisibility(View.GONE);
+            forgotPinBtn.setVisibility(View.VISIBLE);
+            continueWithoutToken.setVisibility(View.GONE);
+        }
+    }
+
+    private void setNavigationWithoutPin() {
+        boolean withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
+        if (withoutPin) {
+            internetAvailable = NetworkUtil.getInternetStatus(this);
+            if (!internetAvailable) navigateToLogin();
+            if (isOnLocalDB(withoutPin)) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            } else {
+                navigateToLogin();
+            }
+        }
+    }
+
+    private void setNetworkBroadCastReceiver() {
+
+        new NetworkReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                internetAvailable = NetworkUtil.getInternetStatus(context);
+
+                Log.d(TAG, "The status of the network has changed");
+            }
+        };
+    }
+
+    private boolean isOnLocalDB(boolean withoutPin) {
+
+        String token = smartCashApplication.getToken(this);
+
+        User user = smartCashApplication.getUser(this);
+        if (!withoutPin) {
+            byte[] pin = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
+
+            return (token != null && !token.isEmpty() && user != null && pin != null);
+        } else {
+            return (token != null && !token.isEmpty() && user != null);
+        }
+    }
+
+    private void navigateToLogin() {
+        Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+        smartCashApplication.deleteSharedPreferences(PinActivity.this);
+        startActivity(new Intent(PinActivity.this, LoginActivity.class));
+    }
+
+    private void navigateToMain() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
+        startActivity(intent);
+
+    }
+
 }

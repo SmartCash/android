@@ -20,6 +20,7 @@ import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
 
 public class WalletSpinnerAdapter extends ArrayAdapter<Wallet> {
+
     private Integer count;
     private Boolean check;
     private ArrayList<Wallet> wallets;

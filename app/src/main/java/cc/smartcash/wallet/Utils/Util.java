@@ -1,7 +1,16 @@
 package cc.smartcash.wallet.Utils;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+
+import java.io.InputStream;
+import java.util.Properties;
+
 public class Util {
 
+    public static final String TAG = Util.class.getSimpleName();
+    public static final String UTF_8 = "UTF-8";
     public static final String prefixQueryStringQrCode = "smartcash:";
     public static final String amountQueryStringQrCode = "?amount=";
 
@@ -43,5 +52,18 @@ public class Util {
         } else {
             return qrCodeString;
         }
+    }
+
+    public static String getProperty(String key, Context context) {
+        try {
+            Properties properties = new Properties();
+            AssetManager assetManager = context.getAssets();
+            InputStream inputStream = assetManager.open("config.properties");
+            properties.load(inputStream);
+            return properties.getProperty(key);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+        }
+        return null;
     }
 }

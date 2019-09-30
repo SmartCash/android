@@ -17,6 +17,7 @@ import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.ViewHolders.WalletDialogViewHolder;
 
 public class WalletDialogAdapter extends RecyclerView.Adapter<WalletDialogViewHolder> {
+
     private Context context;
     private ArrayList<Wallet> wallets;
     private EditText txtAddress;

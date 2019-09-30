@@ -1,5 +1,6 @@
 package cc.smartcash.wallet;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.junit.Test;
@@ -15,7 +16,9 @@ import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
+import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -26,6 +29,10 @@ import static org.junit.Assert.assertTrue;
 
 public class WebWalletApiUnitTest {
 
+    private Context getContext(){
+        return null;
+    }
+
     public static final String TAG = WebWalletApiUnitTest.class.getSimpleName();
 
     @Test
@@ -34,14 +41,15 @@ public class WebWalletApiUnitTest {
         String localIP = SmartCashApplication.getIPAddress(true);
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                "enriquesouza6",
-                "yfKN8v4$",
+                Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
+                Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
                 "password",
-                "81d46070-686b-4975-9c29-9ebc867a3c4e",
+                Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+
                 "",
                 "mobile",
                 localIP,
-                "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
+                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
         );
 
         assertNotNull("Call OK", call);
@@ -67,7 +75,6 @@ public class WebWalletApiUnitTest {
 
     }
 
-
     @Test
     public void getUserInfo() {
 
@@ -78,14 +85,15 @@ public class WebWalletApiUnitTest {
         String token = "";
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                "enriquesouza6",
-                "yfKN8v4$",
+                Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
+                Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
                 "password",
-                "81d46070-686b-4975-9c29-9ebc867a3c4e",
+                Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+
                 "",
                 "mobile",
                 localIP,
-                "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
+                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
         );
 
         assertNotNull("Call OK", call);
@@ -144,14 +152,15 @@ public class WebWalletApiUnitTest {
         String token = "";
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                "enriquesouza6",
-                "yfKN8v4$",
+                Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
+                Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
                 "password",
-                "81d46070-686b-4975-9c29-9ebc867a3c4e",
+                Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+
                 "",
                 "mobile",
                 localIP,
-                "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
+                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
         );
 
         assertNotNull("Call OK", call);
@@ -185,15 +194,26 @@ public class WebWalletApiUnitTest {
 
             Response<WebWalletRootResponse<List<WebWalletContact>>> apiResponse = callUser.execute();
 
+            System.out.println("Get contacts");
+
             assertNull(apiResponse.body().getError());
 
             assertNotNull(apiResponse.body());
 
             assertNotNull(apiResponse.body().getData());
 
-            List<WebWalletContact> user = apiResponse.body().getData();
+            List<WebWalletContact> contacts = apiResponse.body().getData();
 
-            assertNotNull(user);
+            System.out.println("Get contacts");
+
+            for (WebWalletContact contact:contacts) {
+                System.out.println("Contact: ");
+                System.out.println(contact.getName());
+                System.out.println(contact.getEmail());
+                System.out.println(contact.getAddress());
+            }
+
+            assertNotNull(contacts);
 
         } catch (IOException e) {
             e.printStackTrace();

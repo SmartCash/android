@@ -7,16 +7,17 @@
     android:fillViewport="true">
 
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/im_logo"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/smartcash_logo_2019_wordmark_right_s"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/smartcash_logo"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/smartcash_logo" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Switch
         android:id="@+id/network_status"
@@ -31,28 +32,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginRight="20dp"
-
-        android:layout_marginBottom="60dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
         android:background="@color/colorPrimary"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
-
-
-        app:layout_constraintBottom_toBottomOf="@id/im_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-
-        >
+        app:layout_constraintTop_toBottomOf="@+id/im_logo">
 
 
         <ProgressBar
@@ -125,6 +119,7 @@
                 android:layout_marginEnd="20dp"
 
 
+                android:layout_marginBottom="32dp"
                 android:background="@color/btnYellon"
                 android:paddingStart="5dp"
                 android:paddingLeft="5dp"
@@ -137,6 +132,7 @@
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_register" />

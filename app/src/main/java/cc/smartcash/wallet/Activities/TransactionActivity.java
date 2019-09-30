@@ -24,46 +24,63 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.TransactionDetails;
-import cc.smartcash.wallet.Models.TransactionResponse;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.TransactionViewModel;
 
 public class TransactionActivity extends AppCompatActivity {
-    @BindView(R.id.activity_title)
-    TextView activityTitle;
-    @BindView(R.id.summary_title)
-    TextView summaryTitle;
-    @BindView(R.id.size_label)
-    TextView sizeLabel;
-    @BindView(R.id.fee_rate_label)
-    TextView feeRateLabel;
-    @BindView(R.id.received_time_label)
-    TextView receivedTimeLabel;
-    @BindView(R.id.mined_time_label)
-    TextView minedTimeLabel;
-    @BindView(R.id.inclued_in_block_label)
-    TextView incluedInBlockLabel;
-    @BindView(R.id.transaction_hash)
-    TextView transactionHash;
-    @BindView(R.id.txt_size)
-    TextView txtSize;
-    @BindView(R.id.txt_fee_rate)
-    TextView txtFeeRate;
-    @BindView(R.id.txt_received_time)
-    TextView txtReceivedTime;
-    @BindView(R.id.txt_mined_time)
-    TextView txtMinedTime;
-    @BindView(R.id.txt_included_in_block)
-    TextView txtIncludedInBlock;
-    @BindView(R.id.loader)
-    ProgressBar loader;
-    @BindView(R.id.btn_details)
-    Button btnDetails;
+
+    public static final String TAG = TransactionActivity.class.getSimpleName();
+
     private String hash;
     private String token;
     private SmartCashApplication smartCashApplication;
     private TransactionDetails details;
+
+    @BindView(R.id.activity_title)
+    TextView activityTitle;
+
+    @BindView(R.id.summary_title)
+    TextView summaryTitle;
+
+    @BindView(R.id.size_label)
+    TextView sizeLabel;
+
+    @BindView(R.id.fee_rate_label)
+    TextView feeRateLabel;
+
+    @BindView(R.id.received_time_label)
+    TextView receivedTimeLabel;
+
+    @BindView(R.id.mined_time_label)
+    TextView minedTimeLabel;
+
+    @BindView(R.id.inclued_in_block_label)
+    TextView incluedInBlockLabel;
+
+    @BindView(R.id.transaction_hash)
+    TextView transactionHash;
+
+    @BindView(R.id.txt_size)
+    TextView txtSize;
+
+    @BindView(R.id.txt_fee_rate)
+    TextView txtFeeRate;
+
+    @BindView(R.id.txt_received_time)
+    TextView txtReceivedTime;
+
+    @BindView(R.id.txt_mined_time)
+    TextView txtMinedTime;
+
+    @BindView(R.id.txt_included_in_block)
+    TextView txtIncludedInBlock;
+
+    @BindView(R.id.loader)
+    ProgressBar loader;
+
+    @BindView(R.id.btn_details)
+    Button btnDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +115,12 @@ public class TransactionActivity extends AppCompatActivity {
         return true;
     }
 
+    @OnClick(R.id.btn_details)
+    public void onViewClicked() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://insight.smartcash.cc/tx/" + this.hash));
+        this.startActivity(browserIntent);
+    }
+
     public void setVisibility(Boolean isLoading) {
         if (!isLoading) {
             activityTitle.setVisibility(View.VISIBLE);
@@ -118,17 +141,15 @@ public class TransactionActivity extends AppCompatActivity {
         }
     }
 
-    public void setData(FullTransaction transaction, TransactionResponse transactionDetails) {
+    public void setData(FullTransaction transaction) {
+
         transactionHash.setText(transaction.getTxid());
         txtSize.setText(String.valueOf(transaction.getSize()));
         txtFeeRate.setText(String.valueOf(transaction.getFees()));
-
-
         txtReceivedTime.setText(getDate(transaction.getTime()));
         txtMinedTime.setText(getDate(transaction.getBlocktime()));
-
-
         txtIncludedInBlock.setText(transaction.getBlockhash());
+
     }
 
     private String getDate(long epoch) {
@@ -137,7 +158,6 @@ public class TransactionActivity extends AppCompatActivity {
         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
         return format.format(date);
     }
-
 
     public void getTransaction(String hash) {
         TransactionViewModel model = ViewModelProviders.of(this).get(TransactionViewModel.class);
@@ -158,19 +178,14 @@ public class TransactionActivity extends AppCompatActivity {
         model.getTransactionDetails(token, this.details, TransactionActivity.this).observe(TransactionActivity.this, transactionDetails -> {
             if (transactionDetails != null) {
                 setVisibility(false);
-                setData(transaction, transactionDetails);
+                setData(transaction);
                 Log.e("Transaction", transaction.getTxid());
             } else {
                 setVisibility(false);
-                setData(transaction, transactionDetails);
+                setData(transaction);
                 Log.e("Erro", "Não foi possível buscar os detalhes da transaction!");
             }
         });
     }
 
-    @OnClick(R.id.btn_details)
-    public void onViewClicked() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://insight.smartcash.cc/tx/" + this.hash));
-        this.startActivity(browserIntent);
-    }
 }

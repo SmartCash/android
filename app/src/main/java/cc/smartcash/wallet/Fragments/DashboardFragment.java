@@ -30,8 +30,7 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.smartCashApplication = new SmartCashApplication(getContext());
         walletList = smartCashApplication.getUser(getContext()).getWallet();
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
@@ -46,13 +45,14 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupRecyclerViewWallets() {
-        RecyclerView walletRecyclerview = getActivity().findViewById(R.id.wallet_recyclerview);
+        RecyclerView walletRecycler = getActivity().findViewById(R.id.wallet_recyclerview);
         LinearLayoutManager linearLayoutManagerTransactions = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        DashboardWalletListAdapter walletAdapter = new DashboardWalletListAdapter(getContext(), new ArrayList<Wallet>());
+        DashboardWalletListAdapter walletAdapter = new DashboardWalletListAdapter(getContext(), new ArrayList<>());
 
-        walletRecyclerview.setLayoutManager(linearLayoutManagerTransactions);
-        walletRecyclerview.setAdapter(walletAdapter);
+        walletRecycler.setLayoutManager(linearLayoutManagerTransactions);
+        walletRecycler.setAdapter(walletAdapter);
 
         walletAdapter.setItems(walletList);
     }
+
 }

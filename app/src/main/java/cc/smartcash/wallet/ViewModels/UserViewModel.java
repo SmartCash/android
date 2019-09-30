@@ -19,8 +19,10 @@ import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
+import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -177,14 +179,15 @@ public class UserViewModel extends ViewModel {
             if (localIP == null || localIP.isEmpty()) localIP = "100.003.102.100";
 
             Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                    username,
-                    password,
+                    Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
+                    Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
                     "password",
-                    "81d46070-686b-4975-9c29-9ebc867a3c4e",
+                    Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+
                     "",
                     "mobile",
                     localIP,
-                    "B3EIldyQp5Hl2CXZdP8MeYmDl3gXb3tan4XCNg0ZK0"
+                    Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
             );
 
             call.enqueue(new Callback<LoginResponse>() {
@@ -213,6 +216,10 @@ public class UserViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    private Context getContext() {
+        return null;
     }
 
     public void createUser(UserRegisterRequest newUser, Context context) {
@@ -266,12 +273,58 @@ public class UserViewModel extends ViewModel {
 
     }
 
+    public static UserRecoveryKey getSyncUserRecoveryKey() {
+        try {
+
+            Call<WebWalletRootResponse<UserRecoveryKey>> callUserRecoveryKey = new WebWalletAPIConfig().getWebWalletAPIService().getNewMasterSecurityKey();
+
+            Response<WebWalletRootResponse<UserRecoveryKey>> response = callUserRecoveryKey.execute();
+
+            if (response != null && response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+
+                return response.body().getData();
+            }
+
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+        }
+        return null;
+    }
+
+    public static User setSyncUser(UserRegisterRequest newUser, UserRecoveryKey userRecoveryKey, Context context) {
+
+        boolean isInternetOn = NetworkUtil.getInternetStatus(context);
+
+        if (isInternetOn) {
+
+            newUser.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+
+            Call<WebWalletRootResponse<User>> call = new WebWalletAPIConfig().getWebWalletAPIService().setUser(newUser);
+
+            try {
+                Response<WebWalletRootResponse<User>> response = call.execute();
+
+                if (response != null && response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+
+                    User userResponse = response.body().getData();
+                    userResponse.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+                    userResponse.setPassword(newUser.getPassword());
+
+                    return userResponse;
+                }
+
+            } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
+            }
+        }
+        return null;
+    }
+
     private void setResponseError(Context context, Response response, String message) throws JSONException, IOException {
         if (response != null && response.errorBody() != null && response.errorBody().toString() != null && !response.errorBody().toString().isEmpty() && !response.errorBody().toString().toLowerCase().contains("okhttp3")) {
             JSONObject jObjError = new JSONObject(response.errorBody().string());
             Toast.makeText(context, jObjError.getString(message), Toast.LENGTH_LONG).show();
         }
     }
-
 
 }

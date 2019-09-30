@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment;
 import cc.smartcash.wallet.R;
 
 public class SendSmsFragment extends Fragment {
+
+    public static final String TAG = SendSmsFragment.class.getSimpleName();
+
     public static SendSmsFragment newInstance() {
         return new SendSmsFragment();
     }

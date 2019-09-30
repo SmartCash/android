@@ -229,7 +229,7 @@ public class SmartCashApplication extends Application {
     }
 
     public void deleteMSK() {
-        this.context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).edit().remove(Keys.KEY_MSK).commit();
+        this.context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).edit().remove(Keys.KEY_MSK).apply();
     }
 
     public void saveMSK(byte[] bytes) {

@@ -21,4 +21,14 @@ public class Keys {
     public static final String KEY_MSK = "MSK";
 
     public static final String KEY_WITHOUT_PIN = "WithoutPin";
+
+    public static final String CONFIG_CLIENT_ID = "clientId";
+
+    public static final String CONFIG_CLIENT_SECRET = "clientSecret";
+
+    public static final String CONFIG_TEST_USER = "testUser";
+
+    public static final String CONFIG_TEST_PASS = "testPassword";
+
+
 }

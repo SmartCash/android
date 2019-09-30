@@ -45,8 +45,7 @@ public class CoinSpinnerAdapter extends ArrayAdapter<Coin> {
     }
 
     @Override
-    public View getDropDownView(int position, View convertView,
-                                ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView label = (TextView) super.getDropDownView(position, convertView, parent);
         label.setTextColor(Color.BLACK);
         label.setText(coins.get(position).getName());

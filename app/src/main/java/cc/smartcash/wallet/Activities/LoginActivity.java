@@ -34,6 +34,7 @@ import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.LoginViewModel;
 
@@ -45,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
     private boolean internetAvailable;
     private NetworkReceiver networkReceiver;
     private boolean isPasswordVisible = false;
-    private AsyncTask<UserLogin, Integer, User> loginTask;
 
     @BindView(R.id.btn_login)
     Button btnLogin;
@@ -79,9 +79,6 @@ public class LoginActivity extends AppCompatActivity {
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getApplicationContext());
 
-        if (loginTask == null)
-            loginTask = new LoginTask();
-
         setDebugInfo();
 
         setNetworkReceiver();
@@ -91,30 +88,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         endLoadingProcess();
-    }
-
-    private void setDebugInfo() {
-        if (BuildConfig.DEBUG) {
-            txtUser.setText("enriquesouza6");
-            txtPassword.setText("yfKN8v4$");
-        }
-    }
-
-    private void setNetworkReceiver() {
-        internetAvailable = NetworkUtil.getInternetStatus(this);
-        networkReceiver = new NetworkReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                String status = NetworkUtil.getConnectivityStatusString(context);
-                internetAvailable = NetworkUtil.getInternetStatus(context);
-                networkSwitch.setChecked(internetAvailable);
-                networkSwitch.setText(status);
-
-                Log.d(TAG, "The status of the network has changed");
-            }
-        };
     }
 
     @Override
@@ -143,12 +116,6 @@ public class LoginActivity extends AppCompatActivity {
         getCurrentPrices();
     }
 
-    private void getCurrentPrices() {
-
-        new PriceTask().execute();
-
-    }
-
     @OnClick(R.id.btn_login)
     protected void onViewClicked() {
 
@@ -170,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
         UserLogin userLogin = new UserLogin();
         userLogin.setUsername(username);
         userLogin.setPassword(password);
-        loginTask.execute(userLogin);
+        new LoginTask().execute(userLogin);
     }
 
     @OnClick(R.id.btn_register)
@@ -198,6 +165,51 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wallet.smartcash.cc/change-password"));
         this.startActivity(browserIntent);
+    }
+
+    @OnClick(R.id.btn_eye)
+    public void onBtnEyeClicked() {
+        if (isPasswordVisible) {
+            txtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            isPasswordVisible = false;
+            btnEye.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye));
+        } else {
+            txtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            isPasswordVisible = true;
+            btnEye.setImageDrawable(getResources().getDrawable(R.drawable.eye_off));
+        }
+
+        txtPassword.setSelection(txtPassword.getText().length());
+    }
+
+    private void setDebugInfo() {
+        if (BuildConfig.DEBUG) {
+            txtUser.setText(Util.getProperty(Keys.CONFIG_TEST_USER, getApplicationContext()));
+            txtPassword.setText(Util.getProperty(Keys.CONFIG_TEST_PASS, getApplicationContext()));
+        }
+    }
+
+    private void setNetworkReceiver() {
+        internetAvailable = NetworkUtil.getInternetStatus(this);
+        networkReceiver = new NetworkReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String status = NetworkUtil.getConnectivityStatusString(context);
+                internetAvailable = NetworkUtil.getInternetStatus(context);
+                networkSwitch.setChecked(internetAvailable);
+                networkSwitch.setText(status);
+
+                Log.d(TAG, "The status of the network has changed");
+            }
+        };
+    }
+
+    private void getCurrentPrices() {
+
+        new PriceTask().execute();
+
     }
 
     private void startLoadingProcess() {
@@ -236,28 +248,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.btn_eye)
-    public void onBtnEyeClicked() {
-        if (isPasswordVisible) {
-            txtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            isPasswordVisible = false;
-            btnEye.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye));
-        } else {
-            txtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            isPasswordVisible = true;
-            btnEye.setImageDrawable(getResources().getDrawable(R.drawable.eye_off));
-        }
-
-        txtPassword.setSelection(txtPassword.getText().length());
-    }
-
     private void lockLoginButton() {
 
         btnLogin.setEnabled(false);
         btnLogin.setText("loading...");
 
-        findViewById(R.id.btn_register).setVisibility(View.GONE);
-        findViewById(R.id.btn_forgot_password).setVisibility(View.GONE);
+        findViewById(R.id.btn_register).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_forgot_password).setVisibility(View.INVISIBLE);
     }
 
     private void unlockLoginButton() {
@@ -274,36 +271,25 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Log.d(TAG, "Starting login process...");
             startLoadingProcess();
         }
 
         @Override
         protected User doInBackground(UserLogin... users) {
 
-            Log.d(TAG, "do inBackground...");
-
-            LoginViewModel model = new LoginViewModel();
-
             String token = "";
             if (users.length == 0) {
                 token = smartCashApplication.getToken(getApplicationContext());
             } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(users[0].getUsername()).append("\n");
-                sb.append(users[0].getPassword()).append("\n");
-                Log.d(TAG, sb.toString());
                 String password = users[0].getPassword();
                 String username = users[0].getUsername();
-                token = model.getSyncToken(username, password, getApplicationContext());
+                token = LoginViewModel.getSyncToken(username, password, getApplicationContext());
             }
-
             if (token == null || token.isEmpty()) {
                 smartCashApplication.deleteSharedPreferences(getApplicationContext());
                 return null;
             }
-
-            User user = model.getSyncUser(token, getApplicationContext());
+            User user = LoginViewModel.getSyncUser(token, getApplicationContext());
             saveUser(token, user);
             return user;
         }
@@ -311,32 +297,25 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+            int pct = (values[0] * 2);
+
             Log.d(TAG, "on progress update...");
             Log.d(TAG, String.valueOf(values[0]));
+            Log.d(TAG, (pct + "%"));
+
+            if (pct < 100) {
+                startLoadingProcess();
+            }
         }
 
         @Override
         protected void onPostExecute(User user) {
             super.onPostExecute(user);
-
             if (user != null) {
-
-                Log.d(TAG, "on post update...");
-                StringBuilder sb = new StringBuilder();
-                sb.append("ID: ").append(user.getUserId()).append("\n");
-                sb.append("Username: ").append(user.getUsername()).append("\n");
-                sb.append("FisrtName: ").append(user.getFirstName()).append("\n");
-                sb.append("LastName: ").append(user.getLastName()).append("\n");
-                sb.append("E-mail: ").append(user.getEmail()).append("\n");
-                Log.d(TAG, sb.toString());
-
                 navigateToPinActivity();
-
             } else {
-
                 endLoadingProcess();
             }
-
         }
     }
 
@@ -345,23 +324,26 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Log.d(TAG, "Starting login process...");
             lockLoginButton();
         }
 
         @Override
         protected ArrayList<Coin> doInBackground(Void... users) {
-
-            Log.d(TAG, "do inBackground...");
-
             return CurrentPriceViewModel.getSyncPrices(getApplicationContext());
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+            int pct = (values[0] * 2);
+
             Log.d(TAG, "on progress update...");
             Log.d(TAG, String.valueOf(values[0]));
+            Log.d(TAG, (pct + "%"));
+
+            if (pct < 100) {
+                lockLoginButton();
+            }
         }
 
         @Override
@@ -369,16 +351,13 @@ public class LoginActivity extends AppCompatActivity {
             super.onPostExecute(coins);
 
             if (coins != null) {
-
                 smartCashApplication.saveCurrentPrice(getApplicationContext(), coins);
                 unlockLoginButton();
-
             } else {
-
                 endLoadingProcess();
-
             }
 
         }
     }
+
 }

@@ -11,6 +11,8 @@ import cc.smartcash.wallet.R;
 
 public class SendEmailFragment extends Fragment {
 
+    public static final String TAG = SendEmailFragment.class.getSimpleName();
+
     public static SendEmailFragment newInstance() {
         return new SendEmailFragment();
     }
