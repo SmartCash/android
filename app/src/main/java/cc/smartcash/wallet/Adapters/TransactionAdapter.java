@@ -3,6 +3,7 @@ package cc.smartcash.wallet.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,7 +118,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
 
     public Drawable changeIconColor(Integer icon, Integer color) {
         Drawable wrappedDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(context, icon));
-        DrawableCompat.setTint(wrappedDrawable, context.getColor(color));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            DrawableCompat.setTint(wrappedDrawable, context.getColor(color));
+        }
         return wrappedDrawable;
     }
 

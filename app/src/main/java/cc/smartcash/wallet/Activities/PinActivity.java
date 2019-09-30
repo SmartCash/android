@@ -56,7 +56,6 @@ public class PinActivity extends AppCompatActivity {
     private String currentPassword;
     private byte[] encryptedPassword;
     private boolean internetAvailable;
-    private NetworkReceiver networkReceiver;
     private boolean isPasswordVisible = false;
 
     @Override
@@ -115,7 +114,7 @@ public class PinActivity extends AppCompatActivity {
 
     private void setNetworkBroadCastReceiver() {
 
-        networkReceiver = new NetworkReceiver() {
+        new NetworkReceiver() {
 
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -147,46 +146,37 @@ public class PinActivity extends AppCompatActivity {
         startActivity(new Intent(PinActivity.this, LoginActivity.class));
     }
 
+    private void navigateToMain() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
+        startActivity(intent);
+
+    }
+
     @OnClick(R.id.btn_confirm)
     public void onViewClicked() {
-
         if (encryptedPassword != null) {
-
             try {
-
                 smartCashApplication.aead = smartCashApplication.getOrGenerateNewKeysetHandle(getApplicationContext()).getPrimitive(Aead.class);
-
-                byte[] decryptedPin = smartCashApplication.aead.decrypt(encryptedPassword, txtPin.getText().toString().getBytes(StandardCharsets.UTF_8));
-
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-
+                smartCashApplication.aead.decrypt(encryptedPassword, txtPin.getText().toString().getBytes(StandardCharsets.UTF_8));
+                navigateToMain();
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
             }
         } else if (txtPin.getText().toString().equals(txtConfirmPin.getText().toString())) {
 
             //ENCRYPT THE PASSWORD
-
             try {
-
                 setSmartCashApplication();
                 byte[] plainTextToEncrypt = this.currentPassword.getBytes(StandardCharsets.UTF_8);
                 byte[] pin = this.txtConfirmPin.getText().toString().getBytes(StandardCharsets.UTF_8);
                 byte[] cipherTextToEncrypt = smartCashApplication.aead.encrypt(plainTextToEncrypt, pin);
                 smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), Keys.KEY_PASSWORD);
-
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-
+                navigateToMain();
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
             }
-
-
         }
-
-
     }
 
     @OnClick(R.id.forgot_pin_btn)

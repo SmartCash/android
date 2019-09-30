@@ -7,7 +7,7 @@
     android:fillViewport="true">
 
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/im_logo"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -16,9 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
-
-        />
+        android:contentDescription="@string/smartcash_logo" />
 
     <Switch
         android:id="@+id/network_status"
@@ -44,8 +42,6 @@
 
         android:layout_marginBottom="60dp"
         android:background="@color/colorPrimary"
-
-
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
 
@@ -163,7 +159,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
-                android:text="enriquesouza6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/user_label" />
@@ -176,7 +171,6 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="60dp"
                 android:inputType="textPassword"
-                android:text="yfKN8v4$"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -191,9 +185,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/ic_eye"
-                android:backgroundTint="#333"
-
-
+                android:backgroundTint="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/confirm_pin_label" />
 

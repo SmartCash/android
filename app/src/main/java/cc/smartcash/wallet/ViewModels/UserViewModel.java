@@ -8,7 +8,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
@@ -33,7 +36,7 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<UserRecoveryKey> userRecoveryKey;
 
     public LiveData<String> getToken(String username, String password, Context context) {
-        token = new MutableLiveData<String>();
+        token = new MutableLiveData<>();
 
         try {
             loadToken(username, password, context);
@@ -72,17 +75,20 @@ public class UserViewModel extends ViewModel {
             call.enqueue(new Callback<WebWalletRootResponse<User>>() {
                 @Override
                 public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
-                    if (response.isSuccessful()) {
-                        WebWalletRootResponse<User> apiResponse = response.body();
-                        user.setValue(apiResponse.getData());
-                    } else {
-                        try {
-                            user.setValue(null);
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                    if (response != null) {
+                        if (response.isSuccessful()) {
+                            WebWalletRootResponse<User> apiResponse = response.body();
+                            user.setValue(apiResponse.getData());
+                        } else {
+                            try {
+                                user.setValue(null);
+                                setResponseError(context, response, "message");
+                            } catch (Exception e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
+                    } else {
+                        Log.e(TAG, "Response is null");
                     }
                 }
 
@@ -114,29 +120,33 @@ public class UserViewModel extends ViewModel {
             call.enqueue(new Callback<WebWalletRootResponse<User>>() {
                 @Override
                 public void onResponse(Call<WebWalletRootResponse<User>> call, Response<WebWalletRootResponse<User>> response) {
-                    if (response.isSuccessful()) {
 
-                        WebWalletRootResponse<User> apiResponse = response.body();
+                    if (response != null) {
+                        if (response.isSuccessful()) {
 
-                        User userResponse = apiResponse.getData();
+                            WebWalletRootResponse<User> apiResponse = response.body();
 
-                        userResponse.setRecoveryKey(userRecoveryKey.getRecoveryKey());
-                        userResponse.setPassword(newUser.getPassword());
+                            User userResponse = apiResponse.getData();
 
-                        user.setValue(userResponse);
+                            userResponse.setRecoveryKey(userRecoveryKey.getRecoveryKey());
+                            userResponse.setPassword(newUser.getPassword());
 
-                        Log.i(TAG, userResponse.getUsername());
+                            user.setValue(userResponse);
 
-                        Toast.makeText(context, apiResponse.getData().getUsername(), Toast.LENGTH_LONG).show();
+                            Log.i(TAG, userResponse.getUsername());
 
-                    } else {
-                        try {
-                            user.setValue(null);
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, apiResponse.getData().getUsername(), Toast.LENGTH_LONG).show();
+
+                        } else {
+                            try {
+                                user.setValue(null);
+                                setResponseError(context, response, "message");
+                            } catch (Exception e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
+                    } else {
+                        Log.e(TAG, "Response is null");
                     }
                 }
 
@@ -187,8 +197,7 @@ public class UserViewModel extends ViewModel {
                     } else {
                         try {
                             token.setValue(null);
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(context, jObjError.getString("error_description"), Toast.LENGTH_LONG).show();
+                            setResponseError(context, response, "error_description");
                         } catch (Exception e) {
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -210,30 +219,35 @@ public class UserViewModel extends ViewModel {
 
         try {
 
-            userRecoveryKey = new MutableLiveData<UserRecoveryKey>();
+            userRecoveryKey = new MutableLiveData<>();
 
             Call<WebWalletRootResponse<UserRecoveryKey>> callUserRecoveryKey = new WebWalletAPIConfig().getWebWalletAPIService().getNewMasterSecurityKey();
 
             callUserRecoveryKey.enqueue(new Callback<WebWalletRootResponse<UserRecoveryKey>>() {
                 @Override
                 public void onResponse(Call<WebWalletRootResponse<UserRecoveryKey>> call, Response<WebWalletRootResponse<UserRecoveryKey>> response) {
-                    if (response.isSuccessful()) {
-                        WebWalletRootResponse<UserRecoveryKey> apiResponse = response.body();
-                        userRecoveryKey.setValue(apiResponse.getData());
+
+                    if (response != null) {
+
+                        if (response.isSuccessful()) {
+                            WebWalletRootResponse<UserRecoveryKey> apiResponse = response.body();
+                            userRecoveryKey.setValue(apiResponse.getData());
 
 
-                        saveUser(newUser, apiResponse.getData(), context);
+                            saveUser(newUser, apiResponse.getData(), context);
 
 
-                        Toast.makeText(context, apiResponse.getData().getRecoveryKey(), Toast.LENGTH_LONG).show();
-                    } else {
-                        try {
-                            userRecoveryKey.setValue(null);
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, apiResponse.getData().getRecoveryKey(), Toast.LENGTH_LONG).show();
+                        } else {
+                            try {
+                                userRecoveryKey.setValue(null);
+                                setResponseError(context, response, "message");
+                            } catch (Exception e) {
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
+                    } else {
+                        Log.e(TAG, "Response is null");
                     }
                 }
 
@@ -251,5 +265,13 @@ public class UserViewModel extends ViewModel {
         }
 
     }
+
+    private void setResponseError(Context context, Response response, String message) throws JSONException, IOException {
+        if (response != null && response.errorBody() != null && response.errorBody().toString() != null && !response.errorBody().toString().isEmpty() && !response.errorBody().toString().toLowerCase().contains("okhttp3")) {
+            JSONObject jObjError = new JSONObject(response.errorBody().string());
+            Toast.makeText(context, jObjError.getString(message), Toast.LENGTH_LONG).show();
+        }
+    }
+
 
 }

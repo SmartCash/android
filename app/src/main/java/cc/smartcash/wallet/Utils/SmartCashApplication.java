@@ -115,6 +115,7 @@ public class SmartCashApplication extends Application {
 
     public SmartCashApplication(Context context) {
         try {
+            this.context = context;
             Config.register(TinkConfig.LATEST);
             aead = getOrGenerateNewKeysetHandle(context).getPrimitive(Aead.class);
         } catch (GeneralSecurityException | IOException e) {
@@ -229,6 +230,46 @@ public class SmartCashApplication extends Application {
     public void deleteSharedPreferences(Context context) {
         mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         getPreferences(context).edit().clear().apply();
+    }
+
+    public void deleteMSK() {
+        this.context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).edit().remove(Keys.KEY_MSK).commit();
+    }
+
+    public void saveMSK(byte[] bytes) {
+        String string = new String(bytes, Charset.forName("ISO-8859-1"));
+        this.context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).edit().putString(Keys.KEY_MSK, string).apply();
+    }
+
+    public byte[] getMSK() {
+        String string = context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).getString(Keys.KEY_MSK, "");
+        if (string != null && !string.isEmpty())
+            return string.getBytes(Charset.forName("ISO-8859-1"));
+        return null;
+    }
+
+    public String getDecryptedMSK(String pin) {
+
+        String decryptedText = "";
+        byte[] encryptedPassword = this.getMSK();
+
+        if (encryptedPassword != null) {
+
+            try {
+
+                aead = getOrGenerateNewKeysetHandle(context).getPrimitive(Aead.class);
+
+                byte[] decryptedPin = aead.decrypt(encryptedPassword, pin.getBytes(StandardCharsets.UTF_8));
+
+                decryptedText = new String(decryptedPin, StandardCharsets.UTF_8);
+
+
+            } catch (Exception ex) {
+                decryptedText = "";
+                Log.e(TAG, ex.getMessage());
+            }
+        }
+        return decryptedText;
     }
 
     public void saveByte(byte[] bytes, Context context, String key) {

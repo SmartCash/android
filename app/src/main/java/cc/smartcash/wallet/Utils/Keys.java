@@ -18,7 +18,7 @@ public class Keys {
 
     public static final String KEY_PASSWORD = "PASSWORD";
 
-    public static final String KEY_IV_PASSWORD = "IV_PASSWORD";
+    public static final String KEY_MSK = "MSK";
 
     public static final String KEY_WITHOUT_PIN = "WithoutPin";
 }

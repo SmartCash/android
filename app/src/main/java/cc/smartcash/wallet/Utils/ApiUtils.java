@@ -11,11 +11,10 @@ import cc.smartcash.wallet.Services.UserService;
 import cc.smartcash.wallet.Services.WalletService;
 
 public class ApiUtils {
-    //public static final String MAIN_API = "https://smartcashapi.azurewebsites.net/api/";
-    //public static final String TRANSACTION_API = "https://insight.smartcash.cc/api/tx/";
-    //public static final String CURRENT_PRICE_API = "https://wallet.smartcash.cc/api/";
+
     RetrofitConfig retrofitConfig;
     Context context;
+
     public ApiUtils(Context context) {
         this.context = context;
         retrofitConfig = new RetrofitConfig();

@@ -3,12 +3,17 @@ package cc.smartcash.wallet.Activities;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,7 +39,6 @@ import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
-import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Coin selectedCoin;
     private boolean withoutPin;
     private SmartCashApplication smartCashApplication;
+    private LinearLayout linearLayoutBkp;
+    private String txtPin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +69,27 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
 
+        this.txtPin = getPIN();
+
         getCoins();
 
         setUI();
 
         setBtnSettingsClick();
+
+        setIfNeedToBackUpTheWallet();
+    }
+
+    private void setIfNeedToBackUpTheWallet() {
+
+        if (smartCashApplication.getMSK() != null) {
+
+            linearLayoutBkp.setVisibility(View.VISIBLE);
+            return;
+
+        }
+        linearLayoutBkp.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -130,6 +151,94 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         btnExit = findViewById(R.id.button_exit);
         btnSettings = findViewById(R.id.button_settings);
 
+        setBtnExitClick();
+
+        linearLayoutBkp = findViewById(R.id.bkpwallet);
+
+        setLinearLayoutBkpClick();
+    }
+
+    private void setLinearLayoutBkpClick() {
+        linearLayoutBkp.setOnClickListener(v -> {
+
+            String msk = smartCashApplication.getDecryptedMSK(getPIN());
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Backup your wallet");
+            alert.setMessage("Write down in a paper the code:");
+
+            final FrameLayout frameView = new FrameLayout(this);
+            alert.setView(frameView);
+
+            final AlertDialog alertDialog = alert.create();
+            LayoutInflater inflater = alertDialog.getLayoutInflater();
+            View dialogLayout = inflater.inflate(R.layout.wallet_dialog_backup, frameView);
+
+            EditText txtMSC = dialogLayout.findViewById(R.id.txtMSC);
+            TextView lblMSC = dialogLayout.findViewById(R.id.labelMSC);
+            lblMSC.setText(msk);
+
+            Button btnGoToCheckMSC = dialogLayout.findViewById(R.id.btnGoToCheckMSC);
+            Button btnCheckMSC = dialogLayout.findViewById(R.id.btnCheckMSC);
+
+            btnGoToCheckMSC.setOnClickListener(v1 -> {
+                lblMSC.setVisibility(View.GONE);
+                btnGoToCheckMSC.setVisibility(View.GONE);
+
+                btnCheckMSC.setVisibility(View.VISIBLE);
+                txtMSC.setVisibility(View.VISIBLE);
+            });
+
+            btnCheckMSC.setOnClickListener(v2 -> {
+                if (!msk.trim().equals(txtMSC.getText().toString().trim()))
+                    txtMSC.setError("Not the same code yet.");
+                else {
+                    AlertDialog.Builder builderDeleteMSK = new AlertDialog.Builder(this);
+                    builderDeleteMSK.setTitle("Your code is OK!");
+                    builderDeleteMSK.setMessage("*We don't recommend to keep it in the device.");
+
+                    builderDeleteMSK.setPositiveButton("OK, It is safe now. Delete from device.", (dialog, id) -> {
+
+                        smartCashApplication.deleteMSK();
+                        linearLayoutBkp.setVisibility(View.GONE);
+                        alertDialog.cancel();
+
+                    });
+                    builderDeleteMSK.setNegativeButton("Not yet. Keep it there for a while.", (dialog, id) -> {
+
+                    });
+
+                    AlertDialog dialogDeleteMSK = builderDeleteMSK.create();
+                    dialogDeleteMSK.show();
+                }
+            });
+
+            txtMSC.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    if (!msk.trim().equals(txtMSC.getText().toString().trim()))
+                        txtMSC.setError("Not the same code yet.");
+
+                }
+            });
+
+
+            alertDialog.show();
+        });
+    }
+
+    private void setBtnExitClick() {
         btnExit.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Logout?")
@@ -140,8 +249,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
     }
 
+    private String getPIN() {
+        Intent intent = getIntent();
+        String extraPIN = intent.getStringExtra(Keys.KEY_PIN);
+        if (extraPIN != null && !extraPIN.isEmpty()) {
+            return extraPIN;
+        }
+        return null;
+    }
+
     private void navigateToLogin() {
         Toast.makeText(MainActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+        smartCashApplication.deleteMSK();
         smartCashApplication.deleteSharedPreferences(MainActivity.this);
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
@@ -168,8 +287,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void saveSelectedCoin(Coin coin) {
+
         smartCashApplication.saveActualSelectedCoin(MainActivity.this, coin);
         setWalletValue();
+        reloadCurrentFragment();
     }
 
     private void setSelectedCoinOnSpinner(Spinner currentPriceSpinner, ArrayList<Coin> coins) {
@@ -222,23 +343,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (this.coins == null)
             this.coins = smartCashApplication.getCurrentPrice(this);
 
-        if (this.coins == null) {
-            getCurrentPrices();
-        }
-
-    }
-
-    private void getCurrentPrices() {
-        CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
-        model.getCurrentPrices(MainActivity.this).observe(this, currentPrices -> {
-            if (currentPrices != null) {
-                this.coins = SmartCashApplication.convertToArrayList(currentPrices);
-                smartCashApplication.saveCurrentPrice(this, this.coins);
-                Log.d(TAG, "Prices OK");
-            } else {
-                Log.e(TAG, "Error to get current prices!");
-            }
-        });
     }
 
     public void setWalletValue() {
@@ -277,6 +381,29 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             walletConverted.setText("$ " + smartCashApplication.converterValue(amount, selectedCoin.getValue()) + " " + selectedCoin.getName());
         }
 
+    }
+
+    private void reloadCurrentFragment() {
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+
+        if (fragment instanceof DashboardFragment) {
+
+            openFragment(DashboardFragment.newInstance());
+
+        } else if (fragment instanceof ReceiveFragment) {
+
+            openFragment(ReceiveFragment.newInstance());
+
+        } else if (fragment instanceof SendFragment) {
+
+            openFragment(SendFragment.newInstance());
+
+        } else if (fragment instanceof TransactionFragment) {
+
+            openFragment(TransactionFragment.newInstance());
+
+        }
     }
 
     public void openFragment(Fragment fragment) {

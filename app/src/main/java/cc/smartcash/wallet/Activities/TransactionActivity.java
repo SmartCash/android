@@ -3,6 +3,7 @@ package cc.smartcash.wallet.Activities;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -72,7 +73,9 @@ public class TransactionActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getColor(R.color.colorAccent)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(this.getColor(R.color.colorAccent)));
+        }
 
         smartCashApplication = new SmartCashApplication(getApplicationContext());
 

@@ -11,8 +11,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Utils.ApiUtils;
 import cc.smartcash.wallet.Utils.NetworkUtil;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +33,31 @@ public class CurrentPriceViewModel extends ViewModel {
         }
 
         return currentPrices;
+    }
+
+    public static ArrayList<Coin> getSyncPrices(Context context) {
+
+        boolean isInternetOn = NetworkUtil.getInternetStatus(context);
+
+        if (isInternetOn) {
+
+            Call<JsonNode> call = new ApiUtils(context).getCurrentPricesService().getCurrentPrices();
+            Response<JsonNode> response = null;
+            try {
+
+                response = call.execute();
+
+                if (response.isSuccessful()) {
+
+                    return SmartCashApplication.convertToArrayList(response.body().toString());
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
     }
 
     private void loadCurrentPrices(Context context) {

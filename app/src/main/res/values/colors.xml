@@ -11,4 +11,9 @@
     <color name="paidColor">#8bc347</color>
     <color name="receiveColor">#fe9701</color>
     <color name="awaitingColor">#5E6871</color>
+    <color name="red">#F44336</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="grey">#333</color>
+
 </resources>

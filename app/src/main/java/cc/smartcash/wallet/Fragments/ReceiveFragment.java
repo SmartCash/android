@@ -212,6 +212,10 @@ public class ReceiveFragment extends Fragment {
             }
         }
 
+        if (txtAmount.getText().toString().isEmpty()) {
+            txtAmountConverted.setText("0");
+        }
+
         if (!txtAmount.getText().toString().isEmpty()) {
 
             BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
@@ -264,6 +268,10 @@ public class ReceiveFragment extends Fragment {
                 actualSelected = coins.get(i);
                 break;
             }
+        }
+
+        if (txtAmountConverted.getText().toString().isEmpty()) {
+            txtAmount.setText("0");
         }
 
         if (!txtAmountConverted.getText().toString().isEmpty()) {

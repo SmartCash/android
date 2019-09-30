@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -18,33 +19,39 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProviders;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cc.smartcash.wallet.BuildConfig;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserLogin;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
-import cc.smartcash.wallet.ViewModels.UserViewModel;
+import cc.smartcash.wallet.ViewModels.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 
     private SmartCashApplication smartCashApplication;
+    private boolean internetAvailable;
+    private NetworkReceiver networkReceiver;
+    private boolean isPasswordVisible = false;
+    private AsyncTask<UserLogin, Integer, User> loginTask;
+
     @BindView(R.id.btn_login)
     Button btnLogin;
+
     @BindView(R.id.btn_eye)
     ImageView btnEye;
-    private boolean internetAvailable;
 
     @BindView(R.id.network_status)
     Switch networkSwitch;
@@ -60,8 +67,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.login_content)
     ConstraintLayout loginContent;
-    private NetworkReceiver networkReceiver;
-    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +74,33 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_main);
         ButterKnife.bind(this);
 
-        startProcess();
+        startLoadingProcess();
 
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getApplicationContext());
 
+        if (loginTask == null)
+            loginTask = new LoginTask();
+
+        setDebugInfo();
+
+        setNetworkReceiver();
+
+        if (isOnLocalDB()) {
+            startActivity(new Intent(getApplicationContext(), PinActivity.class));
+        }
+
+        endLoadingProcess();
+    }
+
+    private void setDebugInfo() {
+        if (BuildConfig.DEBUG) {
+            txtUser.setText("enriquesouza6");
+            txtPassword.setText("yfKN8v4$");
+        }
+    }
+
+    private void setNetworkReceiver() {
         internetAvailable = NetworkUtil.getInternetStatus(this);
         networkReceiver = new NetworkReceiver() {
 
@@ -88,12 +115,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "The status of the network has changed");
             }
         };
-
-        if (isOnLocalDB()) {
-            startActivity(new Intent(getApplicationContext(), PinActivity.class));
-        } else {
-            getUser(smartCashApplication.getToken(this));
-        }
     }
 
     @Override
@@ -122,6 +143,12 @@ public class LoginActivity extends AppCompatActivity {
         getCurrentPrices();
     }
 
+    private void getCurrentPrices() {
+
+        new PriceTask().execute();
+
+    }
+
     @OnClick(R.id.btn_login)
     protected void onViewClicked() {
 
@@ -140,23 +167,10 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        startProcess();
-        UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
-        model.getToken(username, password, this).observe(this, token -> {
-            try {
-                if (token != null) {
-                    smartCashApplication.saveToken(LoginActivity.this, token);
-                    Log.d(TAG, token);
-                    getUser(token);
-                } else {
-                    Log.e(TAG, "Error to get the token!");
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            } finally {
-
-            }
-        });
+        UserLogin userLogin = new UserLogin();
+        userLogin.setUsername(username);
+        userLogin.setPassword(password);
+        loginTask.execute(userLogin);
     }
 
     @OnClick(R.id.btn_register)
@@ -186,13 +200,13 @@ public class LoginActivity extends AppCompatActivity {
         this.startActivity(browserIntent);
     }
 
-    private void startProcess() {
+    private void startLoadingProcess() {
         findViewById(R.id.login_content).setVisibility(View.GONE);
         findViewById(R.id.login_content).setVisibility(View.INVISIBLE);
         findViewById(R.id.loader).setVisibility(View.VISIBLE);
     }
 
-    private void endProcess() {
+    private void endLoadingProcess() {
         findViewById(R.id.loader).setVisibility(View.GONE);
         findViewById(R.id.loader).setVisibility(View.INVISIBLE);
         findViewById(R.id.login_content).setVisibility(View.VISIBLE);
@@ -201,8 +215,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isOnLocalDB() {
         String token = smartCashApplication.getToken(this);
         User user = smartCashApplication.getUser(this);
-        byte[] pin = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
-        return (token != null && !token.isEmpty() && user != null && pin != null);
+        byte[] password = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
+        return (token != null && !token.isEmpty() && user != null && password != null);
     }
 
     private void navigateToPinActivity() {
@@ -211,41 +225,15 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void getUser(String token) {
-        if (token == null || token.isEmpty()) {
-            endProcess();
+    private void saveUser(String token, User user) {
+        if (user != null) {
+            smartCashApplication.saveToken(LoginActivity.this, token);
+            smartCashApplication.saveUser(LoginActivity.this, user);
+            Log.d(TAG, "Users OK");
+        } else {
+            smartCashApplication.deleteSharedPreferences(LoginActivity.this);
+            Log.e(TAG, "Error to getUser");
         }
-        UserViewModel model = ViewModelProviders.of(this).get(UserViewModel.class);
-        model.getUser(token, LoginActivity.this).observe(LoginActivity.this, user -> {
-            try {
-                if (user != null) {
-                    smartCashApplication.saveUser(LoginActivity.this, user);
-                    Log.d(TAG, "Users OK");
-                    navigateToPinActivity();
-                } else {
-                    smartCashApplication.deleteSharedPreferences(LoginActivity.this);
-                    Log.e(TAG, "Error to getUser");
-                }
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-            } finally {
-                endProcess();
-            }
-        });
-    }
-
-    private void getCurrentPrices() {
-        CurrentPriceViewModel model = ViewModelProviders.of(this).get(CurrentPriceViewModel.class);
-        model.getCurrentPrices(LoginActivity.this).observe(this, currentPrices -> {
-            if (currentPrices != null) {
-                ArrayList<Coin> coins = SmartCashApplication.convertToArrayList(currentPrices);
-                smartCashApplication.saveCurrentPrice(this, coins);
-                Log.d(TAG, "Prices OK");
-            } else {
-                Toast.makeText(getApplicationContext(), "Error to get the current prices!", Toast.LENGTH_LONG).show();
-                Log.e(TAG, "Error to get current prices!");
-            }
-        });
     }
 
     @OnClick(R.id.btn_eye)
@@ -261,5 +249,138 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         txtPassword.setSelection(txtPassword.getText().length());
+    }
+
+    private void lockLoginButton() {
+
+        btnLogin.setEnabled(false);
+        btnLogin.setText("loading...");
+
+        findViewById(R.id.btn_register).setVisibility(View.GONE);
+        findViewById(R.id.btn_forgot_password).setVisibility(View.GONE);
+    }
+
+    private void unlockLoginButton() {
+
+        btnLogin.setEnabled(true);
+        btnLogin.setText("ENTER");
+        findViewById(R.id.btn_register).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_forgot_password).setVisibility(View.VISIBLE);
+
+    }
+
+    class LoginTask extends AsyncTask<UserLogin, Integer, User> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d(TAG, "Starting login process...");
+            startLoadingProcess();
+        }
+
+        @Override
+        protected User doInBackground(UserLogin... users) {
+
+            Log.d(TAG, "do inBackground...");
+
+            LoginViewModel model = new LoginViewModel();
+
+            String token = "";
+            if (users.length == 0) {
+                token = smartCashApplication.getToken(getApplicationContext());
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append(users[0].getUsername()).append("\n");
+                sb.append(users[0].getPassword()).append("\n");
+                Log.d(TAG, sb.toString());
+                String password = users[0].getPassword();
+                String username = users[0].getUsername();
+                token = model.getSyncToken(username, password, getApplicationContext());
+            }
+
+            if (token == null || token.isEmpty()) {
+                smartCashApplication.deleteSharedPreferences(getApplicationContext());
+                return null;
+            }
+
+            User user = model.getSyncUser(token, getApplicationContext());
+            saveUser(token, user);
+            return user;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d(TAG, "on progress update...");
+            Log.d(TAG, String.valueOf(values[0]));
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
+
+            if (user != null) {
+
+                Log.d(TAG, "on post update...");
+                StringBuilder sb = new StringBuilder();
+                sb.append("ID: ").append(user.getUserId()).append("\n");
+                sb.append("Username: ").append(user.getUsername()).append("\n");
+                sb.append("FisrtName: ").append(user.getFirstName()).append("\n");
+                sb.append("LastName: ").append(user.getLastName()).append("\n");
+                sb.append("E-mail: ").append(user.getEmail()).append("\n");
+                Log.d(TAG, sb.toString());
+
+                navigateToPinActivity();
+
+            } else {
+
+                endLoadingProcess();
+            }
+
+        }
+    }
+
+    class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.d(TAG, "Starting login process...");
+            lockLoginButton();
+        }
+
+        @Override
+        protected ArrayList<Coin> doInBackground(Void... users) {
+
+            Log.d(TAG, "do inBackground...");
+
+            ArrayList<Coin> coins = CurrentPriceViewModel.getSyncPrices(getApplicationContext());
+
+            return coins;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            Log.d(TAG, "on progress update...");
+            Log.d(TAG, String.valueOf(values[0]));
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Coin> coins) {
+            super.onPostExecute(coins);
+
+            if (coins != null) {
+
+                smartCashApplication.saveCurrentPrice(getApplicationContext(), coins);
+                unlockLoginButton();
+
+            } else {
+
+                endLoadingProcess();
+
+            }
+
+        }
     }
 }

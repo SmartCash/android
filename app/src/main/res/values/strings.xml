@@ -97,5 +97,6 @@
     <string name="tag_log_error">Error</string>
     <string name="tag_log_success">Success</string>
     <string name="btn_save">Save</string>
+    <string name="smartcash_logo">SmartCash Logo</string>
 
 </resources>

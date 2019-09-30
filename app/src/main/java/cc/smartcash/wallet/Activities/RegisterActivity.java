@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -16,12 +17,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cc.smartcash.wallet.BuildConfig;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
@@ -56,23 +59,47 @@ public class RegisterActivity extends AppCompatActivity {
     private SmartCashApplication smartCashApplication;
     private NetworkReceiver networkReceiver;
 
+    private void setDebugInfo() {
+        if (BuildConfig.DEBUG) {
+            // do something for a debug build
+            String useruuid = UUID.randomUUID().toString();
+            txtUser.setText(useruuid + "@testeandroidmobile.com");
+            txtPassword.setText("123456");
+            txtConfirmPassword.setText("123456");
+            txtPin.setText("1234");
+            txtConfirmPin.setText("1234");
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_main);
         ButterKnife.bind(this);
 
-        getCurrentPrices();
+        if (this.smartCashApplication == null)
+            this.smartCashApplication = new SmartCashApplication(getApplicationContext());
 
-        this.smartCashApplication = new SmartCashApplication(getApplicationContext());
+        setDebugInfo();
 
-        String useruuid = UUID.randomUUID().toString();
-        txtUser.setText(useruuid + "@testeandroidmobile.com");
-        txtPassword.setText("123456");
-        txtConfirmPassword.setText("123456");
-        txtPin.setText("1234");
-        txtConfirmPin.setText("1234");
+        setNetworkReceiver();
 
+        String token = smartCashApplication.getToken(this);
+        User user = smartCashApplication.getUser(this);
+
+        if (token != null && token != "" && user != null) {
+            Log.e("token", token);
+            this.setVisibility();
+
+        } else {
+
+            loginContent.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.GONE);
+
+        }
+    }
+
+    private void setNetworkReceiver() {
         networkReceiver = new NetworkReceiver() {
 
             @Override
@@ -88,23 +115,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         };
-
-        String token = smartCashApplication.getToken(this);
-        User user = smartCashApplication.getUser(this);
-
-        if (token != null && token != "" && user != null) {
-
-            Log.e("token", token);
-
-            this.setVisibility();
-
-        } else {
-
-            loginContent.setVisibility(View.VISIBLE);
-            loader.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(), "Error to retreive the Token or the user", Toast.LENGTH_SHORT).show();
-
-        }
     }
 
     @Override
@@ -126,6 +136,20 @@ public class RegisterActivity extends AppCompatActivity {
         unregisterReceiver(networkReceiver);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        getCurrentPrices();
+    }
+
+    private void navigateToMain() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
+        startActivity(intent);
+
+    }
+
     @OnClick(R.id.btn_save)
     public void onViewClicked() {
 
@@ -135,8 +159,14 @@ public class RegisterActivity extends AppCompatActivity {
         String pin = txtPin.getText().toString();
         String confirm_pin = txtConfirmPin.getText().toString();
 
-        boolean hasError = false;
+        boolean hasError = validateForm(username, password, confirm_password, pin, confirm_pin, false);
 
+        if (hasError) return;
+
+        createNewUser(username, password);
+    }
+
+    private boolean validateForm(String username, String password, String confirm_password, String pin, String confirm_pin, boolean hasError) {
         if (username.isEmpty()) {
             txtUser.setError("The USERNAME can't be empty");
             hasError = true;
@@ -165,8 +195,10 @@ public class RegisterActivity extends AppCompatActivity {
             txtPassword.setError("The PASSWORD does not match");
             hasError = true;
         }
+        return hasError;
+    }
 
-        if (hasError) return;
+    private void createNewUser(String username, String password) {
 
         UserRegisterRequest newUser = new UserRegisterRequest();
         newUser.setUsername(username);
@@ -176,7 +208,6 @@ public class RegisterActivity extends AppCompatActivity {
         this.setVisibility();
 
         UserViewModel model = new ViewModelProvider(this).get(UserViewModel.class);
-
         model.setUser(newUser, this).observe(this, user -> {
             if (user != null) {
 
@@ -185,31 +216,49 @@ public class RegisterActivity extends AppCompatActivity {
                     model.getToken(user.getUsername(), user.getPassword(), this).observe(this, t -> {
 
                         model.getUser(t, this).observe(this, user1 -> {
-                            user1.setRecoveryKey(user.getRecoveryKey());
+                            smartCashApplication.saveToken(RegisterActivity.this, t);
+                            encryptAndSaveMSK(user, user1);
+                            encryptAndSavePassword(newUser, user1);
                             smartCashApplication.saveUser(RegisterActivity.this, user1);
-                            navigateToPinActivity();
+                            navigateToMain();
                         });
-
                     });
-
                 } else {
                     setVisibility();
-                    Log.e(TAG, "It was not possible to register the user");
+                    Log.e(TAG, "The wallet was NULL");
                 }
-
             } else {
                 setVisibility();
-                Log.e(TAG, "It was not possible to register the user");
+                Log.e(TAG, "The user was NULL");
             }
         });
     }
 
-    private void navigateToPinActivity() {
-        Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-        intent.putExtra(Keys.KEY_PASSWORD, txtPassword.getText().toString());
-        intent.putExtra(Keys.KEY_PIN, txtPin.getText().toString());
-        startActivity(intent);
+    private void encryptAndSavePassword(UserRegisterRequest newUser, User user1) {
+        //ENCRYPT AND SAVE THE PASSWORD
+        try {
+            byte[] plainTextToEncrypt = newUser.getPassword().getBytes(StandardCharsets.UTF_8);
+            byte[] pinByte = this.txtPin.getText().toString().getBytes(StandardCharsets.UTF_8);
+            byte[] cipherTextToEncrypt = smartCashApplication.aead.encrypt(plainTextToEncrypt, pinByte);
+            smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), Keys.KEY_PASSWORD);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+        }
     }
+
+    private void encryptAndSaveMSK(User user, User user1) {
+        //ENCRYPT AND SAVE THE MSK
+        try {
+            byte[] plainTextToEncrypt = user.getRecoveryKey().getBytes(StandardCharsets.UTF_8);
+            byte[] pinByte = this.txtPin.getText().toString().getBytes(StandardCharsets.UTF_8);
+            byte[] cipherTextToEncrypt = smartCashApplication.aead.encrypt(plainTextToEncrypt, pinByte);
+            user1.setRecoveryKey(Base64.encodeToString(cipherTextToEncrypt, Base64.DEFAULT));
+            smartCashApplication.saveMSK(cipherTextToEncrypt);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+        }
+    }
+
     public void setVisibility() {
         if (loader.getVisibility() == View.VISIBLE) {
             loginContent.setVisibility(View.VISIBLE);
