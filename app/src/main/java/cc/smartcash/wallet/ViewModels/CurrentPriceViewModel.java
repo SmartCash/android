@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Utils.ApiUtils;
@@ -49,7 +50,7 @@ public class CurrentPriceViewModel extends ViewModel {
 
                 if (response.isSuccessful()) {
 
-                    return SmartCashApplication.convertToArrayList(response.body().toString());
+                    return SmartCashApplication.convertToArrayList(Objects.requireNonNull(response.body()).toString());
 
                 }
             } catch (IOException e) {
@@ -72,11 +73,11 @@ public class CurrentPriceViewModel extends ViewModel {
                 @Override
                 public void onResponse(Call<JsonNode> call, Response<JsonNode> response) {
                     if (response.isSuccessful()) {
-                        currentPrices.setValue(response.body().toString());
+                        currentPrices.setValue(Objects.requireNonNull(response.body()).toString());
                     } else {
                         try {
                             currentPrices.setValue(null);
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            JSONObject jObjError = new JSONObject(Objects.requireNonNull(response.errorBody()).string());
                             Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();

@@ -93,7 +93,7 @@ public class Transaction implements Parcelable, Serializable {
     }
 
     public void setIsPending(Boolean isPending) {
-        isPending = isPending;
+        this.isPending = isPending;
     }
 
     public Integer getBlockindex() {
@@ -109,7 +109,7 @@ public class Transaction implements Parcelable, Serializable {
     }
 
     public void setIsNew(Boolean isNew) {
-        isNew = isNew;
+        this.isNew = isNew;
     }
 
     public Boolean getIsConfirmed() {
@@ -117,7 +117,7 @@ public class Transaction implements Parcelable, Serializable {
     }
 
     public void setIsConfirmed(Boolean isConfirmed) {
-        isConfirmed = isConfirmed;
+        this.isConfirmed = isConfirmed;
     }
 
     public String getOrderData() {

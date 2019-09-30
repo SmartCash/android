@@ -16,12 +16,11 @@ public class RetrofitConfig {
                 .readTimeout(3, TimeUnit.SECONDS)
                 .build();
 
-        Retrofit retrofit = new Retrofit
+        return new Retrofit
                 .Builder()
                 .client(okHttpClient)
                 .baseUrl(url)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
-        return retrofit;
     }
 }

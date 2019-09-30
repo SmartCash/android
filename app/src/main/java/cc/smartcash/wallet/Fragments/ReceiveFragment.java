@@ -218,12 +218,8 @@ public class ReceiveFragment extends Fragment {
 
         if (!txtAmount.getText().toString().isEmpty()) {
 
-            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
-
-            BigDecimal finalValue = amount;
-
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
@@ -276,12 +272,8 @@ public class ReceiveFragment extends Fragment {
 
         if (!txtAmountConverted.getText().toString().isEmpty()) {
 
-            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString()));
-
-            BigDecimal finalValue = amount;
-
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 

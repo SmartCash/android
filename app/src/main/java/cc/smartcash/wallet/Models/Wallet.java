@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Wallet {
@@ -109,7 +108,7 @@ public class Wallet {
     }
 
     public void setIsRewards(Boolean isRewards) {
-        isRewards = isRewards;
+        this.isRewards = isRewards;
     }
 
     public Boolean getIsVault() {
@@ -117,7 +116,7 @@ public class Wallet {
     }
 
     public void setIsVault(Boolean isVault) {
-        isVault = isVault;
+        this.isVault = isVault;
     }
 
     public Boolean getIsScheduled() {
@@ -125,7 +124,7 @@ public class Wallet {
     }
 
     public void setIsScheduled(Boolean isScheduled) {
-        isScheduled = isScheduled;
+        this.isScheduled = isScheduled;
     }
 
     public BigInteger getCardId() {
@@ -144,28 +143,5 @@ public class Wallet {
         this.transactions = transactions;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Wallet wallet = (Wallet) o;
-        return Objects.equals(walletId, wallet.walletId) &&
-                Objects.equals(displayName, wallet.displayName) &&
-                Objects.equals(address, wallet.address) &&
-                Objects.equals(qrCode, wallet.qrCode) &&
-                Objects.equals(balance, wallet.balance) &&
-                Objects.equals(totalSent, wallet.totalSent) &&
-                Objects.equals(totalReceived, wallet.totalReceived) &&
-                Objects.equals(position, wallet.position) &&
-                Objects.equals(isRewards, wallet.isRewards) &&
-                Objects.equals(isVault, wallet.isVault) &&
-                Objects.equals(isScheduled, wallet.isScheduled) &&
-                Objects.equals(cardId, wallet.cardId) &&
-                Objects.equals(transactions, wallet.transactions);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(walletId, displayName, address, qrCode, balance, totalSent, totalReceived, position, isRewards, isVault, isScheduled, cardId, transactions);
-    }
 }

@@ -44,7 +44,7 @@
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
 
     </LinearLayout>
 

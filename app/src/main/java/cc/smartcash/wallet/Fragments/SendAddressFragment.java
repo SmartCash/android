@@ -209,12 +209,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         if (!txtAmount.getText().toString().isEmpty()) {
 
-            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString()));
-
-            BigDecimal finalValue = amount;
-
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
@@ -252,12 +248,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         if (!txtAmountConverted.getText().toString().isEmpty()) {
 
-            BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString()));
-
-            BigDecimal finalValue = amount;
-
             if (actualSelected.getName().equals("SMART")) {
-                amountConverted = smartCashApplication.converterBigDecimal(finalValue, BigDecimal.valueOf(actualSelected.getValue()));
+                amountConverted = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
                 amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
             } else {
 
@@ -358,10 +350,10 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         if (txtToAddress.getText().length() == 0) {
             Toast.makeText(getContext(), "The address to send can't be empty.", Toast.LENGTH_LONG).show();
             return;
-        } else if (txtAmount.getText().length() == 0 || txtAmount.getText().equals("0")) {
+        } else if (txtAmount.getText().length() == 0 || txtAmount.getText().toString().equals("0")) {
             Toast.makeText(getContext(), "The amount to send can't be empty or ZERO.", Toast.LENGTH_LONG).show();
             return;
-        } else if (txtAmountConverted.getText().length() == 0 || txtAmountConverted.getText().equals("0")) {
+        } else if (txtAmountConverted.getText().length() == 0 || txtAmountConverted.getText().toString().equals("0")) {
             Toast.makeText(getContext(), "The amount to send can't be empty or ZERO.", Toast.LENGTH_LONG).show();
             return;
         } else if (txtPin.getText().length() == 0) {

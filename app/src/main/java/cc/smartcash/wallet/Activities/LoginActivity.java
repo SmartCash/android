@@ -269,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    class LoginTask extends AsyncTask<UserLogin, Integer, User> {
+    private class LoginTask extends AsyncTask<UserLogin, Integer, User> {
 
         @Override
         protected void onPreExecute() {
@@ -340,7 +340,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
+    private class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
 
         @Override
         protected void onPreExecute() {
@@ -354,9 +354,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Log.d(TAG, "do inBackground...");
 
-            ArrayList<Coin> coins = CurrentPriceViewModel.getSyncPrices(getApplicationContext());
-
-            return coins;
+            return CurrentPriceViewModel.getSyncPrices(getApplicationContext());
         }
 
         @Override

@@ -174,8 +174,7 @@ public class SmartCashApplication extends Application {
     public User getUser(Context context) {
         mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         String json = getPreferences(context).getString(Keys.KEY_USER, "");
-        User user = gson.fromJson(json, User.class);
-        return user;
+        return gson.fromJson(json, User.class);
     }
 
     public void saveBoolean(Context context, Boolean bool, String key) {
@@ -187,8 +186,7 @@ public class SmartCashApplication extends Application {
 
     public Boolean getBoolean(Context context, String key) {
         mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        Boolean bool = getPreferences(context).getBoolean(key, false);
-        return bool;
+        return getPreferences(context).getBoolean(key, false);
     }
 
     public String converterValue(double amount, double value) {
@@ -210,8 +208,7 @@ public class SmartCashApplication extends Application {
     public Wallet getWallet(Context context) {
         mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         String json = getPreferences(context).getString(Keys.KEY_WALLET, "");
-        Wallet wallet = gson.fromJson(json, Wallet.class);
-        return wallet;
+        return gson.fromJson(json, Wallet.class);
     }
 
     public void saveToken(Context context, String token) {
@@ -223,8 +220,7 @@ public class SmartCashApplication extends Application {
 
     public String getToken(Context context) {
         mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String token = getPreferences(context).getString(Keys.KEY_TOKEN, "");
-        return token;
+        return getPreferences(context).getString(Keys.KEY_TOKEN, "");
     }
 
     public void deleteSharedPreferences(Context context) {
