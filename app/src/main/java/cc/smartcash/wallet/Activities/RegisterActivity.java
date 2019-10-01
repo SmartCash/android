@@ -24,7 +24,6 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cc.smartcash.wallet.BuildConfig;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserRecoveryKey;
@@ -146,7 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setDebugInfo() {
-        if (BuildConfig.DEBUG) {
+        //if (BuildConfig.DEBUG) {
             // do something for a debug build
             String useruuid = UUID.randomUUID().toString();
             txtUser.setText(useruuid + "@testeandroidmobile.com");
@@ -154,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
             txtConfirmPassword.setText("123456");
             txtPin.setText("1234");
             txtConfirmPin.setText("1234");
-        }
+        //}
     }
 
     private void navigateToMain() {

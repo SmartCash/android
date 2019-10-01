@@ -1,6 +1,9 @@
 package cc.smartcash.wallet.Fragments;
 
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,10 +23,17 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,10 +42,13 @@ import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.ConstantsURLS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 public class ReceiveFragment extends Fragment {
 
@@ -108,9 +121,11 @@ public class ReceiveFragment extends Fragment {
         walletSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                setImage(walletList.get(position).getQrCode());
+
                 walletAddress.setText(walletList.get(position).getAddress());
                 smartCashApplication.saveWallet(getContext(), walletList.get(position));
+
+                setQRCodeByAmount();
             }
 
             @Override
@@ -149,11 +164,6 @@ public class ReceiveFragment extends Fragment {
     @OnClick(R.id.btn_copy)
     public void onViewClicked() {
         SmartCashApplication.copyToClipboard(getContext(), walletAddress.getText().toString());
-    }
-
-    private void setImage(String url) {
-        Uri uri = Uri.parse(url);
-        qrCodeImage.setImageURI(uri);
     }
 
     private void setAmountListener() {
@@ -240,16 +250,13 @@ public class ReceiveFragment extends Fragment {
 
     private void setQRCodeByAmount() {
 
-        String qr = "";
         String amountInSmartCash = txtAmountConverted.getText().toString();
 
-        if (amountInSmartCash.isEmpty() || amountInSmartCash.equalsIgnoreCase("0")) {
-            qr = String.format(ConstantsURLS.URL_QRCODE, walletAddress.getText().toString());
+        if (!amountInSmartCash.isEmpty() && Float.parseFloat(amountInSmartCash) > 0) {
+            generateQrCode("smartcash:" + walletAddress.getText().toString() + "?amount=" + amountInSmartCash);
         } else {
-            qr = String.format(ConstantsURLS.URL_QRCODE_AMOUNT, walletAddress.getText().toString(), Float.parseFloat(amountInSmartCash));
+            generateQrCode("smartcash:" + walletAddress.getText().toString());
         }
-
-        setImage(qr);
 
     }
 
@@ -290,4 +297,82 @@ public class ReceiveFragment extends Fragment {
         setQRCodeByAmount();
 
     }
+
+    private void createQRCode(String qrCodeData, String charset, Map hintMap, int qrCodeheight, int qrCodewidth) {
+
+
+        try {
+            //generating qr code.
+            BitMatrix matrix = new MultiFormatWriter().encode(new String(qrCodeData.getBytes(charset), charset),
+                    BarcodeFormat.QR_CODE, qrCodewidth, qrCodeheight, hintMap);
+
+            //converting bitmatrix to bitmap
+            int width = matrix.getWidth();
+            int height = matrix.getHeight();
+            int[] pixels = new int[width * height];
+
+            // All are 0, or black, by default
+            for (int y = 0; y < height; y++) {
+                int offset = y * width;
+                for (int x = 0; x < width; x++) {
+                    //for black and white
+                    pixels[offset + x] = matrix.get(x, y) ? BLACK : WHITE;
+                    //for custom color
+                    //pixels[offset + x] = matrix.get(x, y) ?
+                    //        ResourcesCompat.getColor(getResources(),R.color.colorB,null) :WHITE;
+                }
+            }
+            //creating bitmap
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+            //getting the logo
+            Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.logo_qrcode);
+
+            //setting bitmap to image view
+            qrCodeImage.setImageBitmap(mergeBitmaps(logo, bitmap));
+
+        } catch (Exception er) {
+            Log.e("QrGenerate", er.getMessage());
+        }
+    }
+
+    public Bitmap mergeBitmaps(Bitmap overlay, Bitmap bitmap) {
+
+        int height = bitmap.getHeight();
+        int width = bitmap.getWidth();
+
+        Bitmap combined = Bitmap.createBitmap(width, height, bitmap.getConfig());
+        Canvas canvas = new Canvas(combined);
+        int canvasWidth = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+
+        canvas.drawBitmap(bitmap, new Matrix(), null);
+
+        int centreX = (canvasWidth - overlay.getWidth()) / 2;
+        int centreY = (canvasHeight - overlay.getHeight()) / 2;
+        canvas.drawBitmap(overlay, centreX, centreY, null);
+
+        return combined;
+    }
+
+    private void generateQrCode(String qrCodeText) {
+        try {
+
+            //setting size of qr code
+            int width = qrCodeImage.getWidth();
+            int height = qrCodeImage.getHeight();
+            int smallestDimension = width < height ? width : height;
+
+            Map<EncodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<>();
+
+            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+
+            createQRCode(qrCodeText, Util.UTF_8, hintMap, smallestDimension, smallestDimension);
+
+        } catch (Exception ex) {
+            Log.e("QrGenerate", ex.getMessage());
+        }
+    }
+
 }
