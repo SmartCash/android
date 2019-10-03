@@ -1,11 +1,14 @@
 package cc.smartcash.wallet.ViewModels;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.IOException;
 
 import cc.smartcash.wallet.Models.LoginResponse;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserLogin;
+import cc.smartcash.wallet.Models.WebWalletException;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
 import cc.smartcash.wallet.Utils.Keys;
@@ -19,16 +22,15 @@ public class LoginViewModel {
 
     public static final String TAG = LoginViewModel.class.getSimpleName();
 
-    public static String getSyncToken(String username, String password, Context context) {
+    public static String getSyncToken(UserLogin userLogin, Context context) {
 
         String localIP = SmartCashApplication.getIPAddress(true);
-
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                username,
-                password,
+                userLogin.getUsername(),
+                userLogin.getPassword(),
                 "password",
                 Util.getProperty(Keys.CONFIG_CLIENT_ID, context),
-                "",
+                userLogin.getTwoFactorAuthentication(),
                 "mobile",
                 localIP,
                 Util.getProperty(Keys.CONFIG_CLIENT_SECRET, context)
@@ -37,10 +39,15 @@ public class LoginViewModel {
         try {
             Response<LoginResponse> r = call.execute();
             LoginResponse body = r.body();
+
+            if (r != null && r.errorBody() != null) {
+                WebWalletException exception = WebWalletException.parse(r.errorBody().string());
+                return "error:" + exception.getErrorDescription();
+            }
             return body.getAccessToken();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
         return null;
     }

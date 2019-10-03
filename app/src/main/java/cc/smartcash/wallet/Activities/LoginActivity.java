@@ -62,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.txt_password)
     EditText txtPassword;
 
+    @BindView(R.id.txt_two_factor_auth)
+    EditText txt2fa;
+
     @BindView(R.id.loader)
     ProgressBar loader;
 
@@ -124,19 +127,17 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String password = txtPassword.getText().toString();
-        String username = txtUser.getText().toString();
+        UserLogin userLogin = new UserLogin();
+        userLogin.setUsername(Util.getString(txtUser));
+        userLogin.setPassword(Util.getString(txtPassword));
+        userLogin.setTwoFactorAuthentication(Util.getString(txt2fa));
 
-        if (password.isEmpty() || username.isEmpty()) {
-
+        if (Util.isNullOrEmpty(txtUser) || Util.isNullOrEmpty(txtPassword)) {
             txtUser.setError("The username can't be empty");
             txtPassword.setError("The password can't be empty");
             return;
         }
 
-        UserLogin userLogin = new UserLogin();
-        userLogin.setUsername(username);
-        userLogin.setPassword(password);
         new LoginTask().execute(userLogin);
     }
 
@@ -281,14 +282,22 @@ public class LoginActivity extends AppCompatActivity {
             if (users.length == 0) {
                 token = smartCashApplication.getToken(getApplicationContext());
             } else {
-                String password = users[0].getPassword();
-                String username = users[0].getUsername();
-                token = LoginViewModel.getSyncToken(username, password, getApplicationContext());
+
+                UserLogin userLogin = new UserLogin();
+                userLogin.setPassword(users[0].getPassword());
+                userLogin.setUsername(users[0].getUsername());
+                userLogin.setTwoFactorAuthentication(users[0].getTwoFactorAuthentication());
+
+                token = LoginViewModel.getSyncToken(userLogin, getApplicationContext());
             }
-            if (token == null || token.isEmpty()) {
+            if (token == null || token.isEmpty() || token.contains("error:")) {
                 smartCashApplication.deleteSharedPreferences(getApplicationContext());
-                return null;
+                User error = new User();
+                error.setFirstName("ErrorOfLogin");
+                error.setLastName(token.replace("error:", ""));
+                return error;
             }
+
             User user = LoginViewModel.getSyncUser(token, getApplicationContext());
             saveUser(token, user);
             return user;
@@ -312,7 +321,19 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(User user) {
             super.onPostExecute(user);
             if (user != null) {
-                navigateToPinActivity();
+                if (user.getFirstName() != null && user.getFirstName().equalsIgnoreCase("ErrorOfLogin")) {
+                    //TODO: Think about a better way of returning an error from that
+
+                    if (user.getLastName() != null) {
+                        if (user.getLastName().toLowerCase().contains("2fa")) {
+                            txt2fa.setError(user.getLastName());
+                        }
+                        Toast.makeText(getApplicationContext(), user.getLastName(), Toast.LENGTH_LONG).show();
+                    }
+
+                    endLoadingProcess();
+                } else
+                    navigateToPinActivity();
             } else {
                 endLoadingProcess();
             }

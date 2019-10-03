@@ -469,8 +469,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         if (parsedQr.indexOf("-") == -1) {
             txtToAddress.setText(text);
-            txtAmount.setText(0);
-            txtAmountConverted.setText(0);
+            txtAmount.setText("0");
+            txtAmountConverted.setText("0");
         } else {
             String[] parts = parsedQr.split("-");
             txtToAddress.setText(parts[0]);

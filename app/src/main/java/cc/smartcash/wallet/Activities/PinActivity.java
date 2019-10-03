@@ -29,6 +29,7 @@ import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.Keys;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 
 public class PinActivity extends AppCompatActivity {
 
@@ -78,14 +79,38 @@ public class PinActivity extends AppCompatActivity {
     @OnClick(R.id.btn_confirm)
     public void onViewClicked() {
         if (encryptedPassword != null) {
+            boolean right = false;
             try {
+
+                if (Util.isNullOrEmpty(txtPin)) {
+                    txtPin.setError("The PIN can't be empty");
+                    return;
+                }
                 smartCashApplication.aead = smartCashApplication.getOrGenerateNewKeysetHandle(getApplicationContext()).getPrimitive(Aead.class);
                 smartCashApplication.aead.decrypt(encryptedPassword, txtPin.getText().toString().getBytes(StandardCharsets.UTF_8));
+                right = true;
                 navigateToMain();
             } catch (Exception ex) {
+                right = false;
                 Log.e(TAG, ex.getMessage());
+            } finally {
+                if (!right) new AlertDialog.Builder(this)
+                        .setTitle("Wrong PIN!")
+                        .setMessage("You did not type your PIN correctly, please try again.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            dialog.cancel();
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
             }
-        } else if (txtPin.getText().toString().equals(txtConfirmPin.getText().toString())) {
+        } else if (Util.compareString(txtPin, txtConfirmPin)) {
+
+            if (Util.isNullOrEmpty(txtPin) || Util.isNullOrEmpty(txtConfirmPin)) {
+                txtPin.setError("The PIN can't be empty");
+                txtConfirmPin.setError("The PIN can't be empty");
+                alertDialog("The PIN can't be empty", "If you don't want to use PIN, click on continue without PIN");
+                return;
+            }
 
             //ENCRYPT THE PASSWORD
             try {
@@ -98,6 +123,11 @@ public class PinActivity extends AppCompatActivity {
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
             }
+        } else if (!Util.compareString(txtPin, txtConfirmPin)) {
+            txtPin.setError("The PIN must match");
+            txtConfirmPin.setError("The PIN must match");
+            alertDialog("The PIN must match", "Use the eye to check your PIN.");
+            return;
         }
     }
 
@@ -108,18 +138,10 @@ public class PinActivity extends AppCompatActivity {
                 .setTitle("Forgot the PIN?")
                 .setMessage("Are you sure you want to redefine your PIN?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
-
-
-                        smartCashApplication.deleteSharedPreferences(PinActivity.this);
-                        startActivity(new Intent(PinActivity.this, LoginActivity.class));
-
-
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+                    smartCashApplication.deleteSharedPreferences(PinActivity.this);
+                    startActivity(new Intent(PinActivity.this, LoginActivity.class));
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -240,6 +262,17 @@ public class PinActivity extends AppCompatActivity {
         intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
         startActivity(intent);
 
+    }
+
+    private void alertDialog(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    dialog.dismiss();
+                    dialog.cancel();
+                }).show();
     }
 
 }

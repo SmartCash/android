@@ -3,6 +3,7 @@ package cc.smartcash.wallet.Utils;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -47,7 +48,7 @@ public class Util {
 
         if (qrCodeString.indexOf(prefixQueryStringQrCode) >= 0 && qrCodeString.indexOf(amountQueryStringQrCode) >= 0) {
             return parseQrCodeWithValue(qrCodeString);
-        } else if (qrCodeString.contains("smartcash:") && !qrCodeString.contains("&amount=")) {
+        } else if (qrCodeString.contains(prefixQueryStringQrCode) && !qrCodeString.contains(amountQueryStringQrCode)) {
             return parseQrCodeWithoutValue(qrCodeString);
         } else {
             return qrCodeString;
@@ -66,4 +67,17 @@ public class Util {
         }
         return null;
     }
+
+    public static String getString(TextView view) {
+        return view.getText().toString();
+    }
+
+    public static boolean compareString(TextView textView, TextView textView2) {
+        return getString(textView).equalsIgnoreCase(getString(textView2));
+    }
+
+    public static boolean isNullOrEmpty(TextView view) {
+        return view.getText() == null || view.getText().toString() == null || view.getText().toString().isEmpty();
+    }
+
 }

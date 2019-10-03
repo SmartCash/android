@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">SmartCash</string>
     <string name="smartCash">\u03A3</string>
 
     <!-- Strings related to login -->

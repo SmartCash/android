@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
+import cc.smartcash.wallet.Models.UserLogin;
 import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.R;
@@ -249,10 +250,12 @@ public class RegisterActivity extends AppCompatActivity {
                     sb.append(newUserResponse.getPassword()).append("\n");
                     Log.d(TAG, sb.toString());
 
-                    String password = newUserResponse.getPassword();
-                    String username = newUserResponse.getUsername();
+                    UserLogin userLogin = new UserLogin();
+                    userLogin.setUsername(newUserResponse.getUsername());
+                    userLogin.setPassword(newUserResponse.getPassword());
+                    userLogin.setTwoFactorAuthentication("");
 
-                    String token = LoginViewModel.getSyncToken(username, password, getApplicationContext());
+                    String token = LoginViewModel.getSyncToken(userLogin, getApplicationContext());
                     User userLoginResponse = LoginViewModel.getSyncUser(token, getApplicationContext());
 
                     encryptAndSaveMSK(newUserResponse, userLoginResponse);
