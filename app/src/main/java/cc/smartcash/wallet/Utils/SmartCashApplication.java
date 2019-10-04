@@ -34,6 +34,7 @@ import java.util.List;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.Wallet;
+import cc.smartcash.wallet.R;
 
 public class SmartCashApplication extends Application {
 
@@ -42,7 +43,6 @@ public class SmartCashApplication extends Application {
     private Gson gson = new Gson();
     private static final String TAG = SmartCashApplication.class.toString();
     private static final String PREF_FILE_NAME = "smartcash_wallet";
-
     private static final String TINK_KEYSET_NAME = "smartcash_wallet_keyset";
     private static final String MASTER_KEY_URI = "android-keystore://smartcash_wallet_master_key";
     public Aead aead;
@@ -124,18 +124,17 @@ public class SmartCashApplication extends Application {
     }
 
     public void saveActualSelectedCoin(Context context, Coin coin) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(coin);
-        prefsEditor.putString(Keys.KEY_CURRENT_SELECTED_COIN, json);
+        prefsEditor.putString(KEYS.KEY_CURRENT_SELECTED_COIN, json);
         prefsEditor.apply();
     }
 
     public Coin getActualSelectedCoin(Context context) {
-
-        Coin coin = new Coin("USD", (double) 0);
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString(Keys.KEY_CURRENT_SELECTED_COIN, "");
+        Coin coin = new Coin(context.getString(R.string.default_fiat), (double) 0);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(KEYS.KEY_CURRENT_SELECTED_COIN, "");
 
         if (json != null) {
             Coin coinAux = gson.fromJson(json, Coin.class);
@@ -148,44 +147,44 @@ public class SmartCashApplication extends Application {
     }
 
     public void saveCurrentPrice(Context context, ArrayList<Coin> coins) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(coins);
-        prefsEditor.putString(Keys.KEY_CURRENT_PRICES, json);
+        prefsEditor.putString(KEYS.KEY_CURRENT_PRICES, json);
         prefsEditor.apply();
     }
 
     public ArrayList<Coin> getCurrentPrice(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString(Keys.KEY_CURRENT_PRICES, "");
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(KEYS.KEY_CURRENT_PRICES, "");
         Type type = new TypeToken<ArrayList<Coin>>() {
         }.getType();
         return gson.fromJson(json, type);
     }
 
     public void saveUser(Context context, User user) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(user);
-        prefsEditor.putString(Keys.KEY_USER, json);
+        prefsEditor.putString(KEYS.KEY_USER, json);
         prefsEditor.apply();
     }
 
     public User getUser(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString(Keys.KEY_USER, "");
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(KEYS.KEY_USER, "");
         return gson.fromJson(json, User.class);
     }
 
     public void saveBoolean(Context context, Boolean bool, String key) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         prefsEditor.putBoolean(key, bool);
         prefsEditor.apply();
     }
 
     public Boolean getBoolean(Context context, String key) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         return getPreferences(context).getBoolean(key, false);
     }
 
@@ -193,52 +192,52 @@ public class SmartCashApplication extends Application {
         return String.format("%f", (amount * value));
     }
 
-    public BigDecimal converterBigDecimal(BigDecimal amount, BigDecimal value) {
+    public BigDecimal multiplyBigDecimals(BigDecimal amount, BigDecimal value) {
         return amount.multiply(value);
     }
 
     public void saveWallet(Context context, Wallet wallet) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         String json = gson.toJson(wallet);
-        prefsEditor.putString(Keys.KEY_WALLET, json);
+        prefsEditor.putString(KEYS.KEY_WALLET, json);
         prefsEditor.apply();
     }
 
     public Wallet getWallet(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        String json = getPreferences(context).getString(Keys.KEY_WALLET, "");
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        String json = getPreferences(context).getString(KEYS.KEY_WALLET, "");
         return gson.fromJson(json, Wallet.class);
     }
 
     public void saveToken(Context context, String token) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
-        prefsEditor.putString(Keys.KEY_TOKEN, token);
+        prefsEditor.putString(KEYS.KEY_TOKEN, token);
         prefsEditor.apply();
     }
 
     public String getToken(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
-        return getPreferences(context).getString(Keys.KEY_TOKEN, "");
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        return getPreferences(context).getString(KEYS.KEY_TOKEN, "");
     }
 
     public void deleteSharedPreferences(Context context) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         getPreferences(context).edit().clear().apply();
     }
 
     public void deleteMSK() {
-        this.context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).edit().remove(Keys.KEY_MSK).apply();
+        this.context.getSharedPreferences(KEYS.KEY_MSK, Context.MODE_PRIVATE).edit().remove(KEYS.KEY_MSK).apply();
     }
 
     public void saveMSK(byte[] bytes) {
         String string = new String(bytes, Charset.forName("ISO-8859-1"));
-        this.context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).edit().putString(Keys.KEY_MSK, string).apply();
+        this.context.getSharedPreferences(KEYS.KEY_MSK, Context.MODE_PRIVATE).edit().putString(KEYS.KEY_MSK, string).apply();
     }
 
     public byte[] getMSK() {
-        String string = context.getSharedPreferences(Keys.KEY_MSK, Context.MODE_PRIVATE).getString(Keys.KEY_MSK, "");
+        String string = context.getSharedPreferences(KEYS.KEY_MSK, Context.MODE_PRIVATE).getString(KEYS.KEY_MSK, "");
         if (string != null && !string.isEmpty())
             return string.getBytes(Charset.forName("ISO-8859-1"));
         return null;
@@ -271,14 +270,14 @@ public class SmartCashApplication extends Application {
     public void saveByte(byte[] bytes, Context context, String key) {
         String string = new String(bytes, Charset.forName("ISO-8859-1"));
 
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
         prefsEditor.putString(key, string);
         prefsEditor.apply();
     }
 
     public byte[] getByte(Context context, String key) {
-        mPrefs = context.getSharedPreferences(Keys.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         String string = getPreferences(context).getString(key, "");
 
         byte[] bytes;
@@ -303,7 +302,7 @@ public class SmartCashApplication extends Application {
     public String getDecryptedPassword(Context context, String pin) {
 
         String decryptedText = "";
-        byte[] encryptedPassword = this.getByte(context, Keys.KEY_PASSWORD);
+        byte[] encryptedPassword = this.getByte(context, KEYS.KEY_PASSWORD);
 
         if (encryptedPassword != null) {
 

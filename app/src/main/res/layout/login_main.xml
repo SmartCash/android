@@ -27,7 +27,7 @@
 
         android:layout_marginBottom="20dp"
         android:enabled="false"
-        android:text="Network Status ON"
+        android:text="@string/login_network_error_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -80,7 +80,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_weight="3"
                 android:background="@color/btnYellon"
-                android:text="Register"
+                android:text="@string/login_register_button"
                 android:textAlignment="center"
                 android:textAllCaps="true"
 
@@ -98,7 +98,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_weight="3"
                 android:background="@color/btnYellon"
-                android:text="Enter"
+                android:text="@string/login_enter_button"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
@@ -127,7 +127,7 @@
                 android:paddingEnd="5dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Forgot the password"
+                android:text="@string/login_forgot_the_password_button"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
@@ -192,7 +192,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
-                android:text="@string/prompt_password"
+                android:text="@string/login_password_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_user" />
@@ -204,7 +204,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="@string/prompt_user"
+                android:text="@string/login_username_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -216,7 +216,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
-                android:text="@string/prompt_two_factor"
+                android:text="@string/login_2fa_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_password" />

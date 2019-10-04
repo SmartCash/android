@@ -16,7 +16,7 @@ import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.Utils.Util;
 import retrofit2.Call;
@@ -41,15 +41,15 @@ public class WebWalletApiUnitTest {
         String localIP = SmartCashApplication.getIPAddress(true);
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
-                Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
+                Util.getProperty(KEYS.CONFIG_TEST_USER, getContext()),
+                Util.getProperty(KEYS.CONFIG_TEST_PASS, getContext()),
                 "password",
-                Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+                Util.getProperty(KEYS.CONFIG_CLIENT_ID, getContext()),
 
                 "",
                 "mobile",
                 localIP,
-                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
+                Util.getProperty(KEYS.CONFIG_CLIENT_SECRET, getContext())
         );
 
         assertNotNull("Call OK", call);
@@ -85,15 +85,15 @@ public class WebWalletApiUnitTest {
         String token = "";
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
-                Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
+                Util.getProperty(KEYS.CONFIG_TEST_USER, getContext()),
+                Util.getProperty(KEYS.CONFIG_TEST_PASS, getContext()),
                 "password",
-                Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+                Util.getProperty(KEYS.CONFIG_CLIENT_ID, getContext()),
 
                 "",
                 "mobile",
                 localIP,
-                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
+                Util.getProperty(KEYS.CONFIG_CLIENT_SECRET, getContext())
         );
 
         assertNotNull("Call OK", call);
@@ -152,15 +152,15 @@ public class WebWalletApiUnitTest {
         String token = "";
 
         Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
-                Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
+                Util.getProperty(KEYS.CONFIG_TEST_USER, getContext()),
+                Util.getProperty(KEYS.CONFIG_TEST_PASS, getContext()),
                 "password",
-                Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+                Util.getProperty(KEYS.CONFIG_CLIENT_ID, getContext()),
 
                 "",
                 "mobile",
                 localIP,
-                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
+                Util.getProperty(KEYS.CONFIG_CLIENT_SECRET, getContext())
         );
 
         assertNotNull("Call OK", call);

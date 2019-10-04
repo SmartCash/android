@@ -1,6 +1,6 @@
 package cc.smartcash.wallet.Utils;
 
-public final class ConstantsURLS {
+public final class URLS {
 
     public static final String URL_API_EXPLORER = "https://api-explorer.smartcash.cc/api/smartexplorer/";
 
@@ -23,5 +23,11 @@ public final class ConstantsURLS {
     public static final String URL_QRCODE_AMOUNT = "https://qr.smartcash.cc/?address=%s&amount=%f";
 
     public static final String URL_QRCODE = "https://qr.smartcash.cc/?address=%s";
+
+    public static final String URL_CHANGE_PASSWORD = "https://wallet.smartcash.cc/change-password";
+
+    public static final String URL_API_SMARTTEXT = "https://smartext.me/";
+
+
 
 }

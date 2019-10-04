@@ -2,11 +2,16 @@ package cc.smartcash.wallet.Utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Properties;
+
+import cc.smartcash.wallet.R;
 
 public class Util {
 
@@ -72,6 +77,14 @@ public class Util {
         return view.getText().toString();
     }
 
+    public static BigDecimal getBigDecimal(TextView view) {
+        return BigDecimal.valueOf(Util.getDouble(view));
+    }
+
+    public static Double getDouble(TextView view) {
+        return Double.parseDouble(Util.getString(view));
+    }
+
     public static boolean compareString(TextView textView, TextView textView2) {
         return getString(textView).equalsIgnoreCase(getString(textView2));
     }
@@ -80,4 +93,19 @@ public class Util {
         return view.getText() == null || view.getText().toString() == null || view.getText().toString().isEmpty();
     }
 
+    public static boolean isTaskComplete(int progress) {
+        return ((progress * 2) == 100); //percentage of the progress and the process
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public static String amountInCoinConcatenation(Context context, String coinTick) {
+        return String.format(Locale.getDefault(), context.getString(R.string.send_amount_in_coin_label).replace("%s", coinTick));
+    }
+
+    public static String amountInDefaultCryptoConcatenation(Context context) {
+        return amountInCoinConcatenation(context, context.getString(R.string.default_crypto));
+    }
 }

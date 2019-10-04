@@ -28,7 +28,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
-            android:text="@string/txt_to_address_label"
+            android:text="@string/send_address_label"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.489"
@@ -63,7 +63,7 @@
             app:layout_constraintEnd_toStartOf="@+id/btn_wallet"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_to_address"
-            android:contentDescription="Scan your QRCode"
+            android:contentDescription="@string/send_icon_qrcode_scan_content_description"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
@@ -79,7 +79,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_qr_code"
             app:layout_constraintTop_toBottomOf="@+id/txt_to_address"
-            android:contentDescription="Select your wallet address"
+            android:contentDescription="@string/send_icon_wallet_select_content_description"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
-            android:text="@string/amount_in_smart_label"
+            android:text="@string/send_amount_in_fiat_label"
             android:textAlignment="viewStart"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +136,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/amount_in_smart_label"
+            android:text="@string/send_amount_in_smartcash_label"
             android:textAlignment="viewStart"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -190,7 +190,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
-            android:text="@string/pin_label"
+            android:text="@string/send_pin_label"
             android:textAlignment="viewStart"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -246,7 +246,7 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="20dp"
             android:background="@color/colorAccent"
-            android:text="@string/send_button"
+            android:text="@string/send_button_label"
             android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -256,4 +256,20 @@
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/loader"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

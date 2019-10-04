@@ -13,8 +13,8 @@ import org.json.JSONObject;
 import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.TransactionDetails;
 import cc.smartcash.wallet.Models.TransactionResponse;
-import cc.smartcash.wallet.Utils.ApiUtils;
-import cc.smartcash.wallet.Utils.ConstantsURLS;
+import cc.smartcash.wallet.Utils.ApiUtil;
+import cc.smartcash.wallet.Utils.URLS;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,7 +39,7 @@ public class TransactionViewModel extends ViewModel {
     }
 
     private void loadDetails(String token, TransactionDetails details, Context context) {
-        Call<TransactionResponse> call = new ApiUtils(context).getTransactionDetailsService().getDetails("Bearer " + token, details);
+        Call<TransactionResponse> call = ApiUtil.getTransactionDetailsService().getDetails("Bearer " + token, details);
 
         call.enqueue(new Callback<TransactionResponse>() {
             @Override
@@ -67,7 +67,7 @@ public class TransactionViewModel extends ViewModel {
     }
 
     public void loadTransaction(String hash, Context context) {
-        Call<FullTransaction> call = new ApiUtils(context).getTransactionService().getTransaction(ConstantsURLS.URL_INSIGHT_EXPLORER + hash);
+        Call<FullTransaction> call = ApiUtil.getTransactionService().getTransaction(URLS.URL_INSIGHT_EXPLORER + hash);
 
         call.enqueue(new Callback<FullTransaction>() {
             @Override

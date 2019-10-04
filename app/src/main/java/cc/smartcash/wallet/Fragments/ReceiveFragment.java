@@ -152,7 +152,7 @@ public class ReceiveFragment extends Fragment {
                 if (currentPrices != null) {
                     coins = SmartCashApplication.convertToArrayList(currentPrices);
                 } else {
-                    Log.e(getContext().getString(R.string.tag_log_error), "Error to get current prices.");
+                    Log.e(TAG, "Error to get current prices.");
                 }
             });
         } else {
@@ -228,9 +228,9 @@ public class ReceiveFragment extends Fragment {
 
         if (!txtAmount.getText().toString().isEmpty()) {
 
-            if (actualSelected.getName().equals("SMART")) {
-                amountConverted = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
+            if (actualSelected.getName().equals(getString(R.string.default_crypto))) {
+                amountConverted = smartCashApplication.multiplyBigDecimals(BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
+                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", getString(R.string.default_crypto)));
             } else {
 
                 double currentPrice = actualSelected.getValue();
@@ -279,9 +279,9 @@ public class ReceiveFragment extends Fragment {
 
         if (!txtAmountConverted.getText().toString().isEmpty()) {
 
-            if (actualSelected.getName().equals("SMART")) {
-                amountConverted = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", "SMART"));
+            if (actualSelected.getName().equals(getString(R.string.default_crypto))) {
+                amountConverted = smartCashApplication.multiplyBigDecimals(BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
+                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", getString(R.string.default_crypto)));
             } else {
 
                 double currentPrice = actualSelected.getValue();

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import cc.smartcash.wallet.Models.Coin;
-import cc.smartcash.wallet.Utils.ApiUtils;
+import cc.smartcash.wallet.Utils.ApiUtil;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import retrofit2.Call;
@@ -42,7 +42,7 @@ public class CurrentPriceViewModel extends ViewModel {
 
         if (isInternetOn) {
 
-            Call<JsonNode> call = new ApiUtils(context).getCurrentPricesService().getCurrentPrices();
+            Call<JsonNode> call = ApiUtil.getCurrentPricesService().getCurrentPrices();
             Response<JsonNode> response = null;
             try {
 
@@ -67,7 +67,7 @@ public class CurrentPriceViewModel extends ViewModel {
 
         if (isInternetOn) {
 
-            Call<JsonNode> call = new ApiUtils(context).getCurrentPricesService().getCurrentPrices();
+            Call<JsonNode> call = ApiUtil.getCurrentPricesService().getCurrentPrices();
 
             call.enqueue(new Callback<JsonNode>() {
                 @Override

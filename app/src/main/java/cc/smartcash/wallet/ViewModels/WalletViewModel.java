@@ -10,11 +10,16 @@ import androidx.lifecycle.ViewModel;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import cc.smartcash.wallet.Models.SendPayment;
-import cc.smartcash.wallet.Models.TransactionResponse;
+import cc.smartcash.wallet.Models.SmartTextRequest;
+import cc.smartcash.wallet.Models.SmartTextRoot;
 import cc.smartcash.wallet.Models.WalletPaymentFeeRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
-import cc.smartcash.wallet.Utils.ApiUtils;
+import cc.smartcash.wallet.Utils.ApiUtil;
+import cc.smartcash.wallet.Utils.KEYS;
+import cc.smartcash.wallet.Utils.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,14 +28,59 @@ public class WalletViewModel extends ViewModel {
 
     public static final String TAG = WalletViewModel.class.getSimpleName();
 
-    private MutableLiveData<TransactionResponse> returnResponse;
+    private MutableLiveData<WebWalletRootResponse<String>> returnResponse;
 
-    public LiveData<TransactionResponse> sendPayment(Context context, String token, SendPayment sendPayment) {
+    public static WebWalletRootResponse<Double> getSyncFee(Context context, String token, SendPayment sendPayment) {
 
+        WalletPaymentFeeRequest feeRequest = new WalletPaymentFeeRequest();
+        feeRequest.setAmount(sendPayment.getAmount());
+        feeRequest.setFromAddress(sendPayment.getFromAddress());
+        feeRequest.setToAddress(sendPayment.getToAddress());
+        feeRequest.setRecurrenceType(3);
+        feeRequest.setPassword(sendPayment.getUserKey());
+
+        Call<WebWalletRootResponse<Double>> callFee = ApiUtil.getWalletService().getFee("Bearer " + token, feeRequest);
+
+        try {
+            Response<WebWalletRootResponse<Double>> r = callFee.execute();
+            WebWalletRootResponse<Double> body = r.body();
+            return body;
+
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return null;
+    }
+
+    public static WebWalletRootResponse<String> sendSyncTransaction(Context context, String token, SendPayment sendPayment) {
+        Call<WebWalletRootResponse<String>> callSendPayment = ApiUtil.getWalletService().sentPayment("Bearer " + token, sendPayment);
+        try {
+            Response<WebWalletRootResponse<String>> response = callSendPayment.execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static SmartTextRoot sendSyncSmartText(Context context, String token, SmartTextRequest sendPayment) {
+        Call<SmartTextRoot> callSendPayment = ApiUtil.getSmartTextService().sentPayment(Util.getProperty(KEYS.CONFIG_TOKEN_SEND_BY_TEXT, context), sendPayment);
+        try {
+            Response<SmartTextRoot> response = callSendPayment.execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public LiveData<WebWalletRootResponse<String>> sendPayment(Context context, String token, SendPayment sendPayment) {
         returnResponse = new MutableLiveData<>();
         loadSendPayment(context, token, sendPayment);
-
-
         return returnResponse;
     }
 
@@ -43,7 +93,7 @@ public class WalletViewModel extends ViewModel {
         feeRequest.setRecurrenceType(3);
         feeRequest.setPassword(sendPayment.getUserKey());
 
-        Call<WebWalletRootResponse<Double>> callFee = new ApiUtils(context).getWalletService().getFee("Bearer " + token, feeRequest);
+        Call<WebWalletRootResponse<Double>> callFee = ApiUtil.getWalletService().getFee("Bearer " + token, feeRequest);
 
         callFee.enqueue(new Callback<WebWalletRootResponse<Double>>() {
             @Override
@@ -54,11 +104,11 @@ public class WalletViewModel extends ViewModel {
                     sendPayment.setAmount(sendPayment.getAmount() + fee);
                 }
 
-                Call<TransactionResponse> callSendPayment = new ApiUtils(context).getWalletService().sentPayment("Bearer " + token, sendPayment);
+                Call<WebWalletRootResponse<String>> callSendPayment = ApiUtil.getWalletService().sentPayment("Bearer " + token, sendPayment);
 
-                callSendPayment.enqueue(new Callback<TransactionResponse>() {
+                callSendPayment.enqueue(new Callback<WebWalletRootResponse<String>>() {
                     @Override
-                    public void onResponse(Call<TransactionResponse> call, Response<TransactionResponse> response) {
+                    public void onResponse(Call<WebWalletRootResponse<String>> call, Response<WebWalletRootResponse<String>> response) {
                         if (response.isSuccessful()) {
                             returnResponse.setValue(response.body());
                         } else {
@@ -83,7 +133,7 @@ public class WalletViewModel extends ViewModel {
                     }
 
                     @Override
-                    public void onFailure(Call<TransactionResponse> call, Throwable t) {
+                    public void onFailure(Call<WebWalletRootResponse<String>> call, Throwable t) {
 
                         t.printStackTrace();
                         t.getMessage();
@@ -104,4 +154,5 @@ public class WalletViewModel extends ViewModel {
 
 
     }
+
 }

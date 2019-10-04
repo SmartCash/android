@@ -11,7 +11,7 @@ import cc.smartcash.wallet.Models.UserLogin;
 import cc.smartcash.wallet.Models.WebWalletException;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.Utils.Util;
@@ -29,11 +29,11 @@ public class LoginViewModel {
                 userLogin.getUsername(),
                 userLogin.getPassword(),
                 "password",
-                Util.getProperty(Keys.CONFIG_CLIENT_ID, context),
+                Util.getProperty(KEYS.CONFIG_CLIENT_ID, context),
                 userLogin.getTwoFactorAuthentication(),
                 "mobile",
                 localIP,
-                Util.getProperty(Keys.CONFIG_CLIENT_SECRET, context)
+                Util.getProperty(KEYS.CONFIG_CLIENT_SECRET, context)
         );
 
         try {

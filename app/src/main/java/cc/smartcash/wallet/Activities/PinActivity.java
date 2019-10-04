@@ -26,7 +26,7 @@ import butterknife.OnClick;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.Utils.Util;
@@ -118,7 +118,7 @@ public class PinActivity extends AppCompatActivity {
                 byte[] plainTextToEncrypt = this.currentPassword.getBytes(StandardCharsets.UTF_8);
                 byte[] pin = this.txtConfirmPin.getText().toString().getBytes(StandardCharsets.UTF_8);
                 byte[] cipherTextToEncrypt = smartCashApplication.aead.encrypt(plainTextToEncrypt, pin);
-                smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), Keys.KEY_PASSWORD);
+                smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), KEYS.KEY_PASSWORD);
                 navigateToMain();
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
@@ -193,11 +193,11 @@ public class PinActivity extends AppCompatActivity {
 
     private void getPassword() {
         Intent intent = getIntent();
-        String extraPASSWORD = intent.getStringExtra(Keys.KEY_PASSWORD);
+        String extraPASSWORD = intent.getStringExtra(KEYS.KEY_PASSWORD);
         if (extraPASSWORD != null && !extraPASSWORD.isEmpty()) {
             this.currentPassword = extraPASSWORD;
         } else {
-            encryptedPassword = this.smartCashApplication.getByte(getApplicationContext(), Keys.KEY_PASSWORD);
+            encryptedPassword = this.smartCashApplication.getByte(getApplicationContext(), KEYS.KEY_PASSWORD);
         }
     }
 
@@ -211,7 +211,7 @@ public class PinActivity extends AppCompatActivity {
     }
 
     private void setNavigationWithoutPin() {
-        boolean withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
+        boolean withoutPin = smartCashApplication.getBoolean(this, KEYS.KEY_WITHOUT_PIN);
         if (withoutPin) {
             internetAvailable = NetworkUtil.getInternetStatus(this);
             if (!internetAvailable) navigateToLogin();
@@ -243,7 +243,7 @@ public class PinActivity extends AppCompatActivity {
 
         User user = smartCashApplication.getUser(this);
         if (!withoutPin) {
-            byte[] pin = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
+            byte[] pin = smartCashApplication.getByte(this, KEYS.KEY_PASSWORD);
 
             return (token != null && !token.isEmpty() && user != null && pin != null);
         } else {
@@ -259,7 +259,7 @@ public class PinActivity extends AppCompatActivity {
 
     private void navigateToMain() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
+        intent.putExtra(KEYS.KEY_PIN, this.txtPin.getText().toString());
         startActivity(intent);
 
     }

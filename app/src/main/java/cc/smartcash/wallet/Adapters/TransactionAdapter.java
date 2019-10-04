@@ -56,15 +56,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
         SmartCashApplication smartCashApplication = new SmartCashApplication(context);
         ArrayList<Coin> coins = smartCashApplication.getCurrentPrice(context);
 
-        if (smartCashApplication.getActualSelectedCoin(context) == null || smartCashApplication.getActualSelectedCoin(context).getName().equals("SMART")) {
+        if (smartCashApplication.getActualSelectedCoin(context) == null || smartCashApplication.getActualSelectedCoin(context).getName().equals(context.getString(R.string.default_crypto))) {
             for (Coin item : coins) {
-                if (item.getName().equals("SMART")) {
+                if (item.getName().equals(context.getString(R.string.default_crypto))) {
                     transactionViewHolder.price.setText(String.format("%f", this.transactions.get(i).getAmount()));
                     break;
                 }
             }
         } else {
-            BigDecimal value = smartCashApplication.converterBigDecimal(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(smartCashApplication.getActualSelectedCoin(context).getValue()));
+            BigDecimal value = smartCashApplication.multiplyBigDecimals(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(smartCashApplication.getActualSelectedCoin(context).getValue()));
             transactionViewHolder.price.setText(String.format("%f", value));
         }
 

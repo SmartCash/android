@@ -37,7 +37,7 @@ import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getApplicationContext());
 
-        withoutPin = smartCashApplication.getBoolean(this, Keys.KEY_WITHOUT_PIN);
+        withoutPin = smartCashApplication.getBoolean(this, KEYS.KEY_WITHOUT_PIN);
 
         this.txtPin = getPIN();
 
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
 
             createPinBtn.setOnClickListener(v4 -> {
-                smartCashApplication.saveBoolean(this, false, Keys.KEY_WITHOUT_PIN);
+                smartCashApplication.saveBoolean(this, false, KEYS.KEY_WITHOUT_PIN);
                 startActivity(new Intent(this, PinActivity.class));
             });
 
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private String getPIN() {
         Intent intent = getIntent();
-        String extraPIN = intent.getStringExtra(Keys.KEY_PIN);
+        String extraPIN = intent.getStringExtra(KEYS.KEY_PIN);
         if (extraPIN != null && !extraPIN.isEmpty()) {
             return extraPIN;
         }
@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
 
         walletTxt.setText(getResources().getString(R.string.smartCash) + String.format("%.8f", amount));
-        if (selectedCoin == null || selectedCoin.getName().equals("SMART")) {
+        if (selectedCoin == null || selectedCoin.getName().equals(getString(R.string.default_crypto))) {
             ArrayList<Coin> currentPrice = smartCashApplication.getCurrentPrice(this);
             walletConverted.setText("$ " + smartCashApplication.converterValue(amount, currentPrice.get(0).getValue()) + " " + currentPrice.get(0).getName());
         } else {

@@ -20,6 +20,9 @@ public class WebWalletRootResponse<T> implements Serializable {
     @SerializedName("isValid")
     private Boolean isValid;
 
+    @SerializedName("error_description")
+    private String errorDescription;
+
     public T getData() {
         return data;
     }
@@ -52,5 +55,12 @@ public class WebWalletRootResponse<T> implements Serializable {
         isValid = valid;
     }
 
+    public String getErrorDescription() {
+        return errorDescription;
+    }
+
+    public void setErrorDescription(String errorDescription) {
+        this.errorDescription = errorDescription;
+    }
 
 }

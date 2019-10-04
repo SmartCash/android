@@ -12,7 +12,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="30dp"
-        android:text="@string/qr_code_dialog_title"
+        android:text="@string/send_qr_code_dialog_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

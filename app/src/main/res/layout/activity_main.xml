@@ -40,7 +40,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Backup your wallet!"
+            android:text="@string/main_backup_label"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/white"

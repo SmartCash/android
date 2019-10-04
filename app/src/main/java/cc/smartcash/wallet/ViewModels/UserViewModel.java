@@ -19,7 +19,7 @@ import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 import cc.smartcash.wallet.Utils.Util;
@@ -179,15 +179,15 @@ public class UserViewModel extends ViewModel {
             if (localIP == null || localIP.isEmpty()) localIP = "100.003.102.100";
 
             Call<LoginResponse> call = new WebWalletAPIConfig().getWebWalletAPIService().getToken(
-                    Util.getProperty(Keys.CONFIG_TEST_USER, getContext()),
-                    Util.getProperty(Keys.CONFIG_TEST_PASS, getContext()),
+                    Util.getProperty(KEYS.CONFIG_TEST_USER, getContext()),
+                    Util.getProperty(KEYS.CONFIG_TEST_PASS, getContext()),
                     "password",
-                    Util.getProperty(Keys.CONFIG_CLIENT_ID, getContext()),
+                    Util.getProperty(KEYS.CONFIG_CLIENT_ID, getContext()),
 
                     "",
                     "mobile",
                     localIP,
-                    Util.getProperty(Keys.CONFIG_CLIENT_SECRET, getContext())
+                    Util.getProperty(KEYS.CONFIG_CLIENT_SECRET, getContext())
             );
 
             call.enqueue(new Callback<LoginResponse>() {

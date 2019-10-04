@@ -24,6 +24,7 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cc.smartcash.wallet.BuildConfig;
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserLogin;
@@ -31,9 +32,10 @@ import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.Util;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.LoginViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
@@ -85,24 +87,6 @@ public class RegisterActivity extends AppCompatActivity {
         setNetworkReceiver();
     }
 
-    private void setNetworkReceiver() {
-        networkReceiver = new NetworkReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                Log.i(TAG, "The status of the network has changed");
-                String status = NetworkUtil.getConnectivityStatusString(context);
-
-                boolean internetAvailable = NetworkUtil.getInternetStatus(context);
-                networkSwitch.setChecked(internetAvailable);
-                networkSwitch.setText(status);
-
-            }
-
-        };
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -131,66 +115,81 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_save)
     public void onViewClicked() {
+        if (hasErrorOnForm(Util.getString(txtUser), Util.getString(txtPassword), Util.getString(txtConfirmPassword), Util.getString(txtPin), Util.getString(txtConfirmPin)))
+            return;
+        createNewUser(Util.getString(txtUser), Util.getString(txtPassword));
+    }
 
-        String username = txtUser.getText().toString();
-        String password = txtPassword.getText().toString();
-        String confirm_password = txtConfirmPassword.getText().toString();
-        String pin = txtPin.getText().toString();
-        String confirm_pin = txtConfirmPin.getText().toString();
+    private void setNetworkReceiver() {
+        networkReceiver = new NetworkReceiver() {
 
-        boolean hasError = validateForm(username, password, confirm_password, pin, confirm_pin, false);
+            @Override
+            public void onReceive(Context context, Intent intent) {
 
-        if (hasError) return;
+                Log.i(TAG, getString(R.string.register_network_status_change));
+                String status = NetworkUtil.getConnectivityStatusString(context);
 
-        createNewUser(username, password);
+                boolean internetAvailable = NetworkUtil.getInternetStatus(context);
+                networkSwitch.setChecked(internetAvailable);
+                networkSwitch.setText(status);
+
+            }
+
+        };
     }
 
     private void setDebugInfo() {
-        //if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             // do something for a debug build
-            String useruuid = UUID.randomUUID().toString();
-            txtUser.setText(useruuid + "@testeandroidmobile.com");
+            String userUUID = UUID.randomUUID().toString();
+            txtUser.setText(userUUID + "@testeandroidmobile.com");
             txtPassword.setText("123456");
             txtConfirmPassword.setText("123456");
             txtPin.setText("1234");
             txtConfirmPin.setText("1234");
-        //}
+        }
     }
 
     private void navigateToMain() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.putExtra(Keys.KEY_PIN, this.txtPin.getText().toString());
+        intent.putExtra(KEYS.KEY_PIN, this.txtPin.getText().toString());
         startActivity(intent);
-
     }
 
-    private boolean validateForm(String username, String password, String confirm_password, String pin, String confirm_pin, boolean hasError) {
+    private boolean hasErrorOnForm(String username, String password, String confirm_password, String pin, String confirm_pin) {
+
+        boolean hasError = false;
+
         if (username.isEmpty()) {
-            txtUser.setError("The USERNAME can't be empty");
+            txtUser.setError(getString(R.string.register_username_error_message));
             hasError = true;
         }
         if (password.isEmpty()) {
-            txtPassword.setError("The PASSWORD can't be empty");
+            txtPassword.setError(getString(R.string.register_password_error_message));
             hasError = true;
         }
         if (confirm_password.isEmpty()) {
-            txtConfirmPassword.setError("The confirmation of the PASSWORD can't be empty");
+            txtConfirmPassword.setError(getString(R.string.register_password_confirmation_error_message));
             hasError = true;
         }
         if (pin.isEmpty()) {
-            txtPin.setError("The PIN can't be empty");
+            txtPin.setError(getString(R.string.register_pin_error_message));
             hasError = true;
         }
         if (confirm_pin.isEmpty()) {
-            txtConfirmPin.setError("The confirmation of the PIN can't be empty");
+            txtConfirmPin.setError(getString(R.string.register_pin_confirmation_error_message));
             hasError = true;
         }
         if (!pin.equalsIgnoreCase(confirm_pin)) {
-            txtConfirmPin.setError("The PIN does not match");
+            txtConfirmPin.setError(getString(R.string.register_pin_match_error_message));
             hasError = true;
         }
         if (!password.equalsIgnoreCase(confirm_password)) {
-            txtPassword.setError("The PASSWORD does not match");
+            txtPassword.setError(getString(R.string.register_password_match_error_message));
+            hasError = true;
+        }
+        if (!Util.isValidEmail(username)) {
+            txtUser.setError(getString(R.string.register_username_pattern_error_message));
             hasError = true;
         }
         return hasError;
@@ -210,7 +209,7 @@ public class RegisterActivity extends AppCompatActivity {
             byte[] plainTextToEncrypt = newUser.getPassword().getBytes(StandardCharsets.UTF_8);
             byte[] pinByte = this.txtPin.getText().toString().getBytes(StandardCharsets.UTF_8);
             byte[] cipherTextToEncrypt = smartCashApplication.aead.encrypt(plainTextToEncrypt, pinByte);
-            smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), Keys.KEY_PASSWORD);
+            smartCashApplication.saveByte(cipherTextToEncrypt, getApplicationContext(), KEYS.KEY_PASSWORD);
         } catch (Exception ex) {
             Log.e(TAG, ex.getMessage());
         }
@@ -229,6 +228,16 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private void lockLoginButton() {
+        findViewById(R.id.btn_save).setEnabled(false);
+        ((Button) findViewById(R.id.btn_save)).setText(getString(R.string.register_save_button_loading_status));
+    }
+
+    private void unlockLoginButton() {
+        findViewById(R.id.btn_save).setEnabled(true);
+        ((Button) findViewById(R.id.btn_save)).setText(getString(R.string.register_save_button));
+    }
+
     private class RegisterUserTask extends AsyncTask<UserRegisterRequest, Integer, User> {
 
         @Override
@@ -242,13 +251,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (userRecoveryKeyMain != null) {
                 User newUserResponse = UserViewModel.setSyncUser(users[0], userRecoveryKeyMain, getApplicationContext());
-
                 if (newUserResponse != null) {
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(newUserResponse.getUsername()).append("\n");
-                    sb.append(newUserResponse.getPassword()).append("\n");
-                    Log.d(TAG, sb.toString());
 
                     UserLogin userLogin = new UserLogin();
                     userLogin.setUsername(newUserResponse.getUsername());
@@ -270,17 +273,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            int pct = (values[0] * 2);
-
-            Log.d(TAG, "on progress update...");
-            Log.d(TAG, String.valueOf(values[0]));
-            Log.d(TAG, (pct + "%"));
-
-            if (pct < 100) {
-                lockLoginButton();
-            }
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockLoginButton(); //percentage of the progress
         }
 
         @Override
@@ -293,6 +288,14 @@ public class RegisterActivity extends AppCompatActivity {
                 endLoadingProcess();
             }
         }
+    }
+
+    private void getCurrentPrices() {
+        new PriceTask().execute();
+    }
+
+    private void getUserRecoveryKey() {
+        new UserRecoveryKeyTask().execute();
     }
 
     private class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
@@ -309,13 +312,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-            int pct = (values[0] * 2);
-            if (pct < 100) {
-                lockLoginButton();
-            }
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockLoginButton(); //percentage of the progress
         }
 
         @Override
@@ -344,18 +343,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-            int pct = (values[0] * 2);
-
-            Log.d(TAG, "on progress update...");
-            Log.d(TAG, String.valueOf(values[0]));
-            Log.d(TAG, (pct + "%"));
-
-            if (pct < 100) {
-                lockLoginButton();
-            }
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockLoginButton(); //percentage of the progress
         }
 
         @Override
@@ -363,41 +353,13 @@ public class RegisterActivity extends AppCompatActivity {
             super.onPostExecute(userRecoveryKey);
 
             if (userRecoveryKey != null) {
-
                 userRecoveryKeyMain = userRecoveryKey;
-
                 Toast.makeText(getApplicationContext(), userRecoveryKeyMain.getRecoveryKey(), Toast.LENGTH_SHORT).show();
-
                 unlockLoginButton();
-
             } else {
-
                 endLoadingProcess();
-
             }
-
         }
-    }
-
-    private void getCurrentPrices() {
-
-        new PriceTask().execute();
-
-    }
-
-    private void getUserRecoveryKey() {
-        new UserRecoveryKeyTask().execute();
-    }
-
-    private void lockLoginButton() {
-
-        findViewById(R.id.btn_save).setEnabled(false);
-        ((Button) findViewById(R.id.btn_save)).setText("loading...");
-    }
-
-    private void unlockLoginButton() {
-        findViewById(R.id.btn_save).setEnabled(true);
-        ((Button) findViewById(R.id.btn_save)).setText("SAVE");
     }
 
     private void startLoadingProcess() {
@@ -416,10 +378,8 @@ public class RegisterActivity extends AppCompatActivity {
         if (user != null) {
             smartCashApplication.saveToken(RegisterActivity.this, token);
             smartCashApplication.saveUser(RegisterActivity.this, user);
-            Log.d(TAG, "Users OK");
         } else {
             smartCashApplication.deleteSharedPreferences(RegisterActivity.this);
-            Log.e(TAG, "Error to getUser");
         }
     }
 

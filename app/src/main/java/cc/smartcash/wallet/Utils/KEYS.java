@@ -1,6 +1,6 @@
 package cc.smartcash.wallet.Utils;
 
-public class Keys {
+public class KEYS {
 
     public static final String SHARED_PREFERENCES_FILE_NAME = "Smartcash";
 
@@ -30,5 +30,12 @@ public class Keys {
 
     public static final String CONFIG_TEST_PASS = "testPassword";
 
+    public static final String CONFIG_TOKEN_SEND_BY_TEXT = "tokenSendByText";
+
+    public static final String KEY_SMARTTEXT_EMAIL = "EMAIL";
+
+    public static final String KEY_SMARTTEXT_SMS = "SMS";
+
+    public static final String KEY_SMARTTEXT_LINK = "LINK";
 
 }

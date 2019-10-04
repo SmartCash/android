@@ -31,9 +31,10 @@ import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserLogin;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
-import cc.smartcash.wallet.Utils.Keys;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.NetworkUtil;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.URLS;
 import cc.smartcash.wallet.Utils.Util;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.LoginViewModel;
@@ -115,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         getCurrentPrices();
     }
 
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onViewClicked() {
 
         if (!internetAvailable) {
-            Toast.makeText(getApplicationContext(), "You must be on-line to log-in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_network_error_message), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -133,8 +133,8 @@ public class LoginActivity extends AppCompatActivity {
         userLogin.setTwoFactorAuthentication(Util.getString(txt2fa));
 
         if (Util.isNullOrEmpty(txtUser) || Util.isNullOrEmpty(txtPassword)) {
-            txtUser.setError("The username can't be empty");
-            txtPassword.setError("The password can't be empty");
+            txtUser.setError(getResources().getString(R.string.login_username_error_message));
+            txtPassword.setError(getResources().getString(R.string.login_password_error_message));
             return;
         }
 
@@ -145,27 +145,20 @@ public class LoginActivity extends AppCompatActivity {
     protected void register() {
 
         if (!internetAvailable) {
-            Toast.makeText(getApplicationContext(), "You must be on-line to register.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_network_error_message), Toast.LENGTH_SHORT).show();
             return;
         }
-
-
-        Intent myIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        LoginActivity.this.startActivity(myIntent);
-
+        this.startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
     }
 
     @OnClick(R.id.btn_forgot_password)
     protected void onTxtForgetYourPasswordClicked() {
 
         if (!internetAvailable) {
-            Toast.makeText(getApplicationContext(), "You must be on-line to change your password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_network_error_message), Toast.LENGTH_SHORT).show();
             return;
         }
-
-
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wallet.smartcash.cc/change-password"));
-        this.startActivity(browserIntent);
+        this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_CHANGE_PASSWORD)));
     }
 
     @OnClick(R.id.btn_eye)
@@ -185,32 +178,27 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setDebugInfo() {
         if (BuildConfig.DEBUG) {
-            txtUser.setText(Util.getProperty(Keys.CONFIG_TEST_USER, getApplicationContext()));
-            txtPassword.setText(Util.getProperty(Keys.CONFIG_TEST_PASS, getApplicationContext()));
+            txtUser.setText(Util.getProperty(KEYS.CONFIG_TEST_USER, getApplicationContext()));
+            txtPassword.setText(Util.getProperty(KEYS.CONFIG_TEST_PASS, getApplicationContext()));
         }
     }
 
     private void setNetworkReceiver() {
         internetAvailable = NetworkUtil.getInternetStatus(this);
         networkReceiver = new NetworkReceiver() {
-
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 String status = NetworkUtil.getConnectivityStatusString(context);
                 internetAvailable = NetworkUtil.getInternetStatus(context);
                 networkSwitch.setChecked(internetAvailable);
                 networkSwitch.setText(status);
-
-                Log.d(TAG, "The status of the network has changed");
+                Log.d(TAG, getResources().getString(R.string.login_network_status_change));
             }
         };
     }
 
     private void getCurrentPrices() {
-
         new PriceTask().execute();
-
     }
 
     private void startLoadingProcess() {
@@ -228,13 +216,13 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isOnLocalDB() {
         String token = smartCashApplication.getToken(this);
         User user = smartCashApplication.getUser(this);
-        byte[] password = smartCashApplication.getByte(this, Keys.KEY_PASSWORD);
+        byte[] password = smartCashApplication.getByte(this, KEYS.KEY_PASSWORD);
         return (token != null && !token.isEmpty() && user != null && password != null);
     }
 
     private void navigateToPinActivity() {
         Intent intent = new Intent(getApplicationContext(), PinActivity.class);
-        intent.putExtra(Keys.KEY_PASSWORD, txtPassword.getText().toString());
+        intent.putExtra(KEYS.KEY_PASSWORD, txtPassword.getText().toString());
         startActivity(intent);
     }
 
@@ -242,29 +230,24 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null) {
             smartCashApplication.saveToken(LoginActivity.this, token);
             smartCashApplication.saveUser(LoginActivity.this, user);
-            Log.d(TAG, "Users OK");
         } else {
             smartCashApplication.deleteSharedPreferences(LoginActivity.this);
-            Log.e(TAG, "Error to getUser");
         }
     }
 
     private void lockLoginButton() {
-
         btnLogin.setEnabled(false);
-        btnLogin.setText("loading...");
+        btnLogin.setText(getString(R.string.login_enter_button_loading_status));
 
         findViewById(R.id.btn_register).setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_forgot_password).setVisibility(View.INVISIBLE);
     }
 
     private void unlockLoginButton() {
-
         btnLogin.setEnabled(true);
-        btnLogin.setText("ENTER");
+        btnLogin.setText(getString(R.string.login_enter_button));
         findViewById(R.id.btn_register).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_forgot_password).setVisibility(View.VISIBLE);
-
     }
 
     private class LoginTask extends AsyncTask<UserLogin, Integer, User> {
@@ -304,17 +287,10 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            int pct = (values[0] * 2);
-
-            Log.d(TAG, "on progress update...");
-            Log.d(TAG, String.valueOf(values[0]));
-            Log.d(TAG, (pct + "%"));
-
-            if (pct < 100) {
-                startLoadingProcess();
-            }
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0]))
+                startLoadingProcess(); //percentage of the progress
         }
 
         @Override
@@ -354,31 +330,20 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            int pct = (values[0] * 2);
-
-            Log.d(TAG, "on progress update...");
-            Log.d(TAG, String.valueOf(values[0]));
-            Log.d(TAG, (pct + "%"));
-
-            if (pct < 100) {
-                lockLoginButton();
-            }
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockLoginButton(); //percentage of the progress
         }
 
         @Override
         protected void onPostExecute(ArrayList<Coin> coins) {
             super.onPostExecute(coins);
-
             if (coins != null) {
                 smartCashApplication.saveCurrentPrice(getApplicationContext(), coins);
                 unlockLoginButton();
             } else {
                 endLoadingProcess();
             }
-
         }
     }
-
 }

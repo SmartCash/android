@@ -25,36 +25,29 @@ import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
 
-
 public class SendFragment extends Fragment {
 
     public static final String TAG = SendFragment.class.getSimpleName();
 
-
-    //    @BindView(R.id.address_underline)
-//    View addressUnderline;
-//    @BindView(R.id.sms_underline)
-//    View smsUnderline;
-//    @BindView(R.id.email_underline)
-//    View emailUnderline;
-    @BindView(R.id.frame_layout)
-    FrameLayout frameLayout;
-    @BindView(R.id.scroll_view)
-    ScrollView scrollView;
-    @BindView(R.id.wallet_spinner)
-    Spinner walletSpinner;
-    //    private View activeUnderline;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
     private SmartCashApplication smartCashApplication;
+
+    @BindView(R.id.frame_layout)
+    FrameLayout frameLayout;
+
+    @BindView(R.id.scroll_view)
+    ScrollView scrollView;
+
+    @BindView(R.id.wallet_spinner)
+    Spinner walletSpinner;
 
     public static SendFragment newInstance() {
         return new SendFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getContext());
@@ -69,9 +62,8 @@ public class SendFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getContext());
-//        activeUnderline = getView().findViewById(R.id.address_underline);
-        Fragment addressFrament = SendAddressFragment.newInstance();
-        openFragment(addressFrament);
+        Fragment addressFragment = SendAddressFragment.newInstance();
+        openFragment(addressFragment);
 
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         walletSpinner.setDropDownWidth(displayMetrics.widthPixels);
@@ -84,7 +76,7 @@ public class SendFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 smartCashApplication.saveWallet(getContext(), walletList.get(position));
-                Log.e("ATUAL", walletList.get(position).getAddress());
+                Log.e(TAG, walletList.get(position).getAddress());
             }
 
             @Override
@@ -104,61 +96,10 @@ public class SendFragment extends Fragment {
         }
     }
 
-
-/*    public void changeUnderline(View newActiveUnderline) {
-        activeUnderline.setVisibility(View.GONE);
-        newActiveUnderline.setVisibility(View.VISIBLE);
-        activeUnderline = newActiveUnderline;
-    }*/
-
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
-//
-
-//    @OnClick({R.id.btn_address, R.id.btn_sms, R.id.btn_email})
-//    public void onViewClicked(View view) {
-//        switch (view.getId()) {
-//            case R.id.btn_address:
-//                Fragment addressFragment = SendAddressFragment.newInstance();
-//                openFragment(addressFragment);
-//                changeUnderline(addressUnderline);
-//                break;
-//            case R.id.btn_sms:
-//                Fragment smsFragment = SendSmsFragment.newInstance();
-//                openFragment(smsFragment);
-//                changeUnderline(smsUnderline);
-//                break;
-//            case R.id.btn_email:
-//                Fragment emailFragment = SendEmailFragment.newInstance();
-//                openFragment(emailFragment);
-//                changeUnderline(emailUnderline);
-//                break;
-//        }
-//    }
-
-
-//    @OnClick({R.id.btn_address, R.id.btn_sms, R.id.btn_email})
-//    public void onViewClicked(View view) {
-//        switch (view.getId()) {
-//            case R.id.btn_address:
-//                Fragment addressFragment = SendAddressFragment.newInstance();
-//                openFragment(addressFragment);
-//                changeUnderline(addressUnderline);
-//                break;
-//            case R.id.btn_sms:
-//                Fragment smsFragment = SendSmsFragment.newInstance();
-//                openFragment(smsFragment);
-//                changeUnderline(smsUnderline);
-//                break;
-//            case R.id.btn_email:
-//                Fragment emailFragment = SendEmailFragment.newInstance();
-//                openFragment(emailFragment);
-//                changeUnderline(emailUnderline);
-//                break;
-//        }
-//    }
 }
