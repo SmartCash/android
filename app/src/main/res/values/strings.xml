@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">SmartCash</string>
     <string name="smartCash">\u03A3</string>
+    <string name="app_version">v0.1.8-alpha </string>
 
     <!-- Preferences -->
     <string name="default_fiat">USD</string>
     <string name="default_crypto">SMART</string>
 
     <!-- dashboard xml -->
-    <string name="dashboard_title">Here are your %1$d smartcash addresses. You can use them to receive and send smartcash</string>
+    <string name="dashboard_title">Here are your %1$d SmartCash addresses. You can use them to receive and send SmartCash.</string>
 
     <!-- Enrique's strings -->
 
@@ -15,6 +16,24 @@
     <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
     <string name="main_backup_label">Backup your wallet!</string>
     <string name="main_network_status_offline_label">You are off-line.</string>
+
+    <string name="main_dialog_forgot_pin_title">Forgot the PIN?</string>
+    <string name="main_dialog_forgot_pin_message">Are you sure you want to redefine your PIN?</string>
+
+    <string name="main_dialog_backup_wallet_title">Backup your wallet</string>
+    <string name="main_dialog_backup_wallet_message">Write down in a paper the code:</string>
+
+    <string name="main_dialog_logout_title">Logout?</string>
+    <string name="main_dialog_logout_message">Are you sure you want to logout?</string>
+
+    <string name="main_redirect_to_login_toast">Redirecting to login...</string>
+
+
+    <string name="main_dialog_master_security_code_title">Your code is OK!</string>
+    <string name="main_dialog_master_security_code_message">*We don\'t recommend to keep it in the device.</string>
+    <string name="main_dialog_master_security_code_error_message">Not the same code yet.</string>
+    <string name="main_dialog_master_security_code_positive_button">OK, It is safe now. Delete from device.</string>
+    <string name="main_dialog_master_security_code_negative_button">Not yet. Keep it there for a while.</string>
 
     <!-- main xml => settings modal -->
     <string name="main_toolbox_settings_title_label">Settings</string>
@@ -26,6 +45,23 @@
     <string name="pin_pin_label">PIN</string>
     <string name="pin_forgot_pin_label">I forgot my PIN</string>
     <string name="pin_continue_without_pin_label">I want to continue without PIN</string>
+    <string name="pin_pin_error_message">The PIN can\'t be empty.</string>
+    <string name="pin_pin_confirmation_error_message">The PIN must be the same.</string>
+
+    <string name="pin_wrong_pin_dialog_title">Wrong PIN!</string>
+
+    <string name="pin_wrong_pin_dialog_message">You did not type your PIN correctly, please try again.</string>
+    <string name="pin_wrong_pin_dialog_message2">If you don\'t want to use PIN, click on continue without PIN</string>
+    <string name="pin_wrong_pin_dialog_message3">Use the eye to check your PIN.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_title">Continue WITHOUT the PIN?</string>
+
+    <string name="pin_continue_without_pin_dialog_message">Are you sure you want to proceed without PIN? You won\'t be able to use it off-line.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_redirect">Redirecting to dashboard...</string>
+
 
     <!-- send xml -->
     <string name="send_pin_label">PIN:</string>
@@ -54,6 +90,12 @@
     <string name="send_pin_verification_dialog_ok_button">Close</string>
     <string name="send_wallets_modal_close_button">Cancel</string>
     <string name="send_wallets_modal_title">Wallets</string>
+
+
+    <string name="send_message_success_return">Success</string>
+
+    <string name="send_message_error_return">Error to get the user.</string>
+
 
     <!-- receive xml -->
     <string name="receive_amount_in_smartcash_label">Amount in SMART</string>
@@ -95,6 +137,10 @@
     <string name="register_network_status_change">The status of the network has changed.</string>
     <string name="register_save_button_loading_status">loading...</string>
 
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_send">Send</string>
+    <string name="menu_receive">Receive</string>
+    <string name="menu_transactions">Transactions</string>
 
     <!-- String related to transaction fragment -->
     <string name="btn_all_transactions">All Transactions</string>
@@ -112,12 +158,23 @@
     <!-- Transaction Activity -->
     <string name="transaction_activity_title">Transaction</string>
     <string name="transaction_summary_title">Summary</string>
-    <string name="label_size">Size</string>
-    <string name="label_fee_rate">Fee Rate</string>
-    <string name="label_received_time">Received Time</string>
-    <string name="label_mined_time">Mined Time</string>
-    <string name="label_included_in_block">Included in Block</string>
-    <string name="label_details">Details</string>
+    <string name="transaction_label_size">Size</string>
+    <string name="transaction_label_fee_rate">Fee Rate</string>
+    <string name="transaction_label_received_time">Received Time</string>
+    <string name="transaction_label_mined_time">Mined Time</string>
+    <string name="transaction_label_included_in_block">Included in Block</string>
+    <string name="transaction_label_details">Details</string>
+
+    <string name="transaction_updated_message">Updated!</string>
+
+    <string name="transaction_tab_received">Received</string>
+    <string name="transaction_tab_awaiting">Awaiting</string>
+    <string name="transaction_tab_sent">Sent</string>
+
+    <string name="transaction_error_message">Error to get the transaction.</string>
+    <string name="transaction_detail_error_message">Error to get the transaction detail.</string>
+
+    <string name="transaction_update_error_message">Error to get the user updated data detail.</string>
 
 
 

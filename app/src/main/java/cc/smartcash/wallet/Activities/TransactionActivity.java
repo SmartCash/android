@@ -25,7 +25,9 @@ import butterknife.OnClick;
 import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.TransactionDetails;
 import cc.smartcash.wallet.R;
+import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.URLS;
 import cc.smartcash.wallet.ViewModels.TransactionViewModel;
 
 public class TransactionActivity extends AppCompatActivity {
@@ -100,10 +102,10 @@ public class TransactionActivity extends AppCompatActivity {
 
         details = new TransactionDetails();
 
-        hash = getIntent().getStringExtra("TransactionHash");
-        details.setAmount(getIntent().getDoubleExtra("Amount", 0.0));
+        hash = getIntent().getStringExtra(KEYS.KEY_TRANSACTION_HASH);
+        details.setAmount(getIntent().getDoubleExtra(KEYS.KEY_TRANSACTION_AMOUNT, 0.0));
         details.setFromAddress(smartCashApplication.getWallet(this).getAddress());
-        details.setToAddress(getIntent().getStringExtra("ToAddress"));
+        details.setToAddress(getIntent().getStringExtra(KEYS.KEY_TRANSACTION_TO_ADDRESS));
 
         if (hash != null)
             getTransaction(hash);
@@ -117,7 +119,7 @@ public class TransactionActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_details)
     public void onViewClicked() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://insight.smartcash.cc/tx/" + this.hash));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.hash));
         this.startActivity(browserIntent);
     }
 
@@ -154,8 +156,8 @@ public class TransactionActivity extends AppCompatActivity {
 
     private String getDate(long epoch) {
         Date date = new Date(epoch * 1000L);
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        DateFormat format = new SimpleDateFormat(KEYS.KEY_DATE_FORMAT);
+        format.setTimeZone(TimeZone.getTimeZone(KEYS.KEY_DATE_TIMEZONE));
         return format.format(date);
     }
 
@@ -165,9 +167,9 @@ public class TransactionActivity extends AppCompatActivity {
         model.getTransaction(hash, TransactionActivity.this).observe(TransactionActivity.this, transaction -> {
             if (transaction != null) {
                 getDetails(transaction);
-                Log.e("Transaction", transaction.getTxid());
+                Log.e(TAG, transaction.getTxid());
             } else {
-                Log.e("Erro", "Não foi possível buscar a transaction!");
+                Log.e(TAG, getString(R.string.transaction_error_message));
             }
         });
     }
@@ -179,11 +181,11 @@ public class TransactionActivity extends AppCompatActivity {
             if (transactionDetails != null) {
                 setVisibility(false);
                 setData(transaction);
-                Log.e("Transaction", transaction.getTxid());
+                Log.e(TAG, transaction.getTxid());
             } else {
                 setVisibility(false);
                 setData(transaction);
-                Log.e("Erro", "Não foi possível buscar os detalhes da transaction!");
+                Log.e(TAG, getString(R.string.transaction_detail_error_message));
             }
         });
     }

@@ -301,9 +301,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             new AlertDialog.Builder(getActivity())
                     .setTitle(getString(R.string.send_pin_verification_dialog_title_error_message))
                     .setMessage(getString(R.string.send_pin_verification_dialog_message_error_message))
-                    .setPositiveButton(getString(R.string.send_pin_verification_dialog_ok_button), (dialog, id) -> {
-                        dialog.cancel();
-                    }).show();
+                    .setPositiveButton(getString(R.string.send_pin_verification_dialog_ok_button), (dialog, id) -> dialog.cancel()).show();
         }
     }
 
@@ -361,11 +359,11 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         model.getUser(smartCashApplication.getToken(getActivity()), getActivity()).observe(this, response -> {
             if (response != null) {
-                Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show();
                 smartCashApplication.saveUser(getActivity(), response);
                 ((MainActivity) Objects.requireNonNull(getActivity())).setWalletValue();
             } else {
-                Log.e(TAG, "Error to get the user.");
+                Log.e(TAG, getString(R.string.send_message_error_return));
             }
         });
     }
@@ -382,12 +380,12 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private void setAmountListener() {
 
         Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
-        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+        amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
 
         txtAmountFiat.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+                amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
             }
 
             @Override
@@ -398,7 +396,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
             @Override
             public void afterTextChanged(Editable s) {
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+                amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
             }
         });
 

@@ -2,7 +2,6 @@ package cc.smartcash.wallet.Activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -83,7 +82,7 @@ public class PinActivity extends AppCompatActivity {
             try {
 
                 if (Util.isNullOrEmpty(txtPin)) {
-                    txtPin.setError("The PIN can't be empty");
+                    txtPin.setError(getString(R.string.pin_pin_error_message));
                     return;
                 }
                 smartCashApplication.aead = smartCashApplication.getOrGenerateNewKeysetHandle(getApplicationContext()).getPrimitive(Aead.class);
@@ -95,8 +94,8 @@ public class PinActivity extends AppCompatActivity {
                 Log.e(TAG, ex.getMessage());
             } finally {
                 if (!right) new AlertDialog.Builder(this)
-                        .setTitle("Wrong PIN!")
-                        .setMessage("You did not type your PIN correctly, please try again.")
+                        .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
+                        .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                             dialog.cancel();
@@ -106,9 +105,9 @@ public class PinActivity extends AppCompatActivity {
         } else if (Util.compareString(txtPin, txtConfirmPin)) {
 
             if (Util.isNullOrEmpty(txtPin) || Util.isNullOrEmpty(txtConfirmPin)) {
-                txtPin.setError("The PIN can't be empty");
-                txtConfirmPin.setError("The PIN can't be empty");
-                alertDialog("The PIN can't be empty", "If you don't want to use PIN, click on continue without PIN");
+                txtPin.setError(getString(R.string.pin_pin_error_message));
+                txtConfirmPin.setError(getString(R.string.pin_pin_error_message));
+                alertDialog(getString(R.string.pin_pin_error_message), getString(R.string.pin_wrong_pin_dialog_message2));
                 return;
             }
 
@@ -124,22 +123,21 @@ public class PinActivity extends AppCompatActivity {
                 Log.e(TAG, ex.getMessage());
             }
         } else if (!Util.compareString(txtPin, txtConfirmPin)) {
-            txtPin.setError("The PIN must match");
-            txtConfirmPin.setError("The PIN must match");
-            alertDialog("The PIN must match", "Use the eye to check your PIN.");
+            txtPin.setError(getString(R.string.pin_pin_confirmation_error_message));
+            txtConfirmPin.setError(getString(R.string.pin_pin_confirmation_error_message));
+            alertDialog(getString(R.string.pin_pin_confirmation_error_message), getString(R.string.pin_wrong_pin_dialog_message3));
             return;
         }
     }
 
     @OnClick(R.id.forgot_pin_btn)
     public void onForgotPinClicked() {
-
         new AlertDialog.Builder(this)
-                .setTitle("Forgot the PIN?")
-                .setMessage("Are you sure you want to redefine your PIN?")
+                .setTitle(getString(R.string.main_dialog_forgot_pin_title))
+                .setMessage(getString(R.string.main_dialog_forgot_pin_message))
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                    Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PinActivity.this, getString(R.string.main_redirect_to_login_toast), Toast.LENGTH_SHORT).show();
                     smartCashApplication.deleteSharedPreferences(PinActivity.this);
                     startActivity(new Intent(PinActivity.this, LoginActivity.class));
                 })
@@ -148,22 +146,15 @@ public class PinActivity extends AppCompatActivity {
 
     @OnClick(R.id.continue_without_pin)
     public void onContinueWithoutPinClicked() {
-
         new AlertDialog.Builder(this)
-                .setTitle("Continue WITHOUT the PIN?")
-                .setMessage("Are you sure you want to proceed without PIN? You won't be able to use it off-line.")
+                .setTitle(getString(R.string.pin_continue_without_pin_dialog_title))
+                .setMessage(getString(R.string.pin_continue_without_pin_dialog_message))
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        Toast.makeText(PinActivity.this, "Redirecting to dashboard...", Toast.LENGTH_SHORT).show();
-
-                        smartCashApplication.saveBoolean(PinActivity.this, true, "WithoutPin");
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    Toast.makeText(PinActivity.this, getString(R.string.pin_continue_without_pin_dialog_redirect), Toast.LENGTH_SHORT).show();
+                    smartCashApplication.saveBoolean(PinActivity.this, true, KEYS.KEY_WITHOUT_PIN);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -224,15 +215,11 @@ public class PinActivity extends AppCompatActivity {
     }
 
     private void setNetworkBroadCastReceiver() {
-
         new NetworkReceiver() {
-
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 internetAvailable = NetworkUtil.getInternetStatus(context);
-
-                Log.d(TAG, "The status of the network has changed");
+                Log.d(TAG, getString(R.string.login_network_status_change));
             }
         };
     }
@@ -240,11 +227,9 @@ public class PinActivity extends AppCompatActivity {
     private boolean isOnLocalDB(boolean withoutPin) {
 
         String token = smartCashApplication.getToken(this);
-
         User user = smartCashApplication.getUser(this);
         if (!withoutPin) {
             byte[] pin = smartCashApplication.getByte(this, KEYS.KEY_PASSWORD);
-
             return (token != null && !token.isEmpty() && user != null && pin != null);
         } else {
             return (token != null && !token.isEmpty() && user != null);
@@ -252,7 +237,7 @@ public class PinActivity extends AppCompatActivity {
     }
 
     private void navigateToLogin() {
-        Toast.makeText(PinActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(PinActivity.this, getString(R.string.login_network_status_change), Toast.LENGTH_SHORT).show();
         smartCashApplication.deleteSharedPreferences(PinActivity.this);
         startActivity(new Intent(PinActivity.this, LoginActivity.class));
     }

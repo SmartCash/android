@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
                 String status = NetworkUtil.getConnectivityStatusString(context);
                 internetAvailable = NetworkUtil.getInternetStatus(context);
                 networkSwitch.setChecked(internetAvailable);
-                networkSwitch.setText(status);
+                networkSwitch.setText(getString(R.string.app_version) + status);
                 Log.d(TAG, getResources().getString(R.string.login_network_status_change));
             }
         };

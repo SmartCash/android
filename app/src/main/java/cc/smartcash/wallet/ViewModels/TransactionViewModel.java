@@ -21,6 +21,8 @@ import retrofit2.Response;
 
 public class TransactionViewModel extends ViewModel {
 
+    public static final String TAG = TransactionViewModel.class.getSimpleName();
+
     private MutableLiveData<FullTransaction> transaction;
     private MutableLiveData<TransactionResponse> transactionDetails;
 
@@ -60,7 +62,7 @@ public class TransactionViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<TransactionResponse> call, Throwable t) {
-                Log.e("TransactionViewModel", "Erro ao buscar os detalhes da transaction:" + t.getMessage());
+                Log.e(TAG, "Erro ao buscar os detalhes da transaction:" + t.getMessage());
                 transactionDetails.setValue(null);
             }
         });
@@ -88,7 +90,7 @@ public class TransactionViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<FullTransaction> call, Throwable t) {
-                Log.e("TransactionViewModel", "Erro ao buscar a transaction:" + t.getMessage());
+                Log.e(TAG, "Erro ao buscar a transaction:" + t.getMessage());
                 transaction.setValue(null);
             }
         });

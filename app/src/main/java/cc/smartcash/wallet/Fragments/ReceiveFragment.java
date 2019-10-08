@@ -169,12 +169,12 @@ public class ReceiveFragment extends Fragment {
     private void setAmountListener() {
 
         Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
-        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+        amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
 
         txtAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+                amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
             }
 
             @Override
@@ -185,7 +185,7 @@ public class ReceiveFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+                amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
             }
         });
 
@@ -213,7 +213,7 @@ public class ReceiveFragment extends Fragment {
 
         BigDecimal amountConverted;
         Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
-        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+        amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
 
         for (int i = 0; i < coins.size(); i++) {
             if (coins.get(i).getName().equalsIgnoreCase(actualSelected.getName())) {
@@ -230,7 +230,7 @@ public class ReceiveFragment extends Fragment {
 
             if (actualSelected.getName().equals(getString(R.string.default_crypto))) {
                 amountConverted = smartCashApplication.multiplyBigDecimals(BigDecimal.valueOf(Double.parseDouble(txtAmount.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", getString(R.string.default_crypto)));
+                amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), getString(R.string.default_crypto)));
             } else {
 
                 double currentPrice = actualSelected.getValue();
@@ -264,7 +264,7 @@ public class ReceiveFragment extends Fragment {
 
         BigDecimal amountConverted;
         Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
-        amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", actualSelected.getName()));
+        amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
 
         for (int i = 0; i < coins.size(); i++) {
             if (coins.get(i).getName().equalsIgnoreCase(actualSelected.getName())) {
@@ -281,7 +281,7 @@ public class ReceiveFragment extends Fragment {
 
             if (actualSelected.getName().equals(getString(R.string.default_crypto))) {
                 amountConverted = smartCashApplication.multiplyBigDecimals(BigDecimal.valueOf(Double.parseDouble(txtAmountConverted.getText().toString())), BigDecimal.valueOf(actualSelected.getValue()));
-                amountLabel.setText(String.format(Locale.getDefault(), "Amount in %s", getString(R.string.default_crypto)));
+                amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), getString(R.string.default_crypto)));
             } else {
 
                 double currentPrice = actualSelected.getValue();
@@ -333,7 +333,7 @@ public class ReceiveFragment extends Fragment {
             qrCodeImage.setImageBitmap(mergeBitmaps(logo, bitmap));
 
         } catch (Exception er) {
-            Log.e("QrGenerate", er.getMessage());
+            Log.e(TAG, er.getMessage());
         }
     }
 
@@ -371,7 +371,7 @@ public class ReceiveFragment extends Fragment {
             createQRCode(qrCodeText, Util.UTF_8, hintMap, smallestDimension, smallestDimension);
 
         } catch (Exception ex) {
-            Log.e("QrGenerate", ex.getMessage());
+            Log.e(TAG, ex.getMessage());
         }
     }
 

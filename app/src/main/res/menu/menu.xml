@@ -4,20 +4,20 @@
     <item
         android:id="@+id/nav_dash"
         android:icon="@drawable/ic_action_dash"
-        android:title="Dashboard" />
+        android:title="@string/menu_dashboard" />
 
     <item
         android:id="@+id/nav_send"
         android:icon="@drawable/ic_action_send"
-        android:title="Send" />
+        android:title="@string/menu_send" />
 
     <item
         android:id="@+id/nav_receive"
         android:icon="@drawable/ic_action_receive"
-        android:title="Receive" />
+        android:title="@string/menu_receive" />
     <item
         android:id="@+id/nav_trans"
         android:icon="@drawable/ic_action_trans"
-        android:title="Transações" />
+        android:title="@string/menu_transactions" />
 
 </menu>

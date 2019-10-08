@@ -38,4 +38,13 @@ public class KEYS {
 
     public static final String KEY_SMARTTEXT_LINK = "LINK";
 
+    public static final String KEY_TRANSACTION_HASH = "TransactionHash";
+
+    public static final String KEY_TRANSACTION_AMOUNT = "Amount";
+
+    public static final String KEY_TRANSACTION_TO_ADDRESS = "ToAddress";
+
+    public static final String KEY_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+
+    public static final String KEY_DATE_TIMEZONE = "Etc/UTC";
 }

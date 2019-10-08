@@ -39,7 +39,7 @@ public class TransactionFragment extends Fragment {
     private String activeFilter = null;
     private ArrayList<Wallet> walletList;
     private WalletSpinnerAdapter walletAdapter;
-    private ArrayList<Transaction> filteredTransactions = new ArrayList<Transaction>();
+    private ArrayList<Transaction> filteredTransactions = new ArrayList<>();
     private ArrayList<Transaction> transactions;
     private TransactionAdapter transactionAdapter;
 
@@ -126,15 +126,15 @@ public class TransactionFragment extends Fragment {
                 break;
             case R.id.btn_received:
                 changeUnderline(receivedUnderline);
-                setTransactions("Received");
+                setTransactions(getString(R.string.transaction_tab_received));
                 break;
             case R.id.btn_awaiting:
                 changeUnderline(awaitingUnderline);
-                setTransactions("Awaiting");
+                setTransactions(getString(R.string.transaction_tab_awaiting));
                 break;
             case R.id.btn_paid:
                 changeUnderline(paidUnderline);
-                setTransactions("Sent");
+                setTransactions(getString(R.string.transaction_tab_sent));
                 break;
             case R.id.btn_att:
                 updateData();
@@ -158,11 +158,11 @@ public class TransactionFragment extends Fragment {
 
         model.getUser(smartCashApplication.getToken(getActivity()), getActivity()).observe(this, response -> {
             if (response != null) {
-                Toast.makeText(getActivity(), "Updated!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.transaction_updated_message), Toast.LENGTH_LONG).show();
                 smartCashApplication.saveUser(getActivity(), response);
                 ((MainActivity) getActivity()).setWalletValue();
             } else {
-                Log.e("Erro", "Erro ao buscar os valores!");
+                Log.e(TAG, getString(R.string.transaction_update_error_message));
             }
         });
     }

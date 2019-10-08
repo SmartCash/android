@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             forgotPinBtn.setOnClickListener(v3 -> {
                 new AlertDialog.Builder(this)
-                        .setTitle("Forgot the PIN?")
-                        .setMessage("Are you sure you want to redefine your PIN?")
+                        .setTitle(getString(R.string.main_dialog_forgot_pin_title))
+                        .setMessage(getString(R.string.main_dialog_forgot_pin_message))
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> navigateToLogin())
                         .setNegativeButton(android.R.string.no, null).show();
@@ -164,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             String msk = smartCashApplication.getDecryptedMSK(getPIN());
 
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Backup your wallet");
-            alert.setMessage("Write down in a paper the code:");
+            alert.setTitle(getString(R.string.main_dialog_backup_wallet_title));
+            alert.setMessage(getString(R.string.main_dialog_backup_wallet_message));
 
             final FrameLayout frameView = new FrameLayout(this);
             alert.setView(frameView);
@@ -191,20 +191,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             btnCheckMSC.setOnClickListener(v2 -> {
                 if (!msk.trim().equals(txtMSC.getText().toString().trim()))
-                    txtMSC.setError("Not the same code yet.");
+                    txtMSC.setError(getString(R.string.main_dialog_master_security_code_error_message));
                 else {
                     AlertDialog.Builder builderDeleteMSK = new AlertDialog.Builder(this);
-                    builderDeleteMSK.setTitle("Your code is OK!");
-                    builderDeleteMSK.setMessage("*We don't recommend to keep it in the device.");
+                    builderDeleteMSK.setTitle(getString(R.string.main_dialog_master_security_code_title));
+                    builderDeleteMSK.setMessage(getString(R.string.main_dialog_master_security_code_message));
 
-                    builderDeleteMSK.setPositiveButton("OK, It is safe now. Delete from device.", (dialog, id) -> {
+                    builderDeleteMSK.setPositiveButton(getString(R.string.main_dialog_master_security_code_positive_button), (dialog, id) -> {
 
                         smartCashApplication.deleteMSK();
                         linearLayoutBkp.setVisibility(View.GONE);
                         alertDialog.cancel();
 
                     });
-                    builderDeleteMSK.setNegativeButton("Not yet. Keep it there for a while.", (dialog, id) -> {
+                    builderDeleteMSK.setNegativeButton(getString(R.string.main_dialog_master_security_code_negative_button), (dialog, id) -> {
 
                     });
 
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                     if (!msk.trim().equals(txtMSC.getText().toString().trim()))
-                        txtMSC.setError("Not the same code yet.");
+                        txtMSC.setError(getString(R.string.main_dialog_master_security_code_error_message));
 
                 }
             });
@@ -240,8 +240,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void setBtnExitClick() {
         btnExit.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle("Logout?")
-                    .setMessage("Are you sure you want to logout?")
+                    .setTitle(getString(R.string.main_dialog_logout_title))
+                    .setMessage(getString(R.string.main_dialog_logout_message))
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> navigateToLogin())
                     .setNegativeButton(android.R.string.no, null).show();
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void navigateToLogin() {
-        Toast.makeText(MainActivity.this, "Redirecting to login...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, getString(R.string.main_redirect_to_login_toast), Toast.LENGTH_SHORT).show();
         smartCashApplication.deleteMSK();
         smartCashApplication.deleteSharedPreferences(MainActivity.this);
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         getCoins();
 
-        if (selectedCoin != null && selectedCoin.getName().equalsIgnoreCase("USD")) {
+        if (selectedCoin != null && selectedCoin.getName().equalsIgnoreCase(getString(R.string.default_fiat)) && this.coins != null && !this.coins.isEmpty()) {
             for (Coin auxcoin : this.coins) {
                 if (auxcoin.getName().equalsIgnoreCase(selectedCoin.getName())) {
                     selectedCoin.setValue(auxcoin.getValue());
