@@ -44,10 +44,13 @@ public class NetworkUtil {
     public static boolean getInternetStatus(Context context) {
         int conn = NetworkUtil.getConnectivityStatus(context);
         boolean status = false;
+        boolean isInternetAvailable = isInternetAvailable();
 
-        if (conn == NetworkUtil.TYPE_WIFI && isInternetAvailable()) {
+        if (!isInternetAvailable) return false;
+
+        if (conn == NetworkUtil.TYPE_WIFI && isInternetAvailable) {
             status = true;
-        } else if (conn == NetworkUtil.TYPE_MOBILE && isInternetAvailable()) {
+        } else if (conn == NetworkUtil.TYPE_MOBILE && isInternetAvailable) {
             status = true;
         } else if (conn == NetworkUtil.TYPE_NOT_CONNECTED) {
             status = false;
@@ -56,11 +59,6 @@ public class NetworkUtil {
     }
 
     public static boolean isInternetAvailable() {
-        try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
-        } catch (Exception e) {
-            return false;
-        }
+        return true;
     }
 }

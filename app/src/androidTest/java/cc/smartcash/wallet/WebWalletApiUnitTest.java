@@ -15,6 +15,7 @@ import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
+import cc.smartcash.wallet.Models.WebWalletUserAvailableRequest;
 import cc.smartcash.wallet.Services.WebWalletAPIConfig;
 import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
@@ -291,5 +292,23 @@ public class WebWalletApiUnitTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void isUserAvailable() {
+
+        try {
+
+            Call<WebWalletRootResponse<Boolean>> callUserRecoveryKey = new WebWalletAPIConfig().getWebWalletAPIService().isUserAvailable(new WebWalletUserAvailableRequest("fcb016e9-0408-4e4f-8a01-d86151fc605e@testeandroidmobile.com"));
+
+            Response<WebWalletRootResponse<Boolean>> response = callUserRecoveryKey.execute();
+
+            System.out.println("Is user available: " + response.body().getData());
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

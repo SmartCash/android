@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartCash</string>
+    <string name="smartCash">\u03A3</string>
+    <string name="app_version">v0.1.8-alpha </string>
+
+    <!-- Preferences -->
+    <string name="default_fiat">USD</string>
+    <string name="default_crypto">SMART</string>
+
+    <!-- dashboard xml -->
+    <string name="dashboard_title">Здесь ваши SmartCash адреса. Вы можете использовать их для получения и отправки.</string>
+
+    <!-- Enrique's strings -->
+
+    <!-- main xml -->
+    <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
+    <string name="main_backup_label">Сделайте резервную копию кошелька!</string>
+    <string name="main_network_status_offline_label">Офлайн режим</string>
+
+    <string name="main_dialog_forgot_pin_title">Забыли ваш PIN?</string>
+    <string name="main_dialog_forgot_pin_message">Вы уверены, что хотите сменить ваш PIN?</string>
+
+    <string name="main_dialog_backup_wallet_title">Сделать резервную копию кошелька</string>
+    <string name="main_dialog_backup_wallet_message">Запишите код на бумаге:</string>
+
+    <string name="main_dialog_logout_title">Выйти?</string>
+    <string name="main_dialog_logout_message">Вы уверены, что хотите выйти??</string>
+
+    <string name="main_redirect_to_login_toast">Перенаправление...</string>
+
+
+    <string name="main_dialog_master_security_code_title">Ваш код верный!</string>
+    <string name="main_dialog_master_security_code_message">*Мы не рекомендуем хранить его на этом устройстве.</string>
+    <string name="main_dialog_master_security_code_error_message">Код не совпадает.</string>
+    <string name="main_dialog_master_security_code_positive_button">Теперь всё безопасно. Удалить с устройства.</string>
+    <string name="main_dialog_master_security_code_negative_button">Ещё не всё. Подождите немного.</string>
+
+    <!-- main xml => settings modal -->
+    <string name="main_toolbox_settings_title_label">Настройки</string>
+    <string name="main_toolbox_settings_close_button">Закрыть</string>
+    <string name="main_toolbox_settings_pin_forgot_pin_label">Я забыл(-а) мой PIN</string>
+    <string name="main_toolbox_settings_pin_create_pin_label">Я хочу создать мой PIN</string>
+
+    <!-- pin xml -->
+    <string name="pin_pin_label">PIN</string>
+    <string name="pin_forgot_pin_label">Я забыл(-а) мой PIN</string>
+    <string name="pin_continue_without_pin_label">Я хочу продолжить без PIN</string>
+    <string name="pin_pin_error_message">Нужно заполнить поле PIN</string>
+    <string name="pin_pin_confirmation_error_message">PIN должен совпадать.</string>
+
+    <string name="pin_wrong_pin_dialog_title">Неверный PIN!</string>
+
+    <string name="pin_wrong_pin_dialog_message">Вы ввели свой PIN неверно, попробуйте ещё раз.</string>
+    <string name="pin_wrong_pin_dialog_message2">Если вы не хотите использовать PIN, нажмите продолжить без PIN</string>
+    <string name="pin_wrong_pin_dialog_message3">Проверьте ваш PIN.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_title">Продолжить без PIN?</string>
+
+    <string name="pin_continue_without_pin_dialog_message">Вы уверены, что хотите продолжить без PIN? Вы не сможете использовать офлайн режим.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_redirect">Перенаправление...</string>
+
+
+    <!-- send xml -->
+    <string name="send_pin_label">PIN:</string>
+    <string name="send_address_label">Отправить по Email, Username, SMS или на адрес: </string>
+    <string name="send_amount_in_smartcash_label">Сумма в SMART</string>
+    <string name="send_amount_in_fiat_label">Сумма в FIAT</string>
+    <string name="send_button_label">Отправить SMART</string>
+    <string name="send_icon_wallet_select_content_description">Выберите ваш адрес кошелька</string>
+    <string name="send_icon_qrcode_scan_content_description">Сканировать ваш QR-код</string>
+    <string name="send_save_button_network_error_message">Вы должны находиться в онлайн режиме, чтобы совершить отправку.</string>
+    <string name="send_save_button_loading_status">загрузка...</string>
+    <string name="send_password_label">Пароль:</string>
+    <string name="send_qr_code_dialog_title">Сканировать ваш QR-код</string>
+    <string name="send_camera_permission_label">Smart Hub запрашивает доступ к вашей камере.</string>
+    <string name="send_wallet_dialog_title_label">Вы имеете %s адреса(-ов):</string>
+    <string name="send_amount_in_coin_label">Сумма в %s</string>
+    <string name="send_amount_crypto_error_message">Сумма в SMART обязательна.</string>
+    <string name="send_amount_fiat_error_message">Сумма в FIAT обязательна.</string>
+    <string name="send_address_error_message">Укажите получателя. Вы можете использовать email, username, SMS или адрес SmartCash.</string>
+    <string name="send_pin_error_message">PIN обязателен.</string>
+    <string name="send_insufficient_balance_error_message">Недостаточно средств.</string>
+    <string name="send_min_amount_to_send_error_message">Пожалуйста, выберите больше 0 SMART для отправки.</string>
+    <string name="send_different_address_to_send_error_message">Адрес отправителя и получателя должен отличаться.</string>
+    <string name="send_pin_verification_dialog_title_error_message">Неверный PIN/Пароль</string>
+    <string name="send_pin_verification_dialog_message_error_message">PIN/Пароль не совпадают.</string>
+    <string name="send_pin_verification_dialog_ok_button">Закрыть</string>
+    <string name="send_wallets_modal_close_button">Отменить</string>
+    <string name="send_wallets_modal_title">Кошельки</string>
+
+
+    <string name="send_message_success_return">Успешно</string>
+
+    <string name="send_message_error_return">Error to get the user.</string>
+
+
+    <!-- receive xml -->
+    <string name="receive_amount_in_smartcash_label">Сумма в SMART</string>
+    <string name="receive_amount_in_fiat_label">Сумма в FIAT</string>
+    <string name="receive_fragment_title">Используйте адреса ниже для получения SMART</string>
+
+    <!-- login xml -->
+    <string name="login_username_label">Username или email:</string>
+    <string name="login_password_label">Пароль:</string>
+    <string name="login_2fa_label">2FA код:</string>
+    <string name="login_username_error_message">Username обязателен.</string>
+    <string name="login_password_error_message">Пароль обязателен.</string>
+    <string name="login_2fa_error_message">" 2FA error"</string>
+    <string name="login_register_button">Регистрация</string>
+    <string name="login_enter_button">Войти</string>
+    <string name="login_forgot_the_password_button">Забыл(-а) пароль</string>
+    <string name="login_enter_button_network_error_message">Вы должны находиться в онлайн режиме, чтобы войти в кошелёк.</string>
+    <string name="login_network_error_message">Вы должны находиться в онлайн режиме, чтобы войти в кошелёк.</string>
+    <string name="login_network_status_change">Статус сети изменился.</string>
+    <string name="login_enter_button_loading_status">загрузка...</string>
+
+    <!-- register xml -->
+    <string name="register_username_label">Email:</string>
+    <string name="register_username_error_message">Email обязателен.</string>
+    <string name="register_username_pattern_error_message">Некорректный email.</string>
+    <string name="register_password_label">Пароль:</string>
+    <string name="register_password_confirmation_label">Подтвердить пароль:</string>
+    <string name="register_password_error_message">Пароль обязателен.</string>
+    <string name="register_password_confirmation_error_message">Подтверждение пароля обязательно.</string>
+    <string name="register_password_match_error_message">Пароли не совпадают.</string>
+    <string name="register_pin_label">PIN:</string>
+    <string name="register_pin_confirmation_label">Подтвердить PIN:</string>
+    <string name="register_pin_error_message">PIN обязателен.</string>
+    <string name="register_pin_confirmation_error_message">Подтверждение PIN обязательно.</string>
+    <string name="register_pin_match_error_message">PIN не совпадает.</string>
+    <string name="register_save_button">Сохранить</string>
+    <string name="register_save_button_network_error_message">Вы должны находиться в онлайн режиме, чтобы зарегистрироваться.</string>
+    <string name="register_network_error_message">Вы должны находиться в онлайн режиме, чтобы зарегистрироваться.</string>
+    <string name="register_network_status_change">Статус сети изменился.</string>
+    <string name="register_save_button_loading_status">загрузка...</string>
+
+    <string name="menu_dashboard">Главная</string>
+    <string name="menu_send">Отправить</string>
+    <string name="menu_receive">Получить</string>
+    <string name="menu_transactions">Транзакции</string>
+
+    <!-- String related to transaction fragment -->
+    <string name="btn_all_transactions">Все транзакции</string>
+    <string name="btn_received">Принятые</string>
+    <string name="btn_awaiting">Ожидающие</string>
+    <string name="btn_paid">Отправленные</string>
+
+    <!-- Transaction item -->
+    <string name="label_received">Получено</string>
+    <string name="label_awaiting">Ожидает</string>
+    <string name="label_sent">Отправлено</string>
+    <string name="transaction_id_title">Transaction ID</string>
+
+
+    <!-- Transaction Activity -->
+    <string name="transaction_activity_title">Транзакция</string>
+    <string name="transaction_summary_title">Итого</string>
+    <string name="transaction_label_size">Размер</string>
+    <string name="transaction_label_fee_rate">Комиссия</string>
+    <string name="transaction_label_received_time">Время получения</string>
+    <string name="transaction_label_mined_time">Время добычи</string>
+    <string name="transaction_label_included_in_block">Добавлено в блок</string>
+    <string name="transaction_label_details">Детали</string>
+
+    <string name="transaction_updated_message">Обновлено!</string>
+
+    <string name="transaction_tab_received">Получено</string>
+    <string name="transaction_tab_awaiting">Ожидает</string>
+    <string name="transaction_tab_sent">Отправлено</string>
+
+    <string name="transaction_error_message">Ошибка транзакции.</string>
+    <string name="transaction_detail_error_message">Ошибка получения данных о транзакции.</string>
+
+    <string name="transaction_update_error_message">Ошибка обновления данных.</string>
+    <string name="register_save_button_error_message">It was not possible to save that user. It does probably exists already.</string>
+    <string name="send_web_wallet_error_message">Something went wrong. Please check your address.</string>
+    <string name="register_username_not_available_error_message">This username was already taken. Please, use another one.</string>
+
+
+</resources>

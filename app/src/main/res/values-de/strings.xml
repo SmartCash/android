@@ -1,0 +1,183 @@
+<resources>
+    <string name="app_name">SmartCash</string>
+    <string name="smartCash">\u03A3</string>
+    <string name="app_version">v0.1.8-alpha </string>
+
+    <!-- Preferences -->
+    <string name="default_fiat">USD</string>
+    <string name="default_crypto">SMART</string>
+
+    <!-- dashboard xml -->
+    <string name="dashboard_title">Hier sind Deine %1$d SmartCash Adressen. Benutze diese um SmartCash zu empfangen oder zu verschicken.</string>
+
+    <!-- Enrique's strings -->
+
+    <!-- main xml -->
+    <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
+    <string name="main_backup_label">Backup Dein Wallet!</string>
+    <string name="main_network_status_offline_label">Du bist offline.</string>
+
+    <string name="main_dialog_forgot_pin_title">PIN vergessen?</string>
+    <string name="main_dialog_forgot_pin_message">Möchtest Du wirklich den PIN ändern?</string>
+
+    <string name="main_dialog_backup_wallet_title">Backup Dein Wallet</string>
+    <string name="main_dialog_backup_wallet_message">Schreib den Code auf ein Blatt Papier:</string>
+
+    <string name="main_dialog_logout_title">Ausloggen?</string>
+    <string name="main_dialog_logout_message">Möchtest Du wirklich ausloggen?</string>
+
+    <string name="main_redirect_to_login_toast">Login Weiterleitung...</string>
+
+
+    <string name="main_dialog_master_security_code_title">Dein Code ist korrekt!</string>
+    <string name="main_dialog_master_security_code_message">*Es ist nicht zu empfehlen den Code auf dem Gerät zu speichern.</string>
+    <string name="main_dialog_master_security_code_error_message">Der Code stimmt nicht!</string>
+    <string name="main_dialog_master_security_code_positive_button">OK,nun ist es sicher. Entferne den Code vom Gerät.</string>
+    <string name="main_dialog_master_security_code_negative_button">Nicht jetzt. Behalte den Code noch.</string>
+
+    <!-- main xml => settings modal -->
+    <string name="main_toolbox_settings_title_label">Einstellungen</string>
+    <string name="main_toolbox_settings_close_button">Schliessen</string>
+    <string name="main_toolbox_settings_pin_forgot_pin_label">Ich habe meinen PIN vergessen.</string>
+    <string name="main_toolbox_settings_pin_create_pin_label">Ich möchte meinen PIN eingeben.</string>
+
+    <!-- pin xml -->
+    <string name="pin_pin_label">PIN</string>
+    <string name="pin_forgot_pin_label">Ich habe meinen PIN vergessen.</string>
+    <string name="pin_continue_without_pin_label">Ich möchte ohne PIN vorfahren.</string>
+    <string name="pin_pin_error_message">Der PIN muss Zeichen enthalten.</string>
+    <string name="pin_pin_confirmation_error_message">Der PIN muss identisch sein.</string>
+
+    <string name="pin_wrong_pin_dialog_title">Falscher PIN!</string>
+
+    <string name="pin_wrong_pin_dialog_message">Du hast den PIN nicht korrekt eingegeben, bitte versuche es nochmal.</string>
+    <string name="pin_wrong_pin_dialog_message2">Wenn Du keinen PIN benutzten möchtest, klick auf WEITER OHNE PIN.</string>
+    <string name="pin_wrong_pin_dialog_message3">Bitte kontrolliere Deinen PIN.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_title">WEITER OHNE PIN?</string>
+
+    <string name="pin_continue_without_pin_dialog_message">Willst du wirklich ohne PIN fortfahren? Du wirst nicht in der Lage sein dein Wallet offline zu nutzen!.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_redirect">Dashboard weiterleitung...</string>
+
+
+    <!-- send xml -->
+    <string name="send_pin_label">PIN:</string>
+    <string name="send_address_label">Schicke per E-mail, Benutzername, SMS Nummer oder Adresse: </string>
+    <string name="send_amount_in_smartcash_label">Betrag in SMART</string>
+    <string name="send_amount_in_fiat_label">Betrag in FIAT</string>
+    <string name="send_button_label">Schicke %f SMART</string>
+    <string name="send_icon_wallet_select_content_description">Wähle Dein Wallet Adresse aus.</string>
+    <string name="send_icon_qrcode_scan_content_description">Scanne den QRCode.</string>
+    <string name="send_save_button_network_error_message">Zum Versenden musst Du online sein um.</string>
+    <string name="send_save_button_loading_status">Lade...</string>
+    <string name="send_password_label">Passwort:</string>
+    <string name="send_qr_code_dialog_title">Scan deinen QR CODE</string>
+    <string name="send_camera_permission_label">SmartHup braucht die Berechtigung deine Kamera zu nutzten.</string>
+    <string name="send_wallet_dialog_title_label">Du hast %s Wallets zur Auswahl:</string>
+    <string name="send_amount_in_coin_label">Betrag in %s</string>
+    <string name="send_amount_crypto_error_message">Der Betrag in SMART ist zwingend erforderlich.</string>
+    <string name="send_amount_fiat_error_message">Der Betrag in FIAT ist zwingend erforderlich.</string>
+    <string name="send_address_error_message">Der Empfänger ist zwingend erforderlich. Optionen sind E-mail, Benutzername, SMS Nummer oder SMART Adresse.</string>
+    <string name="send_pin_error_message">Der PIN ist zwingend erforderlich.</string>
+    <string name="send_insufficient_balance_error_message">Dein Kontostand ist nicht ausreichend.</string>
+    <string name="send_min_amount_to_send_error_message">Bitte wähle mehr als null SMART aus.</string>
+    <string name="send_different_address_to_send_error_message">Sender und Empfänger Adresse darf nicht identisch sein.</string>
+    <string name="send_pin_verification_dialog_title_error_message">Falscher PIN/Passwort</string>
+    <string name="send_pin_verification_dialog_message_error_message">PIN/Password stimmen nicht überein.</string>
+    <string name="send_pin_verification_dialog_ok_button">Schliessen</string>
+    <string name="send_wallets_modal_close_button">Abbruch</string>
+    <string name="send_wallets_modal_title">Wallets</string>
+
+
+    <string name="send_message_success_return">Erfolgreich</string>
+
+    <string name="send_message_error_return">Benutzer nicht auffindbar.</string>
+
+
+    <!-- receive xml -->
+    <string name="receive_amount_in_smartcash_label">Betrag in SMART</string>
+    <string name="receive_amount_in_fiat_label">Betrag in FIAT</string>
+    <string name="receive_fragment_title">Benutzte die unten angezeigte Adresse um SMART zu empfangen.</string>
+
+    <!-- login xml -->
+    <string name="login_username_label">Benutzer or E-mail:</string>
+    <string name="login_password_label">Passwort:</string>
+    <string name="login_2fa_label">2FA Code:</string>
+    <string name="login_username_error_message">Der Benutzename ist zwingend erforderlich.</string>
+    <string name="login_password_error_message">Das Passwort ist zwingend erforderlich.</string>
+    <string name="login_2fa_error_message">" 2FA error"</string>
+    <string name="login_register_button">Registrierung</string>
+    <string name="login_enter_button">Eingabe</string>
+    <string name="login_forgot_the_password_button">Passwort vergessen.</string>
+    <string name="login_enter_button_network_error_message">Du musst online sein um dich einzuloggen.</string>
+    <string name="login_network_error_message">Du bist nicht online.</string>
+    <string name="login_network_status_change">Der Netzwerkstatus hat sich geändert.</string>
+    <string name="login_enter_button_loading_status">Lade...</string>
+
+    <!-- register xml -->
+    <string name="register_username_label">E-mail:</string>
+    <string name="register_username_error_message">Die E-mail Adresse ist zwingend erforderlich.</string>
+    <string name="register_username_pattern_error_message">Die E-mail Adresse ist nicht korrekt.</string>
+    <string name="register_password_label">Passwort:</string>
+    <string name="register_password_confirmation_label">Passwort erneut eingeben:</string>
+    <string name="register_password_error_message">Die Passworteingabe ist zwingend erforderlich.</string>
+    <string name="register_password_confirmation_error_message">Die Passworteingabe ist zwingend erforderlich.</string>
+    <string name="register_password_match_error_message">Die passwörter stimmen nicht überein.</string>
+    <string name="register_pin_label">PIN:</string>
+    <string name="register_pin_confirmation_label">PIN erneut eingeben:</string>
+    <string name="register_pin_error_message">Die PIN Eingabe ist zwinged erforderlich.</string>
+    <string name="register_pin_confirmation_error_message">Die PIN Eingabe ist zwingend erforderlich.</string>
+    <string name="register_pin_match_error_message">Der PIN stimmt nicht überein.</string>
+    <string name="register_save_button">Speichern</string>
+    <string name="register_save_button_network_error_message">Du musst online sein um Dich zu registrieren.</string>
+    <string name="register_network_error_message">Du musst musst online sein.</string>
+    <string name="register_network_status_change">Der Netzwerkstatus hat sich geändert.</string>
+    <string name="register_save_button_loading_status">Lade...</string>
+
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_send">Senden</string>
+    <string name="menu_receive">Empfangen</string>
+    <string name="menu_transactions">Transaktionen</string>
+
+    <!-- String related to transaction fragment -->
+    <string name="btn_all_transactions">Alle Transaktionen</string>
+    <string name="btn_received">Empfangen</string>
+    <string name="btn_awaiting">Warte</string>
+    <string name="btn_paid">Gezahlt</string>
+
+    <!-- Transaction item -->
+    <string name="label_received">Empfangen</string>
+    <string name="label_awaiting">Warte</string>
+    <string name="label_sent">Gesendet</string>
+    <string name="transaction_id_title">Transaktions ID</string>
+
+
+    <!-- Transaction Activity -->
+    <string name="transaction_activity_title">Transaktion</string>
+    <string name="transaction_summary_title">Übersicht</string>
+    <string name="transaction_label_size">Größe</string>
+    <string name="transaction_label_fee_rate">Gebüren</string>
+    <string name="transaction_label_received_time">Empfangszeit</string>
+    <string name="transaction_label_mined_time">Verfizierungszeit</string>
+    <string name="transaction_label_included_in_block">Verifiziert in Block</string>
+    <string name="transaction_label_details">Details</string>
+
+    <string name="transaction_updated_message">Updated!</string>
+
+    <string name="transaction_tab_received">Empfangen</string>
+    <string name="transaction_tab_awaiting">Wachtend</string>
+    <string name="transaction_tab_sent">Gesendet</string>
+
+    <string name="transaction_error_message">Transaktion fehlgeschlagen!.</string>
+    <string name="transaction_detail_error_message">Es konnten keine transaktions Details gefunden werden.</string>
+
+    <string name="transaction_update_error_message">Es konnten keine transaktions Informationen eingeholt werden.</string>
+    <string name="register_save_button_error_message">It was not possible to save that user. It does probably exists already.</string>
+    <string name="send_web_wallet_error_message">Something went wrong. Please check your address.</string>
+    <string name="register_username_not_available_error_message">This username was already taken. Please, use another one.</string>
+
+
+</resources>

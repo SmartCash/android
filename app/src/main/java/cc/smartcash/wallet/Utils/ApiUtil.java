@@ -8,6 +8,7 @@ import cc.smartcash.wallet.Services.TransactionService;
 import cc.smartcash.wallet.Services.UserLoginService;
 import cc.smartcash.wallet.Services.UserService;
 import cc.smartcash.wallet.Services.WalletService;
+import cc.smartcash.wallet.Services.WebWalletAPIService;
 
 public class ApiUtil {
 
@@ -37,6 +38,10 @@ public class ApiUtil {
 
     public static SmartTextService getSmartTextService() {
         return RetrofitConfig.getClient(URLS.URL_API_SMARTTEXT).create(SmartTextService.class);
+    }
+
+    public static WebWalletAPIService getWebWalletAPIService() {
+        return RetrofitConfig.getClient(URLS.URL_API_WEBWALLET).create(WebWalletAPIService.class);
     }
 
 }

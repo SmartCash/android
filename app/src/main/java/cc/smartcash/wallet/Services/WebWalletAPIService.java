@@ -8,6 +8,7 @@ import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
 import cc.smartcash.wallet.Models.WebWalletContact;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
+import cc.smartcash.wallet.Models.WebWalletUserAvailableRequest;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -41,4 +42,6 @@ public interface WebWalletAPIService {
     @GET("user/newkey")
     Call<WebWalletRootResponse<UserRecoveryKey>> getNewMasterSecurityKey();
 
+    @POST("user/available")
+    Call<WebWalletRootResponse<Boolean>> isUserAvailable(@Body WebWalletUserAvailableRequest request);
 }

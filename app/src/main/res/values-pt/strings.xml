@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SmartCash</string>
-    <string name="app_version">"v0.1.8-alpha "</string>
+    <string name="app_version">v0.1.9-alpha  </string>
     <string name="btn_all_transactions">Todas as transações</string>
     <string name="btn_awaiting">Esperando</string>
     <string name="btn_paid">Pago</string>
@@ -61,7 +61,7 @@
     <string name="receive_amount_in_fiat_label">Valor em FIAT</string>
     <string name="receive_amount_in_smartcash_label">Valor em SMART</string>
     <string name="dashboard_title">Here are your %1$d SmartCash addresses. You can use them to receive and send SmartCash.</string>
-    <string name="login_2fa_error_message">"  "</string>
+    <string name="login_2fa_error_message">" 2FA error"</string>
     <string name="transaction_tab_sent">Enviado</string>
     <string name="transaction_tab_received">Recebido</string>
     <string name="transaction_tab_awaiting">Esperando</string>
@@ -126,4 +126,7 @@
     <string name="send_pin_verification_dialog_ok_button">Fechar</string>
     <string name="send_pin_verification_dialog_title_error_message">PIN/Password errados</string>
     <string name="send_qr_code_dialog_title">Escaneie o QRCode</string>
+    <string name="register_save_button_error_message">Infelizmente não foi possível salvar o usuário.</string>
+    <string name="register_username_not_available_error_message">Esse usuário não está disponível. Por favor, escolha um outro.</string>
+    <string name="send_web_wallet_error_message">Algo deu errado. Por favor, confira se o endereço está correto.</string>
 </resources>

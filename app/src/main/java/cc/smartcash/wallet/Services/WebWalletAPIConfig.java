@@ -14,6 +14,4 @@ public class WebWalletAPIConfig {
     public WebWalletAPIService getWebWalletAPIService() {
         return this.retrofit.create(WebWalletAPIService.class);
     }
-
-
 }

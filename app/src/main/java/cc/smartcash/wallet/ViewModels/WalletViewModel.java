@@ -17,6 +17,7 @@ import cc.smartcash.wallet.Models.SmartTextRequest;
 import cc.smartcash.wallet.Models.SmartTextRoot;
 import cc.smartcash.wallet.Models.WalletPaymentFeeRequest;
 import cc.smartcash.wallet.Models.WebWalletRootResponse;
+import cc.smartcash.wallet.Models.WebWalletUserAvailableRequest;
 import cc.smartcash.wallet.Utils.ApiUtil;
 import cc.smartcash.wallet.Utils.KEYS;
 import cc.smartcash.wallet.Utils.Util;
@@ -83,6 +84,22 @@ public class WalletViewModel extends ViewModel {
         loadSendPayment(context, token, sendPayment);
         return returnResponse;
     }
+
+    public static WebWalletRootResponse<Boolean> isUserAvailable(String user) {
+
+        Call<WebWalletRootResponse<Boolean>> callFee = ApiUtil.getWebWalletAPIService().isUserAvailable(new WebWalletUserAvailableRequest(user));
+
+        try {
+            Response<WebWalletRootResponse<Boolean>> r = callFee.execute();
+            WebWalletRootResponse<Boolean> body = r.body();
+            return body;
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return null;
+    }
+
+
 
     private void loadSendPayment(Context context, String token, SendPayment sendPayment) {
 

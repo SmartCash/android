@@ -30,6 +30,7 @@ import cc.smartcash.wallet.Models.User;
 import cc.smartcash.wallet.Models.UserLogin;
 import cc.smartcash.wallet.Models.UserRecoveryKey;
 import cc.smartcash.wallet.Models.UserRegisterRequest;
+import cc.smartcash.wallet.Models.WebWalletRootResponse;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Receivers.NetworkReceiver;
 import cc.smartcash.wallet.Utils.KEYS;
@@ -39,6 +40,7 @@ import cc.smartcash.wallet.Utils.Util;
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel;
 import cc.smartcash.wallet.ViewModels.LoginViewModel;
 import cc.smartcash.wallet.ViewModels.UserViewModel;
+import cc.smartcash.wallet.ViewModels.WalletViewModel;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -115,9 +117,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_save)
     public void onViewClicked() {
+
         if (hasErrorOnForm(Util.getString(txtUser), Util.getString(txtPassword), Util.getString(txtConfirmPassword), Util.getString(txtPin), Util.getString(txtConfirmPin)))
             return;
-        createNewUser(Util.getString(txtUser), Util.getString(txtPassword));
+
+        new isUserAvailableTask().execute();
+
     }
 
     private void setNetworkReceiver() {
@@ -250,6 +255,8 @@ public class RegisterActivity extends AppCompatActivity {
         protected User doInBackground(UserRegisterRequest... users) {
 
             if (userRecoveryKeyMain != null) {
+
+
                 User newUserResponse = UserViewModel.setSyncUser(users[0], userRecoveryKeyMain, getApplicationContext());
                 if (newUserResponse != null) {
 
@@ -359,6 +366,39 @@ public class RegisterActivity extends AppCompatActivity {
             } else {
                 endLoadingProcess();
             }
+        }
+    }
+
+    private class isUserAvailableTask extends AsyncTask<Void, Integer, WebWalletRootResponse<Boolean>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            lockLoginButton();
+        }
+
+        @Override
+        protected WebWalletRootResponse<Boolean> doInBackground(Void... users) {
+            return WalletViewModel.isUserAvailable(Util.getString(txtUser));
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockLoginButton(); //percentage of the progress
+        }
+
+        @Override
+        protected void onPostExecute(WebWalletRootResponse<Boolean> booleanWebWalletRootResponse) {
+            super.onPostExecute(booleanWebWalletRootResponse);
+            if (booleanWebWalletRootResponse != null && booleanWebWalletRootResponse.getData()) {
+                createNewUser(Util.getString(txtUser), Util.getString(txtPassword));
+                unlockLoginButton();
+            } else {
+                txtUser.setError(getString(R.string.register_username_not_available_error_message));
+                endLoadingProcess();
+            }
+            unlockLoginButton();
         }
     }
 

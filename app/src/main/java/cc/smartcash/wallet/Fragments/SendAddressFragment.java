@@ -62,6 +62,7 @@ import cc.smartcash.wallet.ViewModels.UserViewModel;
 import cc.smartcash.wallet.ViewModels.WalletViewModel;
 import pub.devrel.easypermissions.EasyPermissions;
 
+
 public class SendAddressFragment extends Fragment implements QRCodeReaderView.OnQRCodeReadListener {
 
     public static final String TAG = SendAddressFragment.class.getSimpleName();
@@ -105,6 +106,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     @BindView(R.id.btn_eye)
     ImageView btnEye;
+
     private BigDecimal mainFee = BigDecimal.valueOf(0.0);
 
     public static SendAddressFragment newInstance() {
@@ -117,6 +119,9 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         ButterKnife.bind(this, view);
 
         this.smartCashApplication = new SmartCashApplication(getContext());
+
+        getPreferences();
+
         if (NetworkUtil.getInternetStatus(getContext())) {
             getCurrentPrices();
         } else {
@@ -131,26 +136,26 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), RC_CAMERA_PERM, perms);
-        setFeeOnButton();
+
         if (withoutPin) {
             pinLabel.setText(getResources().getString(R.string.send_password_label));
             txtPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
             txtPin.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH_PASSWORD)});
         }
+        setFeeOnButton();
         setAmountListener();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getCurrentFee();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getPreferences();
-        new FeeTask().execute();
     }
 
     @Override
@@ -282,20 +287,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                 return;
             }
 
-            SendPayment sendPayment = new SendPayment();
-            sendPayment.setFromAddress(selectedWallet.getAddress());
-            sendPayment.setToAddress(txtToAddress.getText().toString());
-            sendPayment.setAmount(amount);
-            sendPayment.setEmail(this.email);
-            sendPayment.setUserKey(password);
+            new isUserAvailableTask().execute();
 
-            if (PhoneNumberUtils.isGlobalPhoneNumber(Util.getString(txtToAddress))) {
-                new SmartTextOrderTask().execute();
-            } else if (Util.isValidEmail(Util.getString(txtToAddress))) {
-                new SmartSendTask().execute(sendPayment);
-            } else {
-                new SmartSendTask().execute(sendPayment);
-            }
         } else {
             //ERROR
             new AlertDialog.Builder(getActivity())
@@ -303,6 +296,18 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                     .setMessage(getString(R.string.send_pin_verification_dialog_message_error_message))
                     .setPositiveButton(getString(R.string.send_pin_verification_dialog_ok_button), (dialog, id) -> dialog.cancel()).show();
         }
+    }
+
+    private SendPayment getSendPayment() {
+        Double amount = Double.parseDouble(Util.getString(txtAmountCrypto));
+        Wallet selectedWallet = smartCashApplication.getWallet(getActivity());
+        SendPayment sendPayment = new SendPayment();
+        sendPayment.setFromAddress(selectedWallet.getAddress());
+        sendPayment.setToAddress(txtToAddress.getText().toString());
+        sendPayment.setAmount(amount);
+        sendPayment.setEmail(this.email);
+        sendPayment.setUserKey(password);
+        return sendPayment;
     }
 
     public void openFragment(Fragment fragment) {
@@ -380,6 +385,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private void setAmountListener() {
 
         Coin actualSelected = smartCashApplication.getActualSelectedCoin(getContext());
+
         amountLabel.setText(String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.getName()));
 
         txtAmountFiat.addTextChangedListener(new TextWatcher() {
@@ -400,7 +406,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             }
         });
 
-
         txtAmountCrypto.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -418,6 +423,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
             }
         });
+
     }
 
     private void calculateFromFiatToSmart() {
@@ -483,7 +489,15 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     }
 
     private void getCurrentPrices() {
-        new PriceTask().execute();
+        if (NetworkUtil.getInternetStatus(getContext())) {
+            new PriceTask().execute();
+        }
+    }
+
+    private void getCurrentFee() {
+        if (NetworkUtil.getInternetStatus(getContext())) {
+            new FeeTask().execute();
+        }
     }
 
     private void lockSendButton() {
@@ -502,35 +516,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         sendButton.setText(getString(R.string.send_button_label).replace("%f", mainFee.toString()));
     }
 
-    private class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            lockSendButton();
-        }
-
-        @Override
-        protected ArrayList<Coin> doInBackground(Void... users) {
-            return CurrentPriceViewModel.getSyncPrices(getContext());
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            if (!Util.isTaskComplete(progress[0])) lockSendButton(); //percentage of the progress
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Coin> coins) {
-            super.onPostExecute(coins);
-            if (coins != null) {
-                smartCashApplication.saveCurrentPrice(getContext(), coins);
-                unlockSendButton();
-            } else {
-                unlockSendButton();
-            }
-        }
+    private void sendByWebWallet() {
+        new SmartSendTask().execute(getSendPayment());
     }
 
     private class FeeTask extends AsyncTask<Void, Integer, WebWalletRootResponse<Double>> {
@@ -576,6 +563,48 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         }
     }
 
+    private void sendBySmartTextOrder() {
+        if (Util.isValidEmail(Util.getString(txtToAddress)) || PhoneNumberUtils.isGlobalPhoneNumber(Util.getString(txtToAddress))) {
+            //If we have a valid email or a phone number, then try to send by SmartText
+            new SmartTextOrderTask().execute();
+        } else {
+            //if not, we still have the possibility of a valid SmartAddress, so try web wallet
+            sendByWebWallet();
+        }
+    }
+
+    private class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            lockSendButton();
+        }
+
+        @Override
+        protected ArrayList<Coin> doInBackground(Void... users) {
+            return CurrentPriceViewModel.getSyncPrices(getContext());
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockSendButton(); //percentage of the progress
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Coin> coinArrayList) {
+            super.onPostExecute(coinArrayList);
+            if (coinArrayList != null) {
+                smartCashApplication.saveCurrentPrice(getContext(), coinArrayList);
+                coins = coinArrayList;
+                unlockSendButton();
+            } else {
+                unlockSendButton();
+            }
+        }
+    }
+
     private class SmartTextOrderTask extends AsyncTask<SmartTextRequest, Integer, SmartTextRoot> {
 
         @Override
@@ -614,8 +643,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         @Override
         protected void onPostExecute(SmartTextRoot smartTextRoot) {
             super.onPostExecute(smartTextRoot);
-            if (smartTextRoot != null) {
-                if (smartTextRoot.getData() != null) {
+            if (smartTextRoot != null && smartTextRoot.getData() != null) {
 
                     SmartTextData data = smartTextRoot.getData();
                     SendPayment sendPayment = new SendPayment();
@@ -629,11 +657,11 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                     StringBuilder order = new StringBuilder();
                     order.append("https://smartext.me/Order/" + data.getOrderID());
                     Log.d(TAG, order.toString());
-                }
-                unlockSendButton();
+
             } else {
-                unlockSendButton();
+                Toast.makeText(getContext(), getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show();
             }
+            unlockSendButton();
         }
     }
 
@@ -658,18 +686,69 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         @Override
         protected void onPostExecute(WebWalletRootResponse<String> result) {
             super.onPostExecute(result);
+            if (result == null) {
+                Toast.makeText(getContext(), getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show();
+                unlockSendButton();
+                return;
+            }
+            if (result.getValid() != null && !result.getValid()) {
+                Toast.makeText(getContext(), getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show();
+                unlockSendButton();
+                return;
+            }
+            if (!Util.isNullOrEmpty(result.getError())) {
+                Toast.makeText(getContext(), result.getError(), Toast.LENGTH_LONG).show();
+                unlockSendButton();
+                return;
+            }
+            if (!Util.isNullOrEmpty(result.getErrorDescription())) {
+                Toast.makeText(getContext(), result.getErrorDescription(), Toast.LENGTH_LONG).show();
+                unlockSendButton();
+                return;
+            }
             if (result != null) {
                 if (result.getData() != null) {
                     updateData();
                     clearInputs();
                     Log.d(TAG, result.getData());
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show();
                 }
                 unlockSendButton();
             } else {
-                if (Util.isValidEmail(Util.getString(txtToAddress))) {
-                    new SmartTextOrderTask().execute();
-                }
                 unlockSendButton();
+            }
+        }
+    }
+
+    private class isUserAvailableTask extends AsyncTask<Void, Integer, WebWalletRootResponse<Boolean>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            lockSendButton();
+        }
+
+        @Override
+        protected WebWalletRootResponse<Boolean> doInBackground(Void... users) {
+            return WalletViewModel.isUserAvailable(Util.getString(txtToAddress));
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            if (!Util.isTaskComplete(progress[0])) lockSendButton(); //percentage of the progress
+        }
+
+        @Override
+        protected void onPostExecute(WebWalletRootResponse<Boolean> booleanWebWalletRootResponse) {
+            super.onPostExecute(booleanWebWalletRootResponse);
+            if (booleanWebWalletRootResponse != null && booleanWebWalletRootResponse.getData()) {
+                //SEND BY EMAIL/SMS/LINK
+                sendBySmartTextOrder();
+            } else {
+                //SEND TO WEB WALLET
+                sendByWebWallet();
             }
         }
     }

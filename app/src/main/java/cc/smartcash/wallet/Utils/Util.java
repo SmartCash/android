@@ -93,6 +93,10 @@ public class Util {
         return view.getText() == null || view.getText().toString() == null || view.getText().toString().isEmpty();
     }
 
+    public static boolean isNullOrEmpty(String text) {
+        return text == null || text.isEmpty();
+    }
+
     public static boolean isTaskComplete(int progress) {
         return ((progress * 2) == 100); //percentage of the progress and the process
     }
