@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.txt_confirm_password)
     EditText txtConfirmPassword;
 
-    @BindView(R.id.txt_pin)
+    @BindView(R.id.txt_two_fa)
     EditText txtPin;
 
     @BindView(R.id.txt_confirm_pin)

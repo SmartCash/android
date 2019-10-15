@@ -51,7 +51,9 @@ public class SendFragment extends Fragment {
 
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getContext());
+
         walletList = smartCashApplication.getUser(getContext()).getWallet();
+        smartCashApplication.saveWallet(getContext(), walletList.get(0));
         View view = inflater.inflate(R.layout.fragment_send, container, false);
         ButterKnife.bind(this, view);
         return view;

@@ -234,8 +234,69 @@
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/ic_eye"
                 android:backgroundTint="#333" />
+
+
         </RelativeLayout>
 
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/relativelayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativelayout">
+
+            <EditText
+                android:id="@+id/txt_two_fa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentTop="true"
+
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:inputType="numberPassword"
+                android:maxLength="4"
+                app:layout_constraintEnd_toStartOf="@+id/btn_eye2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pin_label2" />
+
+            <TextView
+                android:id="@+id/pin_label2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="32dp"
+                android:text="@string/login_2fa_label"
+                android:textAlignment="viewStart"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <ImageView
+                android:id="@+id/btn_eye2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/ic_eye"
+                android:backgroundTint="#333"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pin_label2" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/send_button"
@@ -252,7 +313,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativelayout"
+            app:layout_constraintTop_toBottomOf="@+id/relativelayout2"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,7 +43,7 @@ public class PinActivity extends AppCompatActivity {
     @BindView(R.id.txt_password)
     EditText txtPin;
 
-    @BindView(R.id.txt_pin)
+    @BindView(R.id.txt_two_fa)
     EditText txtConfirmPin;
 
     @BindView(R.id.confirm_pin_label)

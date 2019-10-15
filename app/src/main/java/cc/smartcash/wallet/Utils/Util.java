@@ -8,8 +8,14 @@ import android.widget.TextView;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import cc.smartcash.wallet.R;
 
@@ -112,4 +118,52 @@ public class Util {
     public static String amountInDefaultCryptoConcatenation(Context context) {
         return amountInCoinConcatenation(context, context.getString(R.string.default_crypto));
     }
+
+    public static String getDateFromEpoch(long epoch) {
+        Date date = new Date(epoch * 1000L);
+        DateFormat format = new SimpleDateFormat(KEYS.KEY_DATE_FORMAT);
+        format.setTimeZone(TimeZone.getTimeZone(KEYS.KEY_DATE_TIMEZONE));
+        return format.format(date);
+    }
+
+    public static String getDate() {
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat(KEYS.KEY_DATE_FORMAT);
+        format.setTimeZone(TimeZone.getTimeZone(KEYS.KEY_DATE_TIMEZONE));
+        return format.format(date);
+    }
+
+    public static Date getDate(String date) {
+
+        if (Util.isNullOrEmpty(date)) return null;
+
+        DateFormat format = new SimpleDateFormat(KEYS.KEY_DATE_FORMAT);
+        format.setTimeZone(TimeZone.getTimeZone(KEYS.KEY_DATE_TIMEZONE));
+
+        try {
+            return format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static long dateDiff(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();//as given
+        //long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+
+        return minutes;
+    }
+
+    public static long dateDiffFromNow(Date d1) {
+
+        if (d1 == null) return Long.MAX_VALUE;
+
+        long diff = new Date().getTime() - d1.getTime();//as given
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
+        return minutes;
+    }
+
 }

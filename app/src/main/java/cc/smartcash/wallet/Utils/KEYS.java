@@ -47,4 +47,7 @@ public class KEYS {
     public static final String KEY_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     public static final String KEY_DATE_TIMEZONE = "Etc/UTC";
+
+    public static final String KEY_TIME_PRICE_WAS_UPDATED = "TimePriceUpdated";
+
 }

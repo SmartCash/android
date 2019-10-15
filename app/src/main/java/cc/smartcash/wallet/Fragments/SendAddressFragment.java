@@ -2,6 +2,7 @@ package cc.smartcash.wallet.Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
@@ -37,6 +38,7 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -81,6 +83,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     String password;
     private boolean withoutPin;
     private boolean isPasswordVisible = false;
+    @BindView(R.id.txt_password)
+    EditText txtPassword;
     private SmartCashApplication smartCashApplication;
     @BindView(R.id.txt_amount_converted)
     EditText txtAmountCrypto;
@@ -94,9 +98,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     EditText txtAmountFiat;
     @BindView(R.id.loader)
     ProgressBar loader;
-
-    @BindView(R.id.txt_password)
-    EditText txtPin;
+    @BindView(R.id.btn_eye2)
+    ImageView btnEye2;
 
     @BindView(R.id.send_button)
     Button sendButton;
@@ -106,11 +109,32 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
     @BindView(R.id.btn_eye)
     ImageView btnEye;
+    @BindView(R.id.txt_two_fa)
+    EditText txtTwoFa;
+    private boolean isTwoFaVisible = false;
+    private BigDecimal mainFee;
 
-    private BigDecimal mainFee = BigDecimal.valueOf(0.0);
+    private boolean isOnline;
+
 
     public static SendAddressFragment newInstance() {
         return new SendAddressFragment();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        this.smartCashApplication = new SmartCashApplication(getContext());
+
+        this.mainFee = BigDecimal.valueOf(0.0);
+
+        this.isOnline = NetworkUtil.getInternetStatus(getContext());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -118,13 +142,9 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         View view = inflater.inflate(R.layout.fragment_send_address, container, false);
         ButterKnife.bind(this, view);
 
-        this.smartCashApplication = new SmartCashApplication(getContext());
-
         getPreferences();
 
-        if (NetworkUtil.getInternetStatus(getContext())) {
-            getCurrentPrices();
-        } else {
+        if (!isOnline) {
             sendButton.setText(getString(R.string.send_save_button_network_error_message));
             sendButton.setActivated(false);
         }
@@ -139,8 +159,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
 
         if (withoutPin) {
             pinLabel.setText(getResources().getString(R.string.send_password_label));
-            txtPin.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            txtPin.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH_PASSWORD)});
+            txtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            txtPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH_PASSWORD)});
         }
         setFeeOnButton();
         setAmountListener();
@@ -149,7 +169,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     @Override
     public void onStart() {
         super.onStart();
-        getCurrentFee();
+        getCurrentFeeAndPrices();
     }
 
     @Override
@@ -238,7 +258,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     @OnClick(R.id.send_button)
     public void onViewClicked() {
 
-        if (!NetworkUtil.getInternetStatus(getActivity())) {
+        if (!isOnline) {
             Toast.makeText(getActivity(), getString(R.string.send_save_button_network_error_message), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -254,8 +274,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             txtAmountCrypto.setError(getString(R.string.send_amount_crypto_error_message));
             Toast.makeText(getContext(), getString(R.string.send_amount_crypto_error_message), Toast.LENGTH_LONG).show();
             return;
-        } else if (Util.isNullOrEmpty(txtPin)) {
-            txtPin.setError(getString(R.string.send_pin_error_message));
+        } else if (Util.isNullOrEmpty(txtPassword)) {
+            txtPassword.setError(getString(R.string.send_pin_error_message));
             Toast.makeText(getContext(), getString(R.string.send_pin_error_message), Toast.LENGTH_LONG).show();
             return;
         }
@@ -276,7 +296,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         if (!withoutPin) {
             password = verifyPin();
         } else {
-            password = Util.getString(txtPin);
+            password = Util.getString(txtPassword);
         }
 
         if (!password.isEmpty()) {
@@ -307,6 +327,10 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         sendPayment.setAmount(amount);
         sendPayment.setEmail(this.email);
         sendPayment.setUserKey(password);
+
+        if (!Util.isNullOrEmpty(txtTwoFa))
+            sendPayment.setCode(Util.getString(txtTwoFa));
+
         return sendPayment;
     }
 
@@ -320,16 +344,30 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     @OnClick(R.id.btn_eye)
     public void onBtnEyeClicked() {
         if (isPasswordVisible) {
-            txtPin.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            txtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             isPasswordVisible = false;
             btnEye.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye));
         } else {
-            txtPin.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            txtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             isPasswordVisible = true;
             btnEye.setImageDrawable(getResources().getDrawable(R.drawable.eye_off));
         }
 
-        txtPin.setSelection(txtPin.getText().length());
+        txtPassword.setSelection(txtPassword.getText().length());
+    }
+
+    @OnClick(R.id.btn_eye2)
+    public void onBtnEye2Clicked() {
+        if (isPasswordVisible) {
+            txtTwoFa.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            isTwoFaVisible = false;
+            btnEye2.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye));
+        } else {
+            txtTwoFa.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            isTwoFaVisible = true;
+            btnEye2.setImageDrawable(getResources().getDrawable(R.drawable.eye_off));
+        }
+        txtTwoFa.setSelection(txtTwoFa.getText().length());
     }
 
     private void getPreferences() {
@@ -355,8 +393,8 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         txtToAddress.setText("");
         txtAmountFiat.setText("");
         txtAmountCrypto.setText(String.valueOf(0.0));
-        txtPin.setText("");
-        sendButton.setText(Objects.requireNonNull(getContext()).getResources().getString(R.string.send_button_label, amountConverted));
+        txtPassword.setText("");
+        setFeeOnButton(amountConverted.toString());
     }
 
     private void updateData() {
@@ -376,10 +414,10 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
     private String verifyPin() {
 
         if (withoutPin) {
-            return txtPin.getText().toString();
+            return txtPassword.getText().toString();
         }
 
-        return this.smartCashApplication.getDecryptedPassword(getActivity(), txtPin.getText().toString());
+        return this.smartCashApplication.getDecryptedPassword(getActivity(), txtPassword.getText().toString());
     }
 
     private void setAmountListener() {
@@ -452,7 +490,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             }
             txtAmountCrypto.setText(String.valueOf(amountConverted));
             BigDecimal amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee);
-            sendButton.setText(getString(R.string.send_button_label, amountWithFee));
+            setFeeOnButton(amountWithFee.toString());
         }
     }
 
@@ -484,19 +522,13 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             }
             txtAmountFiat.setText(String.valueOf(amountConverted));
             BigDecimal amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee);
-            sendButton.setText(getString(R.string.send_button_label, amountWithFee));
+            setFeeOnButton(amountWithFee.toString());
         }
     }
 
-    private void getCurrentPrices() {
-        if (NetworkUtil.getInternetStatus(getContext())) {
-            new PriceTask().execute();
-        }
-    }
-
-    private void getCurrentFee() {
-        if (NetworkUtil.getInternetStatus(getContext())) {
-            new FeeTask().execute();
+    private void getCurrentFeeAndPrices() {
+        if (isOnline) {
+            new FeeAndTask().execute();
         }
     }
 
@@ -512,15 +544,19 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         loader.setVisibility(View.GONE);
     }
 
+    private void setFeeOnButton(String fee) {
+        sendButton.setText(getString(R.string.send_button_label).replace("%f", fee));
+    }
+
     private void setFeeOnButton() {
-        sendButton.setText(getString(R.string.send_button_label).replace("%f", mainFee.toString()));
+        setFeeOnButton(mainFee.toString());
     }
 
     private void sendByWebWallet() {
         new SmartSendTask().execute(getSendPayment());
     }
 
-    private class FeeTask extends AsyncTask<Void, Integer, WebWalletRootResponse<Double>> {
+    private class FeeAndTask extends AsyncTask<Void, Integer, WebWalletRootResponse<Double>> {
 
         @Override
         protected void onPreExecute() {
@@ -534,8 +570,17 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             SendPayment sendPayment = new SendPayment();
             sendPayment.setFromAddress(smartCashApplication.getWallet(getActivity()).getAddress());
             sendPayment.setToAddress(Util.getString(txtToAddress));
+            WebWalletRootResponse<Double> fee = WalletViewModel.getSyncFee(getContext(), smartCashApplication.getToken(getActivity()), sendPayment);
 
-            return WalletViewModel.getSyncFee(getContext(), smartCashApplication.getToken(getActivity()), sendPayment);
+            Date datePriceWasUpdated = Util.getDate(SmartCashApplication.getString(getContext(), KEYS.KEY_TIME_PRICE_WAS_UPDATED));
+            Log.d(TAG, "Date price was updated: " + datePriceWasUpdated);
+            if (Util.dateDiffFromNow(datePriceWasUpdated) > 60) {
+                coins = CurrentPriceViewModel.getSyncPrices(getContext());
+                SmartCashApplication.saveString(getContext(), Util.getDate(), KEYS.KEY_TIME_PRICE_WAS_UPDATED);
+                smartCashApplication.saveCurrentPrice(getContext(), coins);
+            }
+            return fee;
+
         }
 
         @Override
@@ -551,7 +596,7 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
             if (fee != null) {
                 if (fee.getData() != null) {
                     mainFee = BigDecimal.valueOf(fee.getData());
-                    sendButton.setText(getString(R.string.send_button_label, mainFee));
+                    setFeeOnButton();
                     Log.d(TAG, fee.getData().toString());
                 } else if (!fee.getError().isEmpty()) {
                     Log.e(TAG, fee.getError());
@@ -570,38 +615,6 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
         } else {
             //if not, we still have the possibility of a valid SmartAddress, so try web wallet
             sendByWebWallet();
-        }
-    }
-
-    private class PriceTask extends AsyncTask<Void, Integer, ArrayList<Coin>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            lockSendButton();
-        }
-
-        @Override
-        protected ArrayList<Coin> doInBackground(Void... users) {
-            return CurrentPriceViewModel.getSyncPrices(getContext());
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            if (!Util.isTaskComplete(progress[0])) lockSendButton(); //percentage of the progress
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Coin> coinArrayList) {
-            super.onPostExecute(coinArrayList);
-            if (coinArrayList != null) {
-                smartCashApplication.saveCurrentPrice(getContext(), coinArrayList);
-                coins = coinArrayList;
-                unlockSendButton();
-            } else {
-                unlockSendButton();
-            }
         }
     }
 
@@ -652,6 +665,9 @@ public class SendAddressFragment extends Fragment implements QRCodeReaderView.On
                     sendPayment.setToAddress(data.getGeneratedAddress());
                     sendPayment.setEmail(email);
                     sendPayment.setUserKey(password);
+
+                if (!Util.isNullOrEmpty(txtTwoFa))
+                    sendPayment.setCode(Util.getString(txtTwoFa));
 
                     new SmartSendTask().execute(sendPayment);
                     StringBuilder order = new StringBuilder();

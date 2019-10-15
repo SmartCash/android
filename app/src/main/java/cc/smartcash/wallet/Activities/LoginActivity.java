@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -230,6 +231,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null) {
             smartCashApplication.saveToken(LoginActivity.this, token);
             smartCashApplication.saveUser(LoginActivity.this, user);
+            smartCashApplication.saveWallet(LoginActivity.this, user.getWallet().get(0));
         } else {
             smartCashApplication.deleteSharedPreferences(LoginActivity.this);
         }
@@ -326,7 +328,12 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Coin> doInBackground(Void... users) {
-            return CurrentPriceViewModel.getSyncPrices(getApplicationContext());
+            Date datePriceWasUpdated = Util.getDate(SmartCashApplication.getString(getApplicationContext(), KEYS.KEY_TIME_PRICE_WAS_UPDATED));
+            Log.d(TAG, "Date price was updated: " + datePriceWasUpdated);
+            if (Util.dateDiffFromNow(datePriceWasUpdated) > 60) {
+                return CurrentPriceViewModel.getSyncPrices(getApplicationContext());
+            }
+            return null;
         }
 
         @Override
@@ -339,9 +346,11 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Coin> coins) {
             super.onPostExecute(coins);
             if (coins != null) {
+                SmartCashApplication.saveString(getApplicationContext(), Util.getDate(), KEYS.KEY_TIME_PRICE_WAS_UPDATED);
                 smartCashApplication.saveCurrentPrice(getApplicationContext(), coins);
                 unlockLoginButton();
             } else {
+                unlockLoginButton();
                 endLoadingProcess();
             }
         }

@@ -183,6 +183,18 @@ public class SmartCashApplication extends Application {
         prefsEditor.apply();
     }
 
+    public static void saveString(Context context, String stringText, String key) {
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
+        prefsEditor.putString(key, stringText);
+        prefsEditor.apply();
+    }
+
+    public static String getString(Context context, String key) {
+        mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        return getPreferences(context).getString(key, "");
+    }
+
     public Boolean getBoolean(Context context, String key) {
         mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         return getPreferences(context).getBoolean(key, false);
