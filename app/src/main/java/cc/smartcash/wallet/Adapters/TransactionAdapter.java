@@ -3,6 +3,8 @@ package cc.smartcash.wallet.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,20 +15,25 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import cc.smartcash.wallet.Activities.TransactionActivity;
 import cc.smartcash.wallet.Models.Coin;
+import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.Transaction;
 import cc.smartcash.wallet.R;
 import cc.smartcash.wallet.Utils.SmartCashApplication;
+import cc.smartcash.wallet.Utils.URLS;
 import cc.smartcash.wallet.ViewHolders.TransactionViewHolder;
+import cc.smartcash.wallet.ViewModels.TransactionViewModel;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
 
+
+    public static final String TAG = TransactionAdapter.class.getSimpleName();
+
     private Context context;
     private ArrayList<Transaction> transactions;
+    private TransactionViewHolder transactionViewHolder;
 
     public TransactionAdapter(Context context, ArrayList<Transaction> transactions) {
         this.context = context;
@@ -42,51 +49,112 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionViewHold
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(context).inflate(R.layout.transaction_item, viewGroup, false);
-        return new TransactionViewHolder(view);
+        transactionViewHolder = new TransactionViewHolder(view);
+        return transactionViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder transactionViewHolder, int i) {
 
-        transactionViewHolder.amount.setText(String.format("%f", this.transactions.get(i).getAmount()));
+        SmartCashApplication app = new SmartCashApplication(context);
+        Coin actualSelectedCoin = app.getActualSelectedCoin(context);
+
+        String fiatValue = "";
+
+        if (actualSelectedCoin == null || actualSelectedCoin.getName().equals(context.getString(R.string.default_crypto))) {
+            ArrayList<Coin> currentPrice = app.getCurrentPrice(context);
+            fiatValue = (app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions.get(i).getAmount(), currentPrice.get(0).getValue())));
+        } else {
+            fiatValue = (app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions.get(i).getAmount(), actualSelectedCoin.getValue())));
+        }
+
+        transactionViewHolder.amount.setText(app.formatNumberByDefaultCrypto(this.transactions.get(i).getAmount()));
         transactionViewHolder.direction.setText(this.transactions.get(i).getDirection());
         transactionViewHolder.timestamp.setText(this.transactions.get(i).getTimestamp());
         transactionViewHolder.hash.setText(this.transactions.get(i).getHash());
-
-        SmartCashApplication smartCashApplication = new SmartCashApplication(context);
-        ArrayList<Coin> coins = smartCashApplication.getCurrentPrice(context);
-
-        if (smartCashApplication.getActualSelectedCoin(context) == null || smartCashApplication.getActualSelectedCoin(context).getName().equals(context.getString(R.string.default_crypto))) {
-            for (Coin item : coins) {
-                if (item.getName().equals(context.getString(R.string.default_crypto))) {
-                    transactionViewHolder.price.setText(String.format("%f", this.transactions.get(i).getAmount()));
-                    break;
-                }
-            }
-        } else {
-            BigDecimal value = smartCashApplication.multiplyBigDecimals(BigDecimal.valueOf(this.transactions.get(i).getAmount()), BigDecimal.valueOf(smartCashApplication.getActualSelectedCoin(context).getValue()));
-            transactionViewHolder.price.setText(String.format("%f", value));
-        }
-
+        transactionViewHolder.price.setText(" (" + fiatValue + ")");
         transactionViewHolder.hash.setOnClickListener(v -> {
-            Intent intent = new Intent(context, TransactionActivity.class);
-            intent.putExtra("TransactionHash", this.transactions.get(i).getHash());
-            intent.putExtra("Amount", this.transactions.get(i).getAmount());
-            intent.putExtra("FromAddress", this.transactions.get(i).getToAddress());
-
-            context.startActivity(intent);
-//            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://insight.smartcash.cc/tx/" + transactionViewHolder.hash.getText()));
-//            context.startActivity(browserIntent);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.transactions.get(i).getHash()));
+            context.startActivity(browserIntent);
         });
 
-        transactionViewHolder.btnDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setVisibility(transactionViewHolder);
-            }
+        transactionViewHolder.btnDetails.setOnClickListener(v -> {
+            setVisibility(transactionViewHolder);
+
+            TransactionParameter transactionParameter = new TransactionParameter(transactionViewHolder, transactions.get(i).getHash(), i);
+            new TransactionTask().execute(transactionParameter);
+
         });
 
         setDirectionColors(transactionViewHolder, i);
+    }
+
+    private class TransactionParameter {
+        private TransactionViewHolder transactionViewHolder;
+        private String hash;
+        private int position;
+        private FullTransaction transaction;
+
+        public TransactionParameter(TransactionViewHolder transactionViewHolder, String hash, int position) {
+            this.transactionViewHolder = transactionViewHolder;
+            this.hash = hash;
+            this.position = position;
+        }
+
+        public FullTransaction getTransaction() {
+            return transaction;
+        }
+
+        public void setTransaction(FullTransaction transaction) {
+            this.transaction = transaction;
+        }
+
+        public TransactionViewHolder getTransactionViewHolder() {
+            return transactionViewHolder;
+        }
+
+        public String getHash() {
+            return hash;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+    }
+
+    private class TransactionTask extends AsyncTask<TransactionParameter, Integer, TransactionParameter> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected TransactionParameter doInBackground(TransactionParameter... parameters) {
+            parameters[0].getTransactionViewHolder().confirmations.setText("loading...");
+            try {
+                parameters[0].setTransaction(TransactionViewModel.getSyncTransaction(parameters[0].getHash()));
+                return parameters[0];
+            } catch (Exception ex) {
+                parameters[0].getTransactionViewHolder().confirmations.setText("0");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+        }
+
+        @Override
+        protected void onPostExecute(TransactionParameter transactionResult) {
+            super.onPostExecute(transactionResult);
+            try {
+                transactionResult.getTransactionViewHolder().confirmations.setText(String.valueOf(transactionResult.getTransaction().getConfirmations()));
+            } catch (Exception ex) {
+                transactionResult.getTransactionViewHolder().confirmations.setText("0");
+            }
+        }
     }
 
     public void setDirectionColors(TransactionViewHolder transactionViewHolder, int i) {

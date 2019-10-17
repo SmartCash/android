@@ -16,19 +16,23 @@ import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
 
+import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.Wallet;
 import cc.smartcash.wallet.R;
+import cc.smartcash.wallet.Utils.SmartCashApplication;
 
 public class WalletSpinnerAdapter extends ArrayAdapter<Wallet> {
 
     private Integer count;
     private Boolean check;
     private ArrayList<Wallet> wallets;
+    private Context context;
 
     public WalletSpinnerAdapter(Context context, ArrayList<Wallet> walletList) {
         super(context, 0, walletList);
         this.count = 0;
         this.wallets = walletList;
+        this.context = context;
     }
 
     @NonNull
@@ -73,8 +77,23 @@ public class WalletSpinnerAdapter extends ArrayAdapter<Wallet> {
         Wallet currentItem = getItem(position);
 
         if (currentItem != null) {
+
+
+            SmartCashApplication app = new SmartCashApplication(context);
+            Coin actualSelectedCoin = app.getActualSelectedCoin(context);
+
+            String fiatValue = "";
+
+            if (actualSelectedCoin == null || actualSelectedCoin.getName().equals(context.getString(R.string.default_crypto))) {
+                ArrayList<Coin> currentPrice = app.getCurrentPrice(context);
+                fiatValue = (app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.getBalance(), currentPrice.get(0).getValue())));
+            } else {
+                fiatValue = (app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.getBalance(), actualSelectedCoin.getValue())));
+            }
+
+
             textViewName.setText(currentItem.getDisplayName());
-            textViewBalance.setText(String.valueOf(currentItem.getBalance()));
+            textViewBalance.setText(app.formatNumberByDefaultCrypto(currentItem.getBalance()) + " (" + fiatValue + ")");
             textViewAddress.setText(currentItem.getAddress());
             textViewAddress.setText(currentItem.getAddress());
         }

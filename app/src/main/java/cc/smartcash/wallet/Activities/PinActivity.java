@@ -59,6 +59,11 @@ public class PinActivity extends AppCompatActivity {
     ImageView btnEye;
 
     @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(), "Back press disabled!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pin_activity);
@@ -180,6 +185,8 @@ public class PinActivity extends AppCompatActivity {
     private void setSmartCashApplication() {
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getApplicationContext());
+
+        smartCashApplication.getAllValues();
     }
 
     private void getPassword() {

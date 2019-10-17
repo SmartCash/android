@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.os.ConfigurationCompat;
+
 import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.Config;
 import com.google.crypto.tink.KeysetHandle;
@@ -26,10 +28,17 @@ import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Currency;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import cc.smartcash.wallet.Models.Coin;
 import cc.smartcash.wallet.Models.User;
@@ -176,6 +185,97 @@ public class SmartCashApplication extends Application {
         return gson.fromJson(json, User.class);
     }
 
+
+    public static Map<String, String> getAvailableCurrencies() {
+        Locale[] locales = Locale.getAvailableLocales();
+
+        // We use TreeMap so that the order of the data in the map sorted
+        // based on the country name.
+        Map<String, String> currencies = new TreeMap<>();
+        for (Locale locale : locales) {
+            try {
+                currencies.put(locale.getDisplayCountry(),
+                        Currency.getInstance(locale).getCurrencyCode());
+            } catch (Exception e) {
+                // when the locale is not supported
+            }
+        }
+        return currencies;
+    }
+
+    public Map<String, ?> getAllValues() {
+        Map<String, ?> keys = getPreferences(context).getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue().toString());
+        }
+        return keys;
+    }
+
+    public boolean checkAllNecessaryKeys() {
+        Map<String, ?> keys = getAllValues();
+        return keys.containsKey(KEYS.KEY_TOKEN)
+                && keys.containsKey(KEYS.KEY_USER)
+                && keys.containsKey(KEYS.KEY_WALLET)
+                && keys.containsKey(KEYS.KEY_CURRENT_PRICES)
+                && keys.containsKey(KEYS.KEY_TIME_PRICE_WAS_UPDATED)
+                && keys.get(KEYS.KEY_TOKEN) != null
+                && keys.get(KEYS.KEY_USER) != null
+                && keys.get(KEYS.KEY_WALLET) != null
+                && keys.get(KEYS.KEY_CURRENT_PRICES) != null
+                && keys.get(KEYS.KEY_TIME_PRICE_WAS_UPDATED) != null;
+    }
+
+    public String formatNumberBySelectedCurrencyCode(double numberToFormat) {
+        Currency currency = null;
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMaximumFractionDigits(8);
+
+        if (getActualSelectedCoin(context) == null || getActualSelectedCoin(context).getName().equalsIgnoreCase(context.getString(R.string.default_crypto))) {
+            currency = Currency.getInstance(context.getString(R.string.default_fiat));
+
+        } else {
+            currency = Currency.getInstance(getActualSelectedCoin(context).getName());
+        }
+        format.setCurrency(currency);
+        String symbol = currency.getSymbol();
+        if (getActualSelectedCoin(context).getName().equalsIgnoreCase(context.getString(R.string.default_crypto))) {
+            symbol = context.getString(R.string.smartCash);
+        }
+        System.out.println(symbol + " " + format.format(numberToFormat));
+        return symbol + " " + format.format(numberToFormat);
+    }
+
+    public String formatNumberByDefaultCrypto(double numberToFormat) {
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMaximumFractionDigits(8);
+        Currency currency = Currency.getInstance(context.getString(R.string.default_fiat));
+        format.setCurrency(currency);
+        String symbol = context.getString(R.string.smartCash);
+        return symbol + " " + format.format(numberToFormat);
+    }
+
+    public Collection<Locale> getLocalesFromCurrentFiatSelection() {
+
+        Locale currentLocale = ConfigurationCompat.getLocales(context.getResources().getConfiguration()).get(0);
+        System.out.println("Current Locale => " + currentLocale.toString());
+
+        Currency currency = null;
+        if (getActualSelectedCoin(context) == null || getActualSelectedCoin(context).getName().equalsIgnoreCase(context.getString(R.string.default_crypto))) {
+            currency = Currency.getInstance(context.getString(R.string.default_fiat));
+        } else {
+            currency = Currency.getInstance(getActualSelectedCoin(context).getName());
+        }
+        Collection<Locale> returnValue = new LinkedList<>();
+        for (Locale locale : NumberFormat.getAvailableLocales()) {
+            String code = NumberFormat.getCurrencyInstance(locale).
+                    getCurrency().getCurrencyCode();
+            if (currency.getCurrencyCode().equals(code)) {
+                returnValue.add(locale);
+            }
+        }
+        return returnValue;
+    }
+
     public void saveBoolean(Context context, Boolean bool, String key) {
         mPrefs = context.getSharedPreferences(KEYS.SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = getPreferences(context).edit();
@@ -200,8 +300,8 @@ public class SmartCashApplication extends Application {
         return getPreferences(context).getBoolean(key, false);
     }
 
-    public String converterValue(double amount, double value) {
-        return String.format("%f", (amount * value));
+    public double getCurrentValueByRate(double amount, double value) {
+        return (amount * value);
     }
 
     public BigDecimal multiplyBigDecimals(BigDecimal amount, BigDecimal value) {

@@ -179,5 +179,6 @@
     <string name="register_save_button_error_message">It was not possible to save that user. It does probably exists already.</string>
     <string name="register_username_not_available_error_message">This username was already taken. Please, use another one.</string>
     <string name="send_web_wallet_error_message">Something went wrong. Please check your address.</string>
+    <string name="transaction_item_confirmation_label">Confirmations:</string>
 
 </resources>

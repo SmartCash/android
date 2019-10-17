@@ -129,4 +129,5 @@
     <string name="register_save_button_error_message">Infelizmente não foi possível salvar o usuário.</string>
     <string name="register_username_not_available_error_message">Esse usuário não está disponível. Por favor, escolha um outro.</string>
     <string name="send_web_wallet_error_message">Algo deu errado. Por favor, confira se o endereço está correto.</string>
+    <string name="transaction_item_confirmation_label">Confirmations:</string>
 </resources>

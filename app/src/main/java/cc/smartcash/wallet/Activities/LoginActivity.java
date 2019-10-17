@@ -84,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getApplicationContext());
 
+        smartCashApplication.getAllValues();
+
         setDebugInfo();
 
         setNetworkReceiver();
@@ -177,6 +179,11 @@ public class LoginActivity extends AppCompatActivity {
         txtPassword.setSelection(txtPassword.getText().length());
     }
 
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(), "Back press disabled!", Toast.LENGTH_SHORT).show();
+    }
+
     private void setDebugInfo() {
         if (BuildConfig.DEBUG) {
             txtUser.setText(Util.getProperty(KEYS.CONFIG_TEST_USER, getApplicationContext()));
@@ -222,6 +229,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToPinActivity() {
+        if (!smartCashApplication.checkAllNecessaryKeys()) {
+            unlockLoginButton();
+            endLoadingProcess();
+            Toast.makeText(getApplicationContext(), getString(R.string.login_network_error_message), Toast.LENGTH_LONG).show();
+            return;
+        }
         Intent intent = new Intent(getApplicationContext(), PinActivity.class);
         intent.putExtra(KEYS.KEY_PASSWORD, txtPassword.getText().toString());
         startActivity(intent);
@@ -232,6 +245,7 @@ public class LoginActivity extends AppCompatActivity {
             smartCashApplication.saveToken(LoginActivity.this, token);
             smartCashApplication.saveUser(LoginActivity.this, user);
             smartCashApplication.saveWallet(LoginActivity.this, user.getWallet().get(0));
+            smartCashApplication.saveActualSelectedCoin(getApplicationContext(), new Coin(getApplicationContext().getString(R.string.default_crypto), 0.0));
         } else {
             smartCashApplication.deleteSharedPreferences(LoginActivity.this);
         }
@@ -355,4 +369,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
 }

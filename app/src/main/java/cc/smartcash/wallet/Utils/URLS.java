@@ -16,7 +16,9 @@ public final class URLS {
 
     public static final String URL_API_ = "";
 
-    public static final String URL_INSIGHT_EXPLORER = "https://insight.smartcash.cc/api/tx/";
+    public static final String URL_INSIGHT_EXPLORER_API = "https://insight.smartcash.cc/api/tx/";
+
+    public static final String URL_INSIGHT_EXPLORER = "https://insight.smartcash.cc/tx/";
 
     public static final String URL_CURRENT_PRICE_API = "https://wallet.smartcash.cc/api/";
 

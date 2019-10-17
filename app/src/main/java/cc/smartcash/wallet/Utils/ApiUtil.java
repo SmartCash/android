@@ -29,7 +29,7 @@ public class ApiUtil {
     }
 
     public static TransactionService getTransactionService() {
-        return RetrofitConfig.getClient(URLS.URL_INSIGHT_EXPLORER).create(TransactionService.class);
+        return RetrofitConfig.getClient(URLS.URL_INSIGHT_EXPLORER_API).create(TransactionService.class);
     }
 
     public static TransactionDetailsService getTransactionDetailsService() {

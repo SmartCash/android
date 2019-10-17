@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (smartCashApplication == null)
             smartCashApplication = new SmartCashApplication(getApplicationContext());
 
+        smartCashApplication.getAllValues();
+
         withoutPin = smartCashApplication.getBoolean(this, KEYS.KEY_WITHOUT_PIN);
 
         this.txtPin = getPIN();
@@ -371,13 +373,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
         }
 
-        walletTxt.setText(getResources().getString(R.string.smartCash) + String.format("%.8f", amount));
+
+        walletTxt.setText(smartCashApplication.formatNumberByDefaultCrypto(amount));
         if (selectedCoin == null || selectedCoin.getName().equals(getString(R.string.default_crypto))) {
             ArrayList<Coin> currentPrice = smartCashApplication.getCurrentPrice(this);
-            walletConverted.setText("$ " + smartCashApplication.converterValue(amount, currentPrice.get(0).getValue()) + " " + currentPrice.get(0).getName());
+            walletConverted.setText(smartCashApplication.formatNumberBySelectedCurrencyCode(smartCashApplication.getCurrentValueByRate(amount, currentPrice.get(0).getValue())));
         } else {
-            //  walletConverted.setText("$ " + String.format("%.3f", amount / selectedCoin.getValue()));
-            walletConverted.setText("$ " + smartCashApplication.converterValue(amount, selectedCoin.getValue()) + " " + selectedCoin.getName());
+            walletConverted.setText(smartCashApplication.formatNumberBySelectedCurrencyCode(smartCashApplication.getCurrentValueByRate(amount, selectedCoin.getValue())));
         }
 
     }

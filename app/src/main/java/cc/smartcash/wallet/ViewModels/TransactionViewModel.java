@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import cc.smartcash.wallet.Models.FullTransaction;
 import cc.smartcash.wallet.Models.TransactionDetails;
 import cc.smartcash.wallet.Models.TransactionResponse;
@@ -68,8 +70,30 @@ public class TransactionViewModel extends ViewModel {
         });
     }
 
+    public static FullTransaction getSyncTransaction(String hash) {
+        Call<FullTransaction> call = ApiUtil.getTransactionService().getTransaction(URLS.URL_INSIGHT_EXPLORER_API + hash);
+        try {
+            Response<FullTransaction> fullTransactionResponse = call.execute();
+            if (fullTransactionResponse.isSuccessful()) {
+                return fullTransactionResponse.body();
+            } else {
+                try {
+
+                    JSONObject jObjError = new JSONObject(fullTransactionResponse.errorBody().string());
+                    Log.e(TAG, jObjError.getString("message"));
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void loadTransaction(String hash, Context context) {
-        Call<FullTransaction> call = ApiUtil.getTransactionService().getTransaction(URLS.URL_INSIGHT_EXPLORER + hash);
+        Call<FullTransaction> call = ApiUtil.getTransactionService().getTransaction(URLS.URL_INSIGHT_EXPLORER_API + hash);
 
         call.enqueue(new Callback<FullTransaction>() {
             @Override
@@ -95,5 +119,4 @@ public class TransactionViewModel extends ViewModel {
             }
         });
     }
-
 }

@@ -418,6 +418,8 @@ public class RegisterActivity extends AppCompatActivity {
         if (user != null) {
             smartCashApplication.saveToken(RegisterActivity.this, token);
             smartCashApplication.saveUser(RegisterActivity.this, user);
+            smartCashApplication.saveWallet(RegisterActivity.this, user.getWallet().get(0));
+            smartCashApplication.saveActualSelectedCoin(getApplicationContext(), new Coin(getApplicationContext().getString(R.string.default_crypto), 0.0));
         } else {
             smartCashApplication.deleteSharedPreferences(RegisterActivity.this);
         }
