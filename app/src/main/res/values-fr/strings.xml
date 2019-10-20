@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">SmartCash</string>
     <string name="smartCash">\u03A3</string>
-    <string name="app_version">v0.1.9-alpha  </string>
+    <string name="app_version">v0.2.2-alpha</string>
 
     <!-- Preferences -->
     <string name="default_fiat">USD</string>

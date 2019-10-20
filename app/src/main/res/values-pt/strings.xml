@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SmartCash</string>
-    <string name="app_version">v0.1.9-alpha  </string>
+    <string name="app_version">v0.2.2-alpha</string>
     <string name="btn_all_transactions">Todas as transações</string>
     <string name="btn_awaiting">Esperando</string>
     <string name="btn_paid">Pago</string>
