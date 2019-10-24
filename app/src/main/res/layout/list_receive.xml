@@ -5,7 +5,7 @@
     android:layout_height="80dp">
 
     <ImageView
-        android:id="@+id/ic_transaction"
+        android:id="@+id/transaction_item_ic_transaction"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="24dp"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/text_direction"
+        android:id="@+id/transaction_item_text_direction"
         android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -27,11 +27,11 @@
         android:textColor="@android:color/background_light"
         android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ic_transaction"
+        app:layout_constraintStart_toEndOf="@+id/transaction_item_ic_transaction"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/text_amount"
+        android:id="@+id/transaction_item_text_amount_crypto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -40,22 +40,22 @@
         android:textColor="@android:color/black"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/text_direction"
+        app:layout_constraintStart_toEndOf="@+id/transaction_item_text_direction"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txt_dolar"
+        android:id="@+id/transaction_item_text_amount_fiat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="24dp"
         android:text="($ 492.1759)"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/text_amount"
+        app:layout_constraintStart_toEndOf="@+id/transaction_item_text_amount_crypto"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txt_timestamp"
+        android:id="@+id/transaction_item_text_timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -63,10 +63,10 @@
         android:text="12/18/2018, 3:45 PM"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/text_direction" />
+        app:layout_constraintStart_toEndOf="@+id/transaction_item_text_direction" />
 
     <ImageView
-        android:id="@+id/btn_open_details"
+        android:id="@+id/transaction_item_btn_open_details"
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_marginEnd="32dp"

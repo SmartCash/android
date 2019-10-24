@@ -26,97 +26,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Spinner
-                android:id="@+id/wallet_spinner"
+                android:id="@+id/fragment_send_wallet_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </RelativeLayout>
-
-        <!--<Button-->
-        <!--android:id="@+id/btn_address"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:background="#fafafa"-->
-        <!--android:stateListAnimator="@null"-->
-        <!--android:text="Address"-->
-        <!--android:textSize="10sp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/relative_layout" />-->
-
-        <!--<Button-->
-        <!--android:id="@+id/btn_sms"-->
-        <!--android:layout_width="70dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:background="#fafafa"-->
-        <!--android:stateListAnimator="@null"-->
-        <!--android:text="Sms"-->
-        <!--android:textSize="10sp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/btn_email"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/relative_layout" />-->
-
-        <!--<Button-->
-        <!--android:id="@+id/btn_email"-->
-        <!--android:layout_width="70dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:background="#fafafa"-->
-        <!--android:stateListAnimator="@null"-->
-        <!--android:text="Email"-->
-        <!--android:textSize="10sp"-->
-        <!--app:layout_constraintEnd_toStartOf="@+id/btn_sms"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/btn_address"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/relative_layout" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/address_underline"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="2dp"-->
-        <!--android:layout_marginStart="10dp"-->
-        <!--android:layout_marginEnd="10dp"-->
-        <!--android:background="#fe9701"-->
-        <!--android:elevation="10dp"-->
-        <!--android:outlineProvider="none"-->
-        <!--android:visibility="visible"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/btn_address"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/btn_address"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/btn_address" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/sms_underline"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="2dp"-->
-        <!--android:layout_marginStart="10dp"-->
-        <!--android:layout_marginEnd="10dp"-->
-        <!--android:background="#fe9701"-->
-        <!--android:elevation="10dp"-->
-        <!--android:outlineProvider="none"-->
-        <!--android:visibility="invisible"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/btn_sms"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/btn_sms"-->
-        <!--app:layout_constraintHorizontal_bias="1.0"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/btn_sms" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/email_underline"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="2dp"-->
-        <!--android:layout_marginStart="10dp"-->
-        <!--android:layout_marginEnd="10dp"-->
-        <!--android:background="#fe9701"-->
-        <!--android:elevation="10dp"-->
-        <!--android:outlineProvider="none"-->
-        <!--android:visibility="invisible"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/btn_email"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/btn_email"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/btn_email" />-->
 
         <FrameLayout
             android:id="@+id/frame_layout"

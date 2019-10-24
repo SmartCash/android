@@ -8,19 +8,19 @@
 
 
     <ImageView
-        android:id="@+id/im_logo"
+        android:id="@+id/login_main_img_logo"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:layout_marginBottom="40dp"
         android:src="@drawable/smartcash_logo"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintBottom_toTopOf="@+id/login_main_cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Switch
-        android:id="@+id/network_status"
+        android:id="@+id/login_main_network_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -34,7 +34,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/login_main_cardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -46,11 +46,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/im_logo">
+        app:layout_constraintTop_toBottomOf="@+id/login_main_img_logo">
 
 
         <ProgressBar
-            android:id="@+id/loader"
+            android:id="@+id/login_main_loader"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,13 +66,13 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/login_content"
+            android:id="@+id/login_main_login_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible">
 
             <Button
-                android:id="@+id/btn_register"
+                android:id="@+id/login_main_btn_register"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -86,12 +86,12 @@
 
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/btn_login"
+                app:layout_constraintEnd_toStartOf="@+id/login_main_btn_login"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_two_factor_auth" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_txt_two_factor_auth" />
 
             <Button
-                android:id="@+id/btn_login"
+                android:id="@+id/login_main_btn_login"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -104,10 +104,10 @@
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_two_factor_auth" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_txt_two_factor_auth" />
 
             <Button
-                android:id="@+id/btn_forgot_password"
+                android:id="@+id/login_main_btn_forgot_password"
                 android:layout_width="0dp"
 
 
@@ -135,10 +135,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_btn_register" />
 
             <EditText
-                android:id="@+id/txt_two_factor_auth"
+                android:id="@+id/login_main_txt_two_factor_auth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -146,10 +146,10 @@
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/two_factor_auth_label" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_two_factor_auth_label" />
 
             <EditText
-                android:id="@+id/txt_user"
+                android:id="@+id/login_main_txt_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -157,10 +157,10 @@
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_label" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_user_label" />
 
             <EditText
-                android:id="@+id/txt_password"
+                android:id="@+id/login_main_txt_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -170,10 +170,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/confirm_pin_label" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_confirm_pin_label" />
 
             <ImageView
-                android:id="@+id/btn_eye"
+                android:id="@+id/login_main_btn_eye"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
@@ -183,10 +183,10 @@
                 android:background="@drawable/ic_eye"
                 android:backgroundTint="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/confirm_pin_label" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_confirm_pin_label" />
 
             <TextView
-                android:id="@+id/confirm_pin_label"
+                android:id="@+id/login_main_confirm_pin_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -195,10 +195,10 @@
                 android:text="@string/login_password_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_user" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_txt_user" />
 
             <TextView
-                android:id="@+id/user_label"
+                android:id="@+id/login_main_user_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -210,7 +210,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/two_factor_auth_label"
+                android:id="@+id/login_main_two_factor_auth_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -219,7 +219,7 @@
                 android:text="@string/login_2fa_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_password" />
+                app:layout_constraintTop_toBottomOf="@+id/login_main_txt_password" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Spinner
-                android:id="@+id/wallet_spinner"
+                android:id="@+id/fragment_receive_wallet_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/nav_receive"
-        android:icon="@drawable/ic_action_receive"
+        android:icon="@drawable/ic_arrow_down"
         android:title="@string/menu_receive" />
     <item
         android:id="@+id/nav_trans"

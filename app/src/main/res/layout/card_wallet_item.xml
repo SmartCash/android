@@ -13,7 +13,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/round_icon"
+        android:id="@+id/wallet_spinner_item_round_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/ic_transaction"
+            android:id="@+id/transaction_item_ic_transaction"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
@@ -58,12 +58,12 @@
         android:textSize="12dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/img_edit"
-        app:layout_constraintStart_toEndOf="@+id/round_icon"
+        app:layout_constraintStart_toEndOf="@+id/wallet_spinner_item_round_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/smartCash" />
 
     <TextView
-        android:id="@+id/txt_name"
+        android:id="@+id/wallet_spinner_item_txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -71,7 +71,7 @@
         android:text="SPENDING"
         android:textStyle="bold"
         android:textSize="12dp"
-        app:layout_constraintStart_toEndOf="@+id/round_icon"
+        app:layout_constraintStart_toEndOf="@+id/wallet_spinner_item_round_icon"
         app:layout_constraintTop_toBottomOf="@+id/txt_value"
 
         />
@@ -135,6 +135,6 @@
         android:textStyle="bold"
         android:textSize="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/round_icon" />
+        app:layout_constraintTop_toBottomOf="@+id/wallet_spinner_item_round_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

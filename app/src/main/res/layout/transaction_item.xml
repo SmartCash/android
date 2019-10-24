@@ -22,19 +22,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/ic_transaction"
+            android:id="@+id/transaction_item_ic_transaction"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="24dp"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/bg_receive"
-            app:layout_constraintBottom_toTopOf="@+id/text_direction"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/text_direction"
+            android:id="@+id/transaction_item_text_direction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -44,11 +43,11 @@
             android:textColor="@android:color/background_light"
             android:textSize="8sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/ic_transaction"
-            app:layout_constraintTop_toBottomOf="@+id/ic_transaction" />
+            app:layout_constraintStart_toEndOf="@+id/transaction_item_ic_transaction"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_amount"
+            android:id="@+id/transaction_item_text_amount_crypto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -56,22 +55,22 @@
             android:textColor="@android:color/black"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/txt_timestamp"
+            app:layout_constraintStart_toStartOf="@+id/transaction_item_text_timestamp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txt_dolar"
+            android:id="@+id/transaction_item_text_amount_fiat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:text="($ 492.1759)"
             android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/text_amount"
+            app:layout_constraintStart_toEndOf="@+id/transaction_item_text_amount_crypto"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txt_timestamp"
+            android:id="@+id/transaction_item_text_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -79,14 +78,14 @@
             android:text="12/18/2018, 3:45 PM"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_open_details"
+            app:layout_constraintEnd_toStartOf="@+id/transaction_item_btn_open_details"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/text_direction"
-            app:layout_constraintTop_toBottomOf="@+id/text_amount"
+            app:layout_constraintStart_toEndOf="@+id/transaction_item_text_direction"
+            app:layout_constraintTop_toBottomOf="@+id/transaction_item_text_amount_crypto"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
-            android:id="@+id/btn_open_details"
+            android:id="@+id/transaction_item_btn_open_details"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="20dp"

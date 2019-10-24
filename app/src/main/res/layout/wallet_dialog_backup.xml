@@ -22,7 +22,7 @@
 
 
     <Button
-        android:id="@+id/btnGoToCheckMSC"
+        android:id="@+id/wallet_dialog_bkp_btnGoToCheckMSC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -34,7 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelMSC" />
+        app:layout_constraintTop_toBottomOf="@+id/wallet_dialog_bkp_labelMSC" />
 
 
     <EditText
@@ -52,7 +52,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/labelMSC"
+        android:id="@+id/wallet_dialog_bkp_labelMSC"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"

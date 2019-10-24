@@ -14,19 +14,19 @@
         tools:context="cc.smartcash.wallet.Activities.LoginActivity">
 
         <ImageView
-            android:id="@+id/im_logo"
+            android:id="@+id/pin_activity_img_logo"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_marginBottom="40dp"
             android:src="@drawable/smartcash_logo"
-            app:layout_constraintBottom_toTopOf="@+id/cardView"
+            app:layout_constraintBottom_toTopOf="@+id/pin_activity_cardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
+            android:id="@+id/pin_activity_cardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -38,10 +38,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/im_logo">
+            app:layout_constraintTop_toBottomOf="@+id/pin_activity_img_logo">
 
             <ProgressBar
-                android:id="@+id/loader"
+                android:id="@+id/pin_activity_loader"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,12 +56,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/login_content"
+                android:id="@+id/pin_activity_login_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/txt_password"
+                    android:id="@+id/pin_activity_txt_pin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -70,13 +70,13 @@
                     android:layout_marginBottom="20dp"
                     android:inputType="numberPassword"
                     android:maxLength="4"
-                    app:layout_constraintBottom_toTopOf="@+id/confirm_pin_label"
+                    app:layout_constraintBottom_toTopOf="@+id/pin_activity_confirm_pin_label"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pin_label" />
+                    app:layout_constraintTop_toBottomOf="@+id/pin_activity_pin_label" />
 
                 <ImageView
-                    android:id="@+id/btn_eye"
+                    android:id="@+id/pin_activity_btn_eye"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
@@ -86,10 +86,10 @@
                     android:background="@drawable/ic_eye"
                     android:backgroundTint="#333"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pin_label" />
+                    app:layout_constraintTop_toBottomOf="@+id/pin_activity_pin_label" />
 
                 <EditText
-                    android:id="@+id/txt_two_fa"
+                    android:id="@+id/pin_activity_txt_pin_confirmation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -99,22 +99,22 @@
                     android:maxLength="4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/confirm_pin_label" />
+                    app:layout_constraintTop_toBottomOf="@+id/pin_activity_confirm_pin_label" />
 
                 <TextView
-                    android:id="@+id/confirm_pin_label"
+                    android:id="@+id/pin_activity_confirm_pin_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="5dp"
                     android:text="@string/register_pin_confirmation_label"
-                    app:layout_constraintBottom_toTopOf="@+id/txt_two_fa"
+                    app:layout_constraintBottom_toTopOf="@+id/pin_activity_txt_pin_confirmation"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
-                    android:id="@+id/pin_label"
+                    android:id="@+id/pin_activity_pin_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -122,13 +122,13 @@
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="5dp"
                     android:text="@string/register_pin_label"
-                    app:layout_constraintBottom_toTopOf="@+id/txt_password"
+                    app:layout_constraintBottom_toTopOf="@+id/pin_activity_txt_pin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/forgot_pin_btn"
+                    android:id="@+id/pin_activity_forgot_pin_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -139,10 +139,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_two_fa" />
+                    app:layout_constraintTop_toBottomOf="@+id/pin_activity_txt_pin_confirmation" />
 
                 <TextView
-                    android:id="@+id/continue_without_pin"
+                    android:id="@+id/pin_activity_continue_without_pin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -152,10 +152,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/forgot_pin_btn" />
+                    app:layout_constraintTop_toBottomOf="@+id/pin_activity_forgot_pin_btn" />
 
                 <Button
-                    android:id="@+id/btn_confirm"
+                    android:id="@+id/pin_activity_btn_confirm"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -169,7 +169,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/continue_without_pin" />
+                    app:layout_constraintTop_toBottomOf="@+id/pin_activity_continue_without_pin" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

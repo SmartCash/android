@@ -26,7 +26,7 @@
             app:layout_constraintVertical_bias="0.0">
 
             <TextView
-                android:id="@+id/qrcode_card_title"
+                android:id="@+id/fragment_receive_qrcode_card_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -41,7 +41,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/qrcode_image"
+                android:id="@+id/fragment_receive_qrcode_image"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_marginStart="40dp"
@@ -50,10 +50,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/qrcode_card_title" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_receive_qrcode_card_title" />
 
             <TextView
-                android:id="@+id/wallet_address"
+                android:id="@+id/fragment_receive_wallet_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -64,20 +64,20 @@
                 android:textSize="10sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/qrcode_image"
-                app:layout_constraintStart_toStartOf="@+id/qrcode_image"
-                app:layout_constraintTop_toBottomOf="@+id/qrcode_image" />
+                app:layout_constraintEnd_toEndOf="@+id/fragment_receive_qrcode_image"
+                app:layout_constraintStart_toStartOf="@+id/fragment_receive_qrcode_image"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_receive_qrcode_image" />
 
             <ImageView
-                android:id="@+id/btn_copy"
+                android:id="@+id/fragment_receive_btn_copy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/wallet_address"
+                app:layout_constraintStart_toEndOf="@+id/fragment_receive_wallet_address"
                 app:srcCompat="@drawable/ic_action_copy"
-                fresco:layout_constraintBottom_toBottomOf="@+id/wallet_address"
+                fresco:layout_constraintBottom_toBottomOf="@+id/fragment_receive_wallet_address"
                 fresco:layout_constraintEnd_toEndOf="parent"
-                fresco:layout_constraintTop_toTopOf="@+id/wallet_address" />
+                fresco:layout_constraintTop_toTopOf="@+id/fragment_receive_wallet_address" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -98,7 +98,7 @@
             app:layout_constraintTop_toBottomOf="@+id/first_card">
 
             <TextView
-                android:id="@+id/amount_label"
+                android:id="@+id/fragment_receive_amount_label_fiat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -107,10 +107,10 @@
                 android:textAlignment="viewStart"
                 android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_amount" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_receive_txt_amount_fiat" />
 
             <EditText
-                android:id="@+id/txt_amount"
+                android:id="@+id/fragment_receive_txt_amount_fiat"
 
                 android:layout_width="0dp"
                 app:layout_constraintWidth_default="percent"
@@ -126,7 +126,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/amount_with_label"
+                android:id="@+id/fragment_receive_amount_crypto_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -137,10 +137,10 @@
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_amount_converted" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_receive_txt_amount_converted" />
 
             <EditText
-                android:id="@+id/txt_amount_converted"
+                android:id="@+id/fragment_receive_txt_amount_converted"
                 android:layout_width="0dp"
                 app:layout_constraintWidth_default="percent"
                 app:layout_constraintWidth_percent=".4"
@@ -163,7 +163,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Spinner
-                android:id="@+id/wallet_spinner"
+                android:id="@+id/fragment_receive_wallet_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

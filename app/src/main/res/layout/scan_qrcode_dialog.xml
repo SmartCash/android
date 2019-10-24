@@ -6,7 +6,7 @@
     android:background="@drawable/scan_qrcode_dialog_bg">
 
     <TextView
-        android:id="@+id/wallet_dialog_title"
+        android:id="@+id/show_wallets_dialog_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -18,17 +18,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.dlazaro66.qrcodereaderview.QRCodeReaderView
-        android:id="@+id/qr_code_scan"
+        android:id="@+id/scan_qrcode_dialog_qr_code_scan"
         android:layout_width="0dp"
         android:layout_height="400dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wallet_dialog_title" />
+        app:layout_constraintTop_toBottomOf="@+id/show_wallets_dialog_title" />
 
     <Button
-        android:id="@+id/wallet_dialog_cancel_button"
+        android:id="@+id/show_wallets_dialog_scan_qrcode_dialog_cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -39,7 +39,7 @@
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qr_code_scan"
+        app:layout_constraintTop_toBottomOf="@+id/scan_qrcode_dialog_qr_code_scan"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
