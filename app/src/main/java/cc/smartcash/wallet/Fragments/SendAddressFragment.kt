@@ -8,10 +8,8 @@ import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.telephony.PhoneNumberUtils
-import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
@@ -47,7 +45,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import pub.devrel.easypermissions.EasyPermissions
 import java.math.BigDecimal
 import java.util.*
-
 
 class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
@@ -150,7 +147,17 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             txtPassword.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PASSWORD))
         }
         setFeeOnButton()
-        setAmountListener()
+
+        Util.setAmountListener(
+                context!!,
+                smartCashApplication!!,
+                amountLabel,
+                txtAmountFiat,
+                txtAmountCrypto,
+                mainFee,
+                sendButton,
+                null
+        )
 
         hideConfirmationFields()
     }
@@ -182,7 +189,15 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             txtToAddress.setText(parts[0])
             txtAmountCrypto.setText(parts[1])
         }
-        calculateFromSmartToFiat()
+        Util.calculateFromSmartToFiat(
+                context!!,
+                smartCashApplication!!,
+                amountLabel,
+                txtAmountFiat,
+                txtAmountCrypto,
+                mainFee,
+                sendButton
+        )
 
         dialog!!.hide()
     }
@@ -420,110 +435,6 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             txtPassword.text.toString()
         } else this.smartCashApplication!!.getDecryptedPassword(activity!!, txtPassword.text.toString())
 
-    }
-
-    private fun setAmountListener() {
-
-        val actualSelected = smartCashApplication!!.getActualSelectedCoin(context!!)
-
-        amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-
-        txtAmountFiat.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (txtAmountFiat.isFocused)
-                    calculateFromFiatToSmart()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-            }
-        })
-
-        txtAmountCrypto.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (txtAmountCrypto.isFocused)
-                    calculateFromSmartToFiat()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-
-    }
-
-    private fun calculateFromFiatToSmart() {
-        val amountConverted: BigDecimal
-        var actualSelected = smartCashApplication!!.getActualSelectedCoin(context!!)
-        val coins = this.smartCashApplication!!.AppPreferences.Coins
-
-        amountLabel.text = Util.amountInCoinConcatenation(context!!, actualSelected.name!!)
-
-        for (i in coins!!.indices) {
-            if (coins[i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
-                actualSelected = coins[i]
-                break
-            }
-        }
-
-        if (Util.isNullOrEmpty(txtAmountFiat)) {
-            txtAmountCrypto.setText(ZERO)
-        } else {
-            if (actualSelected.name == getString(R.string.default_crypto)) {
-                amountConverted = smartCashApplication!!.multiplyBigDecimals(Util.getBigDecimal(txtAmountFiat), BigDecimal.valueOf(actualSelected.value!!))
-                amountLabel.text = Util.amountInDefaultCryptoConcatenation(context!!)
-            } else {
-                val currentPrice = actualSelected.value!!
-                val amountInTheField = Util.getDouble(txtAmountFiat)
-                val ruleOfThree = amountInTheField / currentPrice
-                amountConverted = BigDecimal.valueOf(ruleOfThree)
-            }
-            txtAmountCrypto.setText(amountConverted.toString())
-            val amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee)
-            setFeeOnButton(amountWithFee.toString())
-        }
-    }
-
-    private fun calculateFromSmartToFiat() {
-
-        val amountConverted: BigDecimal
-        var actualSelected = smartCashApplication!!.getActualSelectedCoin(context!!)
-        val coins = this.smartCashApplication!!.AppPreferences.Coins
-
-        amountLabel.text = Util.amountInCoinConcatenation(context!!, actualSelected.name!!)
-
-        for (i in coins!!.indices) {
-            if (coins[i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
-                actualSelected = coins[i]
-                break
-            }
-        }
-
-        if (Util.isNullOrEmpty(txtAmountCrypto)) {
-            txtAmountFiat.setText(ZERO)
-        } else {
-            if (actualSelected.name == getString(R.string.default_crypto)) {
-                amountConverted = smartCashApplication!!.multiplyBigDecimals(Util.getBigDecimal(txtAmountCrypto), BigDecimal.valueOf(actualSelected.value!!))
-                amountLabel.text = Util.amountInDefaultCryptoConcatenation(context!!)
-            } else {
-
-                val currentPrice = actualSelected.value!!
-                val amountInTheField = Util.getDouble(txtAmountCrypto)
-                val ruleOfThree = amountInTheField * currentPrice
-                amountConverted = BigDecimal.valueOf(ruleOfThree)
-            }
-            txtAmountFiat.setText(amountConverted.toString())
-            val amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee)
-            setFeeOnButton(amountWithFee.toString())
-        }
     }
 
     private fun lockSendButton() {

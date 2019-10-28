@@ -13,7 +13,6 @@ import java.io.Serializable
 @JsonPropertyOrder("error", "error_description")
 class WebWalletException private constructor(`in`: Parcel) : Serializable, Parcelable {
 
-
     @JsonProperty("error")
     @SerializedName("error")
     @Expose

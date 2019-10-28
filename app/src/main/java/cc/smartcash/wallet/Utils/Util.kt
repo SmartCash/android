@@ -2,13 +2,19 @@ package cc.smartcash.wallet.Utils
 
 import android.content.Context
 import android.telephony.PhoneNumberUtils
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
-import cc.smartcash.wallet.Models.SendPayment
-import cc.smartcash.wallet.Models.SmartTextRequest
-import cc.smartcash.wallet.Models.SmartTextRoot
+import cc.smartcash.wallet.Models.*
 import cc.smartcash.wallet.R
+import cc.smartcash.wallet.ViewModels.LoginViewModel
+import com.google.gson.Gson
+import retrofit2.Call
+import java.io.IOException
 import java.math.BigDecimal
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -21,6 +27,8 @@ object Util {
     const val UTF_8 = "UTF-8"
     private const val prefixQueryStringQrCode = "smartcash:"
     private const val amountQueryStringQrCode = "?amount="
+
+    const val ZERO = "0"
 
     val date: String
         get() {
@@ -93,7 +101,11 @@ object Util {
     }
 
     fun getDouble(view: TextView): Double {
-        return java.lang.Double.parseDouble(getString(view))
+        return try {
+            java.lang.Double.parseDouble(getString(view))
+        } catch (e: java.lang.Exception) {
+            0.0
+        }
     }
 
     fun compareString(textView: TextView, textView2: TextView): Boolean {
@@ -209,7 +221,6 @@ object Util {
         return null
     }
 
-
     fun dateDiff(d1: Date, d2: Date): Long {
         val diff = d2.time - d1.time//as given
         //long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
@@ -225,4 +236,188 @@ object Util {
         return TimeUnit.MILLISECONDS.toMinutes(diff)
     }
 
+    fun calculateFromFiatToSmart(
+            context: Context,
+            smartCashApplication: SmartCashApplication,
+            amountLabel: TextView,
+            txtAmountFiat: EditText,
+            txtAmountCrypto: EditText,
+            mainFee: BigDecimal?,
+            sendButton: Button?
+    ) {
+        val amountConverted: BigDecimal
+        var actualSelected = smartCashApplication.getActualSelectedCoin(context)
+        val coins = smartCashApplication.AppPreferences.Coins
+
+        amountLabel.text = amountInCoinConcatenation(context, actualSelected.name!!)
+
+        for (i in coins!!.indices) {
+            if (coins[i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
+                actualSelected = coins[i]
+                break
+            }
+        }
+
+        if (isNullOrEmpty(txtAmountFiat)) {
+            txtAmountCrypto.setText(ZERO)
+        } else {
+            if (actualSelected.name == context.getString(R.string.default_crypto)) {
+                amountConverted = smartCashApplication.multiplyBigDecimals(Util.getBigDecimal(txtAmountFiat), BigDecimal.valueOf(actualSelected.value!!))
+                amountLabel.text = Util.amountInDefaultCryptoConcatenation(context)
+            } else {
+                val currentPrice = actualSelected.value!!
+                val amountInTheField = Util.getDouble(txtAmountFiat)
+                val ruleOfThree = amountInTheField / currentPrice
+                amountConverted = BigDecimal.valueOf(ruleOfThree)
+            }
+            txtAmountCrypto.setText(amountConverted.toString())
+            val amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee)
+            if (sendButton != null)
+                sendButton.text = context.getString(R.string.send_button_label).replace("%f", smartCashApplication.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(amountWithFee.toString())))
+        }
+    }
+
+    fun calculateFromSmartToFiat(
+            context: Context,
+            smartCashApplication: SmartCashApplication,
+            amountLabel: TextView,
+            txtAmountFiat: EditText,
+            txtAmountCrypto: EditText,
+            mainFee: BigDecimal?,
+            sendButton: Button?
+    ) {
+
+        val amountConverted: BigDecimal
+        var actualSelected = smartCashApplication.getActualSelectedCoin(context)
+        val coins = smartCashApplication.AppPreferences.Coins
+
+        amountLabel.text = Util.amountInCoinConcatenation(context, actualSelected.name!!)
+
+        for (i in coins!!.indices) {
+            if (coins[i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
+                actualSelected = coins[i]
+                break
+            }
+        }
+
+        if (isNullOrEmpty(txtAmountCrypto)) {
+            txtAmountFiat.setText(ZERO)
+        } else {
+            if (actualSelected.name == context.getString(R.string.default_crypto)) {
+                amountConverted = smartCashApplication.multiplyBigDecimals(Util.getBigDecimal(txtAmountCrypto), BigDecimal.valueOf(actualSelected.value!!))
+                amountLabel.text = amountInDefaultCryptoConcatenation(context)
+            } else {
+
+                val currentPrice = actualSelected.value!!
+                val amountInTheField = getDouble(txtAmountCrypto)
+                val ruleOfThree = amountInTheField * currentPrice
+                amountConverted = BigDecimal.valueOf(ruleOfThree)
+            }
+            txtAmountFiat.setText(amountConverted.toString())
+            val amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee)
+
+            if (sendButton != null)
+                sendButton.text = context.getString(R.string.send_button_label).replace("%f", smartCashApplication.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(amountWithFee.toString())))
+        }
+    }
+
+
+    fun setAmountListener(
+            context: Context,
+            smartCashApplication: SmartCashApplication,
+            amountLabel: TextView,
+            txtAmountFiat: EditText,
+            txtAmountCrypto: EditText,
+            mainFee: BigDecimal?,
+            sendButton: Button?,
+            setQrCode: (() -> Unit?)?
+    ) {
+
+        val actualSelected = smartCashApplication.getActualSelectedCoin(context)
+
+        amountLabel.text = String.format(Locale.getDefault(), context.getString(R.string.send_amount_in_coin_label), actualSelected.name)
+
+        txtAmountFiat.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                amountLabel.text = String.format(Locale.getDefault(), context.getString(R.string.send_amount_in_coin_label), actualSelected.name)
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (txtAmountFiat.isFocused) {
+                    calculateFromFiatToSmart(
+                            context,
+                            smartCashApplication,
+                            amountLabel,
+                            txtAmountFiat,
+                            txtAmountCrypto,
+                            mainFee,
+                            sendButton
+                    )
+                    if (setQrCode != null) setQrCode()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                amountLabel.text = String.format(Locale.getDefault(), context.getString(R.string.send_amount_in_coin_label), actualSelected.name)
+            }
+        })
+
+        txtAmountCrypto.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (txtAmountCrypto.isFocused) {
+                    calculateFromSmartToFiat(
+                            context,
+                            smartCashApplication,
+                            amountLabel,
+                            txtAmountFiat,
+                            txtAmountCrypto,
+                            mainFee,
+                            sendButton
+                    )
+                    if (setQrCode != null) setQrCode()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable) {
+
+            }
+        })
+
+    }
+
+    fun <T> getResponse(p: Call<WebWalletRootResponse<T>>): WebWalletRootResponse<T> {
+
+        var responseWebWalletRootResponse: WebWalletRootResponse<T> = WebWalletRootResponse()
+
+        try {
+            val r = p.execute()
+            responseWebWalletRootResponse.valid = r.isSuccessful
+            if (r.isSuccessful) {
+                val body = r.body()
+                if (body != null) {
+                    responseWebWalletRootResponse.data = body.data
+                }
+            } else {
+                try {
+                    var ex = Gson().fromJson<WebWalletException>(r.message(), WebWalletException::class.java)
+                    responseWebWalletRootResponse.errorDescription = ex.errorDescription
+                    responseWebWalletRootResponse.error = ex.error
+
+                } catch (e: Exception) {
+                    responseWebWalletRootResponse.errorDescription = e.message
+                    responseWebWalletRootResponse.error = e.toString()
+                    Log.e(LoginViewModel.TAG, e.message)
+                }
+            }
+        } catch (e: IOException) {
+            responseWebWalletRootResponse.errorDescription = e.message
+            responseWebWalletRootResponse.error = e.toString()
+            Log.e(LoginViewModel.TAG, e.message)
+        }
+        return responseWebWalletRootResponse
+    }
 }

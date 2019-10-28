@@ -32,10 +32,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private var btnSettings: ImageView? = null
     private var walletTxt: TextView? = null
     private var walletConverted: TextView? = null
-    private var coins: ArrayList<Coin>? = null
     private var adapter: CoinSpinnerAdapter? = null
-    private var selectedCoin: Coin? = null
-    private var withoutPin: Boolean = false
     private var smartCashApplication: SmartCashApplication? = null
     private var linearLayoutBkp: LinearLayout? = null
     private var txtPin: String? = null
@@ -57,31 +54,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(applicationContext)
 
-        smartCashApplication!!.allValues
-
-        withoutPin = smartCashApplication!!.getBoolean(this, KEYS.KEY_WITHOUT_PIN)!!
-
         this.txtPin = pin
 
-        getCoins()
-
         setUI()
-
         setBtnSettingsClick()
-
         setIfNeedToBackUpTheWallet()
     }
 
     private fun setIfNeedToBackUpTheWallet() {
-
         if (smartCashApplication!!.msk != null) {
-
             linearLayoutBkp!!.visibility = View.VISIBLE
             return
-
         }
         linearLayoutBkp!!.visibility = View.GONE
-
     }
 
     override fun onStart() {
@@ -99,7 +84,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             val forgotPinBtn = settingsView.findViewById<TextView>(R.id.settings_modal_forgot_pin_btn)
             val createPinBtn = settingsView.findViewById<TextView>(R.id.settings_modal_create_pin)
 
-            if (withoutPin) {
+            if (smartCashApplication?.AppPreferences?.WithoutPin!!) {
                 forgotPinBtn.visibility = View.GONE
             } else {
                 createPinBtn.visibility = View.GONE
@@ -244,10 +229,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun setSpinner(currentPriceSpinner: Spinner) {
 
+        val coins = smartCashApplication?.AppPreferences?.Coins
+
         adapter = CoinSpinnerAdapter(this, android.R.layout.simple_spinner_item, coins!!)
         currentPriceSpinner.adapter = adapter
 
-        setSelectedCoinOnSpinner(currentPriceSpinner, coins!!)
+        setSelectedCoinOnSpinner(currentPriceSpinner, coins)
 
         currentPriceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View,
@@ -268,7 +255,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun setSelectedCoinOnSpinner(currentPriceSpinner: Spinner, coins: ArrayList<Coin>) {
-        getCoins()
         val selectedCoin = smartCashApplication!!.getActualSelectedCoin(this)
         if (selectedCoin != null) {
             for (i in coins.indices) {
@@ -307,47 +293,43 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return true
     }
 
-    private fun getCoins() {
-
-        if (this.coins == null)
-            this.coins = smartCashApplication!!.getCurrentPrice(this)
-
-    }
-
     fun setWalletValue() {
 
-        val user = smartCashApplication!!.getUser(this)
+        val user = smartCashApplication?.AppPreferences?.User
+
+        if (user == null) return
 
         if (user == null) navigateToLogin()
 
-        val wallets = user!!.wallet
+        val wallets = user.wallet
+
+        if (wallets == null) return
+
         var amount: Double? = 0.0
 
-        for (wallet in wallets!!) {
+        for (wallet in wallets) {
             amount = amount?.plus(wallet.balance!!)
         }
 
-        selectedCoin = smartCashApplication!!.getActualSelectedCoin(this)
+        val selectedCoin = smartCashApplication?.AppPreferences?.ActualSelectedCoin
+        val coins = smartCashApplication?.AppPreferences?.Coins
 
-        getCoins()
-
-        if (selectedCoin != null && selectedCoin!!.name!!.equals(getString(R.string.default_fiat), ignoreCase = true) && this.coins != null && this.coins!!.isNotEmpty()) {
-            for (auxcoin in this.coins!!) {
-                if (auxcoin.name!!.equals(selectedCoin!!.name!!, ignoreCase = true)) {
-                    selectedCoin!!.value = auxcoin.value
+        if (selectedCoin != null && selectedCoin.name!!.equals(getString(R.string.default_fiat), ignoreCase = true) && coins != null && coins.isNotEmpty()) {
+            for (auxcoin in coins) {
+                if (auxcoin.name!!.equals(selectedCoin.name!!, ignoreCase = true)) {
+                    selectedCoin.value = auxcoin.value
                     smartCashApplication!!.saveActualSelectedCoin(this, auxcoin)
                     break
                 }
             }
         }
 
-
         walletTxt!!.text = smartCashApplication!!.formatNumberByDefaultCrypto(amount!!)
-        if (selectedCoin == null || selectedCoin!!.name == getString(R.string.default_crypto)) {
+        if (selectedCoin == null || selectedCoin.name == getString(R.string.default_crypto)) {
             val currentPrice = smartCashApplication!!.getCurrentPrice(this)
             walletConverted!!.text = smartCashApplication!!.formatNumberBySelectedCurrencyCode(smartCashApplication!!.getCurrentValueByRate(amount, currentPrice!![0].value!!))
         } else {
-            walletConverted!!.text = smartCashApplication!!.formatNumberBySelectedCurrencyCode(smartCashApplication!!.getCurrentValueByRate(amount, selectedCoin!!.value!!))
+            walletConverted!!.text = smartCashApplication!!.formatNumberBySelectedCurrencyCode(smartCashApplication!!.getCurrentValueByRate(amount, selectedCoin.value!!))
         }
 
     }

@@ -7,8 +7,6 @@ import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
 import android.graphics.Matrix
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -47,10 +45,10 @@ class ReceiveFragment : Fragment() {
     lateinit var walletSpinner: Spinner
 
     @BindView(R.id.fragment_receive_txt_amount_converted)
-    lateinit var txtAmountConverted: EditText
+    lateinit var txtAmountCrypto: EditText
 
     @BindView(R.id.fragment_receive_txt_amount_fiat)
-    lateinit var txtAmount: EditText
+    lateinit var txtAmountFiat: EditText
 
     @BindView(R.id.fragment_receive_amount_label_fiat)
     lateinit var amountLabel: TextView
@@ -111,7 +109,16 @@ class ReceiveFragment : Fragment() {
                 }
             }
         }
-        setAmountListener()
+        Util.setAmountListener(
+                context!!,
+                smartCashApplication!!,
+                amountLabel,
+                txtAmountFiat,
+                txtAmountCrypto,
+                BigDecimal(0.0),
+                null,
+                ::setQRCodeByAmount
+        )
     }
 
     @OnClick(R.id.fragment_receive_btn_copy)
@@ -119,131 +126,15 @@ class ReceiveFragment : Fragment() {
         SmartCashApplication.copyToClipboard(context!!, walletAddress.text.toString())
     }
 
-    private fun setAmountListener() {
+    fun setQRCodeByAmount() {
 
-        val actualSelected = smartCashApplication!!.getActualSelectedCoin(context!!)
-        amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-
-        txtAmount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (txtAmount.isFocused)
-                    calculateFromFiatToSmart()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-            }
-        })
-
-
-        txtAmountConverted.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (txtAmountConverted.isFocused)
-                    calculateFromSmartToFiat()
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-    }
-
-    private fun calculateFromFiatToSmart() {
-
-        val amountConverted: BigDecimal
-        var actualSelected = smartCashApplication!!.getActualSelectedCoin(context!!)
-        amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-
-        for (i in smartCashApplication?.AppPreferences?.Coins!!.indices) {
-            if (smartCashApplication?.AppPreferences?.Coins!![i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
-                actualSelected = smartCashApplication?.AppPreferences?.Coins!![i]
-                break
-            }
-        }
-
-        if (txtAmount.text.toString().isEmpty()) {
-            txtAmountConverted.setText("0")
-        }
-
-        if (txtAmount.text.toString().isNotEmpty()) {
-
-            if (actualSelected.name == getString(R.string.default_crypto)) {
-                amountConverted = smartCashApplication!!.multiplyBigDecimals(BigDecimal.valueOf(java.lang.Double.parseDouble(txtAmount.text.toString())), BigDecimal.valueOf(actualSelected.value!!))
-                amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), getString(R.string.default_crypto))
-            } else {
-
-                val currentPrice = actualSelected.value!!
-                val amountInTheField = java.lang.Double.parseDouble(txtAmount.text.toString())
-                val ruleOfThree = amountInTheField / currentPrice
-                amountConverted = BigDecimal.valueOf(ruleOfThree)
-            }
-
-            txtAmountConverted.setText(amountConverted.toString())
-
-        }
-
-        setQRCodeByAmount()
-
-
-    }
-
-    private fun setQRCodeByAmount() {
-
-        val amountInSmartCash = txtAmountConverted.text.toString()
+        val amountInSmartCash = txtAmountCrypto.text.toString()
 
         if (amountInSmartCash.isNotEmpty() && java.lang.Float.parseFloat(amountInSmartCash) > 0) {
             generateQrCode("smartcash:" + walletAddress.text.toString() + "?amount=" + amountInSmartCash)
         } else {
             generateQrCode("smartcash:" + walletAddress.text.toString())
         }
-
-    }
-
-    private fun calculateFromSmartToFiat() {
-
-        val amountConverted: BigDecimal
-        var actualSelected = smartCashApplication!!.getActualSelectedCoin(context!!)
-        amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), actualSelected.name)
-
-
-
-        for (i in smartCashApplication?.AppPreferences?.Coins!!.indices) {
-            if (smartCashApplication?.AppPreferences?.Coins!![i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
-                actualSelected = smartCashApplication?.AppPreferences?.Coins!![i]
-                break
-            }
-        }
-
-        if (txtAmountConverted.text.toString().isEmpty()) {
-            txtAmount.setText("0")
-        }
-
-        if (txtAmountConverted.text.toString().isNotEmpty()) {
-
-            if (actualSelected.name == getString(R.string.default_crypto)) {
-                amountConverted = smartCashApplication!!.multiplyBigDecimals(BigDecimal.valueOf(java.lang.Double.parseDouble(txtAmountConverted.text.toString())), BigDecimal.valueOf(actualSelected.value!!))
-                amountLabel.text = String.format(Locale.getDefault(), getString(R.string.send_amount_in_coin_label), getString(R.string.default_crypto))
-            } else {
-
-                val currentPrice = actualSelected.value!!
-                val amountInTheField = java.lang.Double.parseDouble(txtAmountConverted.text.toString())
-                val ruleOfThree = amountInTheField * currentPrice
-                amountConverted = BigDecimal.valueOf(ruleOfThree)
-            }
-
-            txtAmount.setText(amountConverted.toString())
-
-        }
-
-        setQRCodeByAmount()
 
     }
 

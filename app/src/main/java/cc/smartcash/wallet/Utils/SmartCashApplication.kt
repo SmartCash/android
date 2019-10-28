@@ -118,7 +118,12 @@ class SmartCashApplication(context: Context) : Application() {
     }
 
     fun getCurrentPrice(context: Context): ArrayList<Coin>? {
-        return ArrayList(GsonBuilder().create().fromJson(this.mPrefs?.getString(KEYS.KEY_CURRENT_PRICES, ""), Array<Coin>::class.java).toList())
+
+        val fromPref = this.mPrefs?.getString(KEYS.KEY_CURRENT_PRICES, "")
+
+        if (Util.isNullOrEmpty(fromPref)) return null
+
+        return ArrayList(GsonBuilder().create().fromJson(fromPref, Array<Coin>::class.java).toList())
     }
 
 

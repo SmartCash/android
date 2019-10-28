@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import butterknife.BindView
@@ -21,6 +24,7 @@ import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.ViewModels.LoginViewModel
 import cc.smartcash.wallet.ViewModels.UserViewModel
 import cc.smartcash.wallet.ViewModels.WalletViewModel
+import cc.smartcash.wallet.tasks.LoginTask
 import cc.smartcash.wallet.tasks.PriceTask
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -30,9 +34,6 @@ class RegisterActivity : AppCompatActivity() {
     private var smartCashApplication: SmartCashApplication? = null
 
     private var userRecoveryKeyMain: UserRecoveryKey? = null
-
-    @BindView(R.id.register_main_activity_network_status)
-    lateinit var networkSwitch: Switch
 
     @BindView(R.id.register_main_activity_txt_user)
     lateinit var txtUser: EditText
@@ -176,7 +177,13 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun getCurrentPrices() {
-        PriceTask(this.applicationContext, ::startLoadingProcess, ::endLoadingProcess).execute()
+        PriceTask(this.applicationContext, ::startLoadingProcess, ::afterPriceTaskWasExecuted).execute()
+    }
+
+    fun afterPriceTaskWasExecuted(coins: ArrayList<Coin>?) {
+        if (this.smartCashApplication?.AppPreferences?.Coins?.isNotEmpty()!!) {
+            endLoadingProcess()
+        }
     }
 
     private fun getUserRecoveryKey() {
@@ -204,15 +211,17 @@ class RegisterActivity : AppCompatActivity() {
                     userLogin.twoFactorAuthentication = ""
 
                     val token = LoginViewModel.getSyncToken(userLogin, applicationContext)
-                    val userLoginResponse = LoginViewModel.getSyncUser(token!!, applicationContext)
 
-                    encryptAndSaveMSK(newUserResponse, userLoginResponse)
-                    encryptAndSavePassword(users[0])
+                    if (token.valid!!) {
+                        val userLoginResponse = LoginViewModel.getSyncUser(token.data!!, applicationContext)
+                        encryptAndSaveMSK(newUserResponse, userLoginResponse.data)
+                        encryptAndSavePassword(users[0])
 
-                    //TODO: Save User
-                    //saveUser(token, userLoginResponse)
+                        //TODO: Save User
+                        LoginTask.saveUser(token.data!!, userLoginResponse.data, applicationContext, smartCashApplication!!)
 
-                    return userLoginResponse
+                        return userLoginResponse.data
+                    }
                 }
             }
             return null
@@ -237,11 +246,6 @@ class RegisterActivity : AppCompatActivity() {
 
     private inner class UserRecoveryKeyTask : AsyncTask<Void, Int, UserRecoveryKey>() {
 
-        override fun onPreExecute() {
-            super.onPreExecute()
-            startLoadingProcess()
-        }
-
         override fun doInBackground(vararg users: Void): UserRecoveryKey? {
             return UserViewModel.syncUserRecoveryKey
         }
@@ -253,16 +257,11 @@ class RegisterActivity : AppCompatActivity() {
                 startLoadingProcess() //percentage of the progress
         }
 
-
         override fun onPostExecute(userRecoveryKey: UserRecoveryKey?) {
             super.onPostExecute(userRecoveryKey)
-
             if (userRecoveryKey != null) {
                 userRecoveryKeyMain = userRecoveryKey
                 Toast.makeText(applicationContext, userRecoveryKeyMain!!.recoveryKey, Toast.LENGTH_SHORT).show()
-                endLoadingProcess()
-            } else {
-                endLoadingProcess()
             }
         }
     }
@@ -290,12 +289,10 @@ class RegisterActivity : AppCompatActivity() {
             super.onPostExecute(booleanWebWalletRootResponse)
             if (booleanWebWalletRootResponse != null && booleanWebWalletRootResponse.data!!) {
                 createNewUser(Util.getString(txtUser), Util.getString(txtPassword))
-                endLoadingProcess()
             } else {
                 txtUser.error = getString(R.string.register_username_not_available_error_message)
                 endLoadingProcess()
             }
-            endLoadingProcess()
         }
     }
 

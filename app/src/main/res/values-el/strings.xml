@@ -41,7 +41,7 @@
     <string name="main_toolbox_settings_title_label">Ρυθμίσεις</string>
     <string name="main_toolbox_settings_close_button">Κλείσιμο</string>
     <string name="main_toolbox_settings_pin_forgot_pin_label">Ξέχασα το PIN μου</string>
-    <string name="main_toolbox_settings_pin_create_pin_label">Θέλω να δημιουργήσω ένα PIN</string>
+    <string name="main_toolbox_settings_pin_create_pin_label">Θέλω να δημιουργήσω PIN</string>
 
     <!-- pin xml -->
     <string name="pin_pin_label">PIN</string>
@@ -59,10 +59,10 @@
 
     <string name="pin_continue_without_pin_dialog_title">Συνέχεια ΧΩΡΙΣ PIN?</string>
 
-    <string name="pin_continue_without_pin_dialog_message">Είστε βέβαιοι ότι θέλετε να προχωρήσετε χωρίς PIN; Δεν θα μπορέσετε να χρησιμοποιήσεις το πορτοφόλι εκτός σύνδεσης.</string>
+    <string name="pin_continue_without_pin_dialog_message">Είστε βέβαιοι ότι θέλετε να προχωρήσετε χωρίς PIN; Δεν θα μπορέσετε να χρησιμοποιήσετε το πορτοφόλι εκτός σύνδεσης.</string>
 
 
-    <string name="pin_continue_without_pin_dialog_redirect">Ανακατεύθυνση ταμπλό...</string>
+    <string name="pin_continue_without_pin_dialog_redirect">Ανακατεύθυνση στην αρχική...</string>
 
 
     <!-- send xml -->
@@ -89,7 +89,7 @@
     <string name="send_different_address_to_send_error_message">Η διεύθυνση του αποστολέα με του παραλήπτη πρέπει να είναι διαφορετική.</string>
     <string name="send_pin_verification_dialog_title_error_message">Λάθος PIN/κωδικός πρόσβασης</string>
     <string name="send_pin_verification_dialog_message_error_message">Το PIN/κωδικός πρόσβασης δεν τεριάζουν.</string>
-    <string name="send_pin_verification_dialog_ok_button">ΚΚλείσιμο</string>
+    <string name="send_pin_verification_dialog_ok_button">Κλείσιμο</string>
     <string name="send_wallets_modal_close_button">Ακύρωση</string>
     <string name="send_wallets_modal_title">Πορτοφόλια</string>
 
@@ -112,8 +112,8 @@
     <string name="login_password_error_message">Ο κωδικός πρόσβασης είναι υποχρεωτικός.</string>
     <string name="login_2fa_error_message">" 2FA πρόβλημα"</string>
     <string name="login_register_button">Εγγραφή</string>
-    <string name="login_enter_button">Εισάγετε</string>
-    <string name="login_forgot_the_password_button">Ξεχάσατε τον κωδικό πρόσβασης</string>
+    <string name="login_enter_button">Είσοδος</string>
+    <string name="login_forgot_the_password_button">Ξέχασα τον κωδικό πρόσβασης</string>
     <string name="login_enter_button_network_error_message">Πρέπει να είστε σε συνδεδεμένοι στο διαδίκτυο  για να συνδεθείτε.</string>
     <string name="login_network_error_message"> Πρέπει να είστε σε συνδεδεμένοι στο διαδίκτυο  για να συνδεθείτε.</string>
     <string name="login_network_status_change">Η κατάσταση του δικτύου έχει αλλάξει.</string>
@@ -139,7 +139,7 @@
     <string name="register_network_status_change">Η κατάσταση του δικτύου έχει αλλάξει.</string>
     <string name="register_save_button_loading_status">Φόρτωση...</string>
 
-    <string name="menu_dashboard">Ταμπλό</string>
+    <string name="menu_dashboard">Αρχική</string>
     <string name="menu_send">Στείλτε</string>
     <string name="menu_receive">Λάβετε</string>
     <string name="menu_transactions">Συναλλαγές</string>
@@ -148,7 +148,7 @@
     <string name="btn_all_transactions">Όλες οι συναλλαγές</string>
     <string name="btn_received">Παραλήφθηκαν</string>
     <string name="btn_awaiting">Εν αναμονή</string>
-    <string name="btn_paid">Εξοφλήθη</string>
+    <string name="btn_paid">Στάλθηκαν</string>
 
     <!-- Transaction item -->
     <string name="label_received"> Παραλήφθηκαν </string>

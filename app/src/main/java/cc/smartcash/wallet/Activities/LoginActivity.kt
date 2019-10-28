@@ -13,14 +13,17 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import cc.smartcash.wallet.*
+import cc.smartcash.wallet.Models.Coin
 import cc.smartcash.wallet.Models.User
 import cc.smartcash.wallet.Models.UserLogin
+import cc.smartcash.wallet.Models.WebWalletRootResponse
 import cc.smartcash.wallet.Utils.KEYS
 import cc.smartcash.wallet.Utils.SmartCashApplication
 import cc.smartcash.wallet.Utils.URLS
 import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.tasks.LoginTask
 import cc.smartcash.wallet.tasks.PriceTask
+import java.util.*
 
 class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
 
@@ -126,16 +129,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
             return
         }
 
-        object : LoginTask(applicationContext, ::startLoadingProcess, ::endLoadingProcess) {
-            override fun beforeExecution() {
-                startLoadingProcess()
-            }
-
-            override fun afterExecution(result: User?) {
-                endLoadingProcess()
-                navigateToPinActivity()
-            }
-        }.execute(userLogin)
+        LoginTask(applicationContext, ::startLoadingProcess, ::afterLoginTaskExecuted).execute(userLogin)
     }
 
     @OnClick(R.id.login_main_btn_register)
@@ -185,10 +179,10 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
     }
 
     private fun getCurrentPrices() {
-        PriceTask(this.applicationContext, ::startLoadingProcess, ::endLoadingProcess).execute()
+        PriceTask(this.applicationContext, ::startLoadingProcess, ::afterPriceTaskWasExecuted).execute()
     }
 
-    fun startLoadingProcess() {
+    private fun startLoadingProcess() {
         findViewById<View>(R.id.login_main_login_content).visibility = View.GONE
         findViewById<View>(R.id.login_main_login_content).visibility = View.INVISIBLE
         findViewById<View>(R.id.login_main_loader).visibility = View.VISIBLE
@@ -199,7 +193,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
         findViewById<View>(R.id.login_main_btn_forgot_password).visibility = View.INVISIBLE
     }
 
-    fun endLoadingProcess() {
+    private fun endLoadingProcess() {
         findViewById<View>(R.id.login_main_loader).visibility = View.GONE
         findViewById<View>(R.id.login_main_loader).visibility = View.INVISIBLE
         findViewById<View>(R.id.login_main_login_content).visibility = View.VISIBLE
@@ -208,6 +202,22 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
         btnLogin.text = getString(R.string.login_enter_button)
         findViewById<View>(R.id.login_main_btn_register).visibility = View.VISIBLE
         findViewById<View>(R.id.login_main_btn_forgot_password).visibility = View.VISIBLE
+    }
+
+    private fun afterLoginTaskExecuted(user: WebWalletRootResponse<User?>) {
+
+        if (user != null && user.valid != null && user.valid!! && user.data != null) {
+            navigateToPinActivity()
+        }
+
+        Toast.makeText(applicationContext, user.error + " : " + user.errorDescription, Toast.LENGTH_LONG).show()
+
+        endLoadingProcess()
+
+    }
+
+    private fun afterPriceTaskWasExecuted(coins: ArrayList<Coin>?) {
+        endLoadingProcess()
     }
 
     private fun navigateToPinActivity() {

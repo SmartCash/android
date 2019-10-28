@@ -4,14 +4,19 @@ import android.content.Context
 import android.util.Log
 import cc.smartcash.wallet.Models.User
 import cc.smartcash.wallet.Models.UserLogin
+import cc.smartcash.wallet.Models.WebWalletException
+import cc.smartcash.wallet.Models.WebWalletRootResponse
 import cc.smartcash.wallet.Utils.*
+import com.google.gson.Gson
 import java.io.IOException
 
 object LoginViewModel {
 
     val TAG: String = LoginViewModel::class.java.simpleName
 
-    fun getSyncToken(userLogin: UserLogin, context: Context): String? {
+    fun getSyncToken(userLogin: UserLogin, context: Context): WebWalletRootResponse<String?> {
+
+        var responseWebWalletRootResponse: WebWalletRootResponse<String?> = WebWalletRootResponse()
 
         val localIP = SmartCashApplication.getIPAddress(true)
 
@@ -25,44 +30,48 @@ object LoginViewModel {
                 localIP,
                 Util.getProperty(KEYS.CONFIG_CLIENT_SECRET, context)!!
         )
-
         try {
             val r = call.execute()
-            val body = r.body()
+            responseWebWalletRootResponse.valid = r.isSuccessful
+            if (r.isSuccessful) {
+                val body = r.body()
+                if (body != null) {
+                    responseWebWalletRootResponse.data = body.accessToken
+                }
+            } else {
+                try {
+                    var ex = Gson().fromJson<WebWalletException>(r.errorBody()?.string(), WebWalletException::class.java)
+                    responseWebWalletRootResponse.errorDescription = ex.errorDescription
+                    responseWebWalletRootResponse.error = ex.error
 
-            if (r.errorBody() != null) {
-
-                return "error:" + r.errorBody()!!.string()
+                } catch (e: Exception) {
+                    responseWebWalletRootResponse.errorDescription = e.message
+                    responseWebWalletRootResponse.error = e.toString()
+                    Log.e(TAG, e.message)
+                }
             }
-            return body!!.accessToken
-
         } catch (e: IOException) {
+            responseWebWalletRootResponse.errorDescription = e.message
+            responseWebWalletRootResponse.error = e.toString()
             Log.e(TAG, e.message)
         }
 
-        return null
+        return responseWebWalletRootResponse
     }
 
-    fun getSyncUser(token: String, context: Context): User? {
-
+    fun getSyncUser(token: String, context: Context): WebWalletRootResponse<User?> {
+        var responseWebWalletRootResponse: WebWalletRootResponse<User?> = WebWalletRootResponse()
         val isInternetOn = NetworkUtil.getInternetStatus(context)
-
         if (isInternetOn) {
             try {
                 val callUser = ApiUtil.userService.getUser("Bearer $token")
-
-                val apiResponse = callUser.execute()
-
-                return apiResponse.body()!!.data
+                responseWebWalletRootResponse = Util.getResponse(callUser)
 
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
-
         }
-
-        return null
+        return responseWebWalletRootResponse
     }
 
 }

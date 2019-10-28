@@ -10,5 +10,5 @@ import retrofit2.http.Header
 interface UserService {
 
     @GET("user/my")
-    fun getUser(@Header("Authorization") auth: String): Call<WebWalletRootResponse<User>>
+    fun getUser(@Header("Authorization") auth: String): Call<WebWalletRootResponse<User?>>
 }
