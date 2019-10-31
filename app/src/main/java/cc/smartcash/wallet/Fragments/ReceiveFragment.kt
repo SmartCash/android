@@ -128,12 +128,17 @@ class ReceiveFragment : Fragment() {
 
     fun setQRCodeByAmount() {
 
-        val amountInSmartCash = txtAmountCrypto.text.toString()
+        var amountInSmartCash = "0.0"
 
-        if (amountInSmartCash.isNotEmpty() && java.lang.Float.parseFloat(amountInSmartCash) > 0) {
-            generateQrCode("smartcash:" + walletAddress.text.toString() + "?amount=" + amountInSmartCash)
-        } else {
-            generateQrCode("smartcash:" + walletAddress.text.toString())
+        when {
+            Util.isNullOrEmpty(txtAmountCrypto).not() && Util.getString(txtAmountCrypto) != "." -> {
+                amountInSmartCash = txtAmountCrypto.text.toString()
+            }
+        }
+
+        when {
+            Util.isNullOrEmpty(amountInSmartCash).not() && java.lang.Float.parseFloat(amountInSmartCash) > 0 -> generateQrCode("smartcash:" + walletAddress.text.toString() + "?amount=" + amountInSmartCash)
+            else -> generateQrCode("smartcash:" + walletAddress.text.toString())
         }
 
     }
