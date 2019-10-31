@@ -5,21 +5,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.Serializable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class SmartApiItem : Serializable {
+data class SmartApiItem(
 
-    var updated: String? = null
+        var updated: String? = null,
 
-    var currencies: SmartApiCurrency? = null
+        var currencies: SmartApiCurrency? = null,
 
-    var ticker: String? = null
+        var ticker: String? = null,
 
-    var `object`: String? = null
+        var `object`: String? = null,
 
-    var created: String? = null
+        var created: String? = null,
 
-    var exchange: String? = null
+        var exchange: String? = null,
 
-    var id: String? = null
+        var id: String? = null,
 
-    var name: String? = null
-}
+        var name: String? = null
+
+) : Serializable

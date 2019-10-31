@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.Serializable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class SapiUnconfirmed : Serializable {
+data class SapiUnconfirmed(
+        var delta: Int = 0,
 
-    var delta: Int = 0
-
-    var transactions: List<String>? = null
-
-}
+        var transactions: List<String>? = null
+) : Serializable

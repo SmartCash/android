@@ -62,7 +62,7 @@ class SmartCashApplication(context: Context) : Application() {
             val currentLocale = ConfigurationCompat.getLocales(context!!.resources.configuration).get(0)
             println("Current Locale => $currentLocale")
 
-            val currency: Currency? = if (getActualSelectedCoin(context!!) == null || getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
+            val currency: Currency? = if (getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
                 Currency.getInstance(context!!.getString(R.string.default_fiat))
             } else {
                 Currency.getInstance(getActualSelectedCoin(context!!).name)
@@ -117,7 +117,7 @@ class SmartCashApplication(context: Context) : Application() {
         return coin
     }
 
-    fun getCurrentPrice(context: Context): ArrayList<Coin>? {
+    fun getCurrentPrice(): ArrayList<Coin>? {
 
         val fromPref = this.mPrefs?.getString(KEYS.KEY_CURRENT_PRICES, "")
 
@@ -127,17 +127,17 @@ class SmartCashApplication(context: Context) : Application() {
     }
 
 
-    fun getUser(context: Context): User? {
+    fun getUser(): User? {
         return gson.fromJson(this.mPrefs?.getString(KEYS.KEY_USER, ""), User::class.java)
     }
 
-    fun getWallet(context: Context): Wallet? = gson.fromJson(this.mPrefs?.getString(KEYS.KEY_WALLET, ""), Wallet::class.java) //SharedEditor<Wallet>().get(context, this.mPrefs!!, KEYS.KEY_WALLET)
+    fun getWallet(): Wallet? = gson.fromJson(this.mPrefs?.getString(KEYS.KEY_WALLET, ""), Wallet::class.java) //SharedEditor<wallet>().get(context, this.mPrefs!!, KEYS.KEY_WALLET)
 
-    fun getBoolean(context: Context, key: String): Boolean? = this.mPrefs?.getBoolean(key, false)
+    fun getBoolean(key: String): Boolean? = this.mPrefs?.getBoolean(key, false)
 
     fun get(key: String): String? = this.mPrefs?.getString(key, null)
 
-    fun getToken(context: Context): String? = this.mPrefs?.getString(KEYS.KEY_TOKEN, "")
+    fun getToken(): String? = this.mPrefs?.getString(KEYS.KEY_TOKEN, "")
 
     fun getDecryptedMSK(pin: String): String {
 
@@ -164,7 +164,7 @@ class SmartCashApplication(context: Context) : Application() {
         return decryptedText
     }
 
-    fun getByte(context: Context, key: String): ByteArray? {
+    fun getByte(key: String): ByteArray? {
 
         val string = this.mPrefs?.getString(key, "")
         val bytes: ByteArray
@@ -190,7 +190,7 @@ class SmartCashApplication(context: Context) : Application() {
     fun getDecryptedPassword(context: Context, pin: String): String {
 
         var decryptedText = ""
-        val encryptedPassword = this.getByte(context, KEYS.KEY_PASSWORD)
+        val encryptedPassword = this.getByte(KEYS.KEY_PASSWORD)
 
         if (encryptedPassword != null) {
 
@@ -212,7 +212,7 @@ class SmartCashApplication(context: Context) : Application() {
         return decryptedText
     }
 
-    fun getString(context: Context, key: String): String? = this.mPrefs?.getString(key, "")
+    fun getString(key: String): String? = this.mPrefs?.getString(key, "")
 
     //endregion
 
@@ -227,27 +227,29 @@ class SmartCashApplication(context: Context) : Application() {
     fun saveUser(context: Context, user: User) =
             SharedEditor<User>().saveGson(context, this.mPrefs!!, user, KEYS.KEY_USER)
 
-    fun saveBoolean(context: Context, bool: Boolean?, key: String) =
-            SharedEditor<Boolean?>().saveGson(context, this.mPrefs!!, bool, key)
+    fun saveBoolean(context: Context, bool: Boolean, key: String) =
+            SharedEditor<Boolean?>().saveBoolean(context, this.mPrefs!!, bool, key)
 
     fun saveWallet(context: Context, wallet: Wallet) =
             SharedEditor<Wallet>().saveGson(context, this.mPrefs!!, wallet, KEYS.KEY_WALLET)
 
     fun saveToken(context: Context, token: String) = SharedEditor<String>().saveString(context, this.mPrefs!!, token, KEYS.KEY_TOKEN)
 
+    fun saveWithoutPIN(context: Context, flag: Boolean) = SharedEditor<String>().saveBoolean(context, this.mPrefs!!, flag, KEYS.KEY_WITHOUT_PIN)
+
     fun saveMSK(bytes: ByteArray) =
             this.context!!.getSharedPreferences(KEYS.KEY_MSK, Context.MODE_PRIVATE).edit().putString(KEYS.KEY_MSK, String(bytes, Charset.forName("ISO-8859-1"))).apply()
 
-    fun saveByte(bytes: ByteArray, context: Context, key: String) =
+    fun saveByte(bytes: ByteArray, key: String) =
             this.mPrefs?.edit()?.putString(key, String(bytes, Charset.forName("ISO-8859-1")))?.apply()
 
-    fun saveString(context: Context, stringText: String, key: String) = this.mPrefs?.edit()?.putString(key, stringText)?.apply()
+    fun saveString(stringText: String, key: String) = this.mPrefs?.edit()?.putString(key, stringText)?.apply()
 
     //endregion
 
     //region delete shared preferences
 
-    fun deleteSharedPreferences(context: Context) =
+    fun deleteSharedPreferences() =
             this.mPrefs?.edit()?.clear()?.apply()
 
     fun deleteMSK() =
@@ -264,24 +266,51 @@ class SmartCashApplication(context: Context) : Application() {
                 && keys.containsKey(KEYS.KEY_WALLET)
                 && keys.containsKey(KEYS.KEY_CURRENT_PRICES)
                 && keys.containsKey(KEYS.KEY_TIME_PRICE_WAS_UPDATED)
+                && keys.containsKey(KEYS.KEY_WITHOUT_PIN)
                 && keys[KEYS.KEY_TOKEN] != null
                 && keys[KEYS.KEY_USER] != null
                 && keys[KEYS.KEY_WALLET] != null
                 && keys[KEYS.KEY_CURRENT_PRICES] != null
-                && keys[KEYS.KEY_TIME_PRICE_WAS_UPDATED] != null)
+                && keys[KEYS.KEY_TIME_PRICE_WAS_UPDATED] != null
+                && keys[KEYS.KEY_WITHOUT_PIN] != null
+                )
     }
 
-    fun formatNumberBySelectedCurrencyCode(numberToFormat: Double): String {
-        var currency: Currency? = null
-        val format = NumberFormat.getInstance()
-        format.maximumFractionDigits = 8
+    fun getKeysThatDoesNotExists(): String {
+        val error = StringBuilder()
+        val keys = allValues
+        if (keys.containsKey(KEYS.KEY_TOKEN).not()) {
+            error.appendln("KEY_TOKEN: NOK")
+        }
+        if (keys.containsKey(KEYS.KEY_USER).not()) {
+            error.appendln("KEY_USER: NOK")
+        }
+        if (keys.containsKey(KEYS.KEY_WALLET).not()) {
+            error.appendln("KEY_WALLET: NOK")
+        }
+        if (keys.containsKey(KEYS.KEY_CURRENT_PRICES).not()) {
+            error.appendln("KEY_CURRENT_PRICES")
+        }
+        if (keys.containsKey(KEYS.KEY_TIME_PRICE_WAS_UPDATED).not()) {
+            error.appendln("KEY_TIME_PRICE_WAS_UPDATED")
+        }
+        if (keys.containsKey(KEYS.KEY_WITHOUT_PIN).not()) {
+            error.appendln("KEY_WITHOUT_PIN")
+        }
+        return error.toString()
+    }
 
-        currency = if (getActualSelectedCoin(context!!) == null || getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
+
+    fun formatNumberBySelectedCurrencyCode(numberToFormat: Double): String {
+        val currency = if (getActualSelectedCoin(context!!) == null || getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
             Currency.getInstance(context!!.getString(R.string.default_fiat))
 
         } else {
             Currency.getInstance(getActualSelectedCoin(context!!).name)
         }
+        val format = NumberFormat.getInstance()
+        format.maximumFractionDigits = 8
+
         format.currency = currency
         var symbol = currency!!.symbol
         if (getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
@@ -310,8 +339,7 @@ class SmartCashApplication(context: Context) : Application() {
 
     companion object {
         fun copyToClipboard(context: Context, text: String) {
-            var clipboardManager: ClipboardManager? = null
-            clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(text, text)
             clipboardManager.primaryClip = clipData
 

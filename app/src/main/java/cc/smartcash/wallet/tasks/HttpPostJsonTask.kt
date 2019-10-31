@@ -12,7 +12,7 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 abstract class HttpPostJsonTask : AsyncTask<String, Void, JSONArray>(), DelegateHttpPostJsonTask {
-    var json: String? = null
+    private var json: String? = null
 
     override fun doInBackground(vararg urls: String): JSONArray? {
         try {

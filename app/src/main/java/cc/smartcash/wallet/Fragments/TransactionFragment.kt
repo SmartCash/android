@@ -55,7 +55,7 @@ class TransactionFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
-        walletList = smartCashApplication!!.getUser(context!!)!!.wallet
+        walletList = smartCashApplication!!.getUser()!!.wallet
         transactions = walletList!![0].transactions
         val view = inflater.inflate(R.layout.fragment_transaction, container, false)
         ButterKnife.bind(this, view)
@@ -90,7 +90,7 @@ class TransactionFragment : Fragment() {
             }
         }
 
-        val savedWallet = smartCashApplication!!.getWallet(context!!)
+        val savedWallet = smartCashApplication!!.getWallet()
 
         if (savedWallet != null) {
             for (i in walletList!!.indices) {
@@ -138,7 +138,7 @@ class TransactionFragment : Fragment() {
     private fun updateData() {
         ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
 
-            it.getUser(smartCashApplication!!.getToken(activity!!)!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
+            it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
                 if (response != null) {
                     Toast.makeText(activity, getString(R.string.transaction_updated_message), Toast.LENGTH_LONG).show()
                     smartCashApplication!!.saveUser(activity!!, response)

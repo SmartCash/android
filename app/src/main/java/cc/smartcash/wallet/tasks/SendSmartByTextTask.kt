@@ -28,7 +28,7 @@ class SendSmartByTextTask(context: Context, sendPayment: SendPayment, pre: () ->
     }
 
     override fun doInBackground(vararg users: SmartTextRequest): SmartTextRoot? {
-        return WalletViewModel.sendSyncSmartText(this.appContext, smartCashApplication.getToken(this.appContext)!!, users[0])
+        return WalletViewModel.sendSyncSmartText(this.appContext, smartCashApplication.getToken()!!, users[0])
     }
 
     override fun onPostExecute(smartTextRoot: SmartTextRoot?) {

@@ -32,18 +32,17 @@ class PriceTask(context: Context, pre: () -> Unit, pos: (coins: ArrayList<Coin>?
     override fun doInBackground(vararg params: Void?): ArrayList<Coin>? {
 
         try {
-            val datePriceWasUpdated = Util.getDate(this.smartCashApplication.getString(appContext, KEYS.KEY_TIME_PRICE_WAS_UPDATED))
+            val datePriceWasUpdated = Util.getDate(this.smartCashApplication.getString(KEYS.KEY_TIME_PRICE_WAS_UPDATED))
             Log.d(LoginActivity.TAG, "Date price was updated: $datePriceWasUpdated")
 
             if (datePriceWasUpdated == null || Util.dateDiffFromNow(datePriceWasUpdated) > 60) {
                 val syncPrices = CurrentPriceViewModel.getSyncPrices(appContext)
+                        ?: return this.smartCashApplication.getCurrentPrice()
 
-                if (syncPrices == null) return this.smartCashApplication.getCurrentPrice(this.appContext)
-
-                this.smartCashApplication.saveString(this.appContext, Util.date, KEYS.KEY_TIME_PRICE_WAS_UPDATED)
+                this.smartCashApplication.saveString(Util.date, KEYS.KEY_TIME_PRICE_WAS_UPDATED)
                 this.smartCashApplication.saveCurrentPrice(this.appContext, syncPrices)
             }
-            return this.smartCashApplication.getCurrentPrice(this.appContext)
+            return this.smartCashApplication.getCurrentPrice()
         } catch (e: Exception) {
             return null
         }

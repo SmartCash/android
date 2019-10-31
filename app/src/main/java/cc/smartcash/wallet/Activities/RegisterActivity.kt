@@ -155,7 +155,7 @@ class RegisterActivity : AppCompatActivity() {
             val plainTextToEncrypt = newUser.password!!.toByteArray(StandardCharsets.UTF_8)
             val pinByte = this.txtPin.text.toString().toByteArray(StandardCharsets.UTF_8)
             val cipherTextToEncrypt = smartCashApplication!!.aead.encrypt(plainTextToEncrypt, pinByte)
-            smartCashApplication!!.saveByte(cipherTextToEncrypt, applicationContext, KEYS.KEY_PASSWORD)
+            smartCashApplication!!.saveByte(cipherTextToEncrypt, KEYS.KEY_PASSWORD)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message)
         }
@@ -180,8 +180,8 @@ class RegisterActivity : AppCompatActivity() {
         PriceTask(this.applicationContext, ::startLoadingProcess, ::afterPriceTaskWasExecuted).execute()
     }
 
-    fun afterPriceTaskWasExecuted(coins: ArrayList<Coin>?) {
-        if (this.smartCashApplication?.AppPreferences?.Coins?.isNotEmpty()!!) {
+    private fun afterPriceTaskWasExecuted(coins: ArrayList<Coin>?) {
+        if (this.smartCashApplication?.AppPreferences?.coins?.isNotEmpty()!!) {
             endLoadingProcess()
         }
     }

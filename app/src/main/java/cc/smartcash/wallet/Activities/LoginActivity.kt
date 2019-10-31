@@ -63,9 +63,9 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
 
     private val isOnLocalDB: Boolean
         get() {
-            val token = smartCashApplication!!.getToken(this)
-            val user = smartCashApplication!!.getUser(this)
-            val password = smartCashApplication!!.getByte(this, KEYS.KEY_PASSWORD)
+            val token = smartCashApplication!!.getToken()
+            val user = smartCashApplication!!.getUser()
+            val password = smartCashApplication!!.getByte(KEYS.KEY_PASSWORD)
             return token != null && token.isNotEmpty() && user != null && password != null
         }
 
@@ -75,6 +75,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
         ButterKnife.bind(this)
 
         this.networkReceiver = NetworkChangeReceiver(this)
+
 
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(applicationContext)
@@ -157,11 +158,11 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
         if (isPasswordVisible) {
             txtPassword.transformationMethod = PasswordTransformationMethod.getInstance()
             isPasswordVisible = false
-            btnEye.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+            Util.changeImage(btnEye, R.drawable.ic_eye, this.applicationContext)
         } else {
             txtPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
             isPasswordVisible = true
-            btnEye.setImageDrawable(resources.getDrawable(R.drawable.eye_off))
+            Util.changeImage(btnEye, R.drawable.eye_off, this.applicationContext)
         }
 
         txtPassword.setSelection(txtPassword.text.length)
@@ -206,24 +207,23 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
 
     private fun afterLoginTaskExecuted(user: WebWalletRootResponse<User?>) {
 
-        if (user != null && user.valid != null && user.valid!! && user.data != null) {
+        if ((user.valid == null || !user.valid!! || user.data == null).not()) {
             navigateToPinActivity()
         }
 
         Toast.makeText(applicationContext, user.error + " : " + user.errorDescription, Toast.LENGTH_LONG).show()
-
         endLoadingProcess()
-
     }
 
     private fun afterPriceTaskWasExecuted(coins: ArrayList<Coin>?) {
+        val size = coins?.size
         endLoadingProcess()
     }
 
     private fun navigateToPinActivity() {
-        if (!smartCashApplication!!.checkAllNecessaryKeys()) {
+        if (smartCashApplication!!.checkAllNecessaryKeys().not()) {
             endLoadingProcess()
-            Toast.makeText(applicationContext, getString(R.string.login_network_error_message), Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "We don't have all necessary keys to proceed" + smartCashApplication!!.getKeysThatDoesNotExists(), Toast.LENGTH_LONG).show()
             return
         }
         val intent = Intent(applicationContext, PinActivity::class.java)

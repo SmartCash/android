@@ -34,10 +34,10 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
 
         var webWalletGetSyncTokenRootResponse: WebWalletRootResponse<String?> = WebWalletRootResponse()
 
-        var webWalletGetSyncUserRootResponse: WebWalletRootResponse<User?> = WebWalletRootResponse()
+        val webWalletGetSyncUserRootResponse: WebWalletRootResponse<User?> = WebWalletRootResponse()
 
         if (users.isEmpty()) {
-            token = smartCashApplication.getToken(this.appContext)
+            token = smartCashApplication.getToken()
         } else {
             webWalletGetSyncTokenRootResponse = LoginViewModel.getSyncToken(users[0], this.appContext)
         }
@@ -48,26 +48,26 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
 
             val user = LoginViewModel.getSyncUser(token!!, this.appContext)
 
-            if (user != null && user.valid!!) {
+            return if (user != null && user.valid!!) {
                 saveUser(token, user.data, appContext, smartCashApplication)
                 webWalletGetSyncUserRootResponse.valid = user.valid
                 webWalletGetSyncUserRootResponse.error = user.error
                 webWalletGetSyncUserRootResponse.errorDescription = user.errorDescription
                 webWalletGetSyncUserRootResponse.data = user.data
-                return webWalletGetSyncUserRootResponse
+                webWalletGetSyncUserRootResponse
             } else {
                 webWalletGetSyncUserRootResponse.valid = user.valid
                 webWalletGetSyncUserRootResponse.error = user.error
                 webWalletGetSyncUserRootResponse.errorDescription = user.errorDescription
-                smartCashApplication.deleteSharedPreferences(this.appContext)
-                return webWalletGetSyncUserRootResponse
+                smartCashApplication.deleteSharedPreferences()
+                webWalletGetSyncUserRootResponse
             }
 
         } else {
             webWalletGetSyncUserRootResponse.valid = webWalletGetSyncTokenRootResponse.valid
             webWalletGetSyncUserRootResponse.error = webWalletGetSyncTokenRootResponse.error
             webWalletGetSyncUserRootResponse.errorDescription = webWalletGetSyncTokenRootResponse.errorDescription
-            smartCashApplication.deleteSharedPreferences(this.appContext)
+            smartCashApplication.deleteSharedPreferences()
         }
         return webWalletGetSyncUserRootResponse
     }
@@ -79,8 +79,9 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
                 smartCashApplication.saveUser(appContext, user)
                 smartCashApplication.saveWallet(appContext, user.wallet!![0])
                 smartCashApplication.saveActualSelectedCoin(appContext, Coin(appContext.getString(R.string.default_crypto), 0.0))
+                smartCashApplication.saveWithoutPIN(appContext, false)
             } else {
-                smartCashApplication.deleteSharedPreferences(appContext)
+                smartCashApplication.deleteSharedPreferences()
             }
         }
     }

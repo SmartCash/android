@@ -6,21 +6,19 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class WebWalletRootResponse<T> : Serializable {
+data class WebWalletRootResponse<T>(
+        @SerializedName("data")
+        var data: T? = null,
 
-    @SerializedName("data")
-    var data: T? = null
+        @SerializedName("error")
+        var error: String? = null,
 
-    @SerializedName("error")
-    var error: String? = null
+        @SerializedName("status")
+        var status: String? = null,
 
-    @SerializedName("status")
-    var status: String? = null
+        @SerializedName("isValid")
+        var valid: Boolean? = null,
 
-    @SerializedName("isValid")
-    var valid: Boolean? = null
-
-    @SerializedName("error_description")
-    var errorDescription: String? = null
-
-}
+        @SerializedName("error_description")
+        var errorDescription: String? = null
+) : Serializable 

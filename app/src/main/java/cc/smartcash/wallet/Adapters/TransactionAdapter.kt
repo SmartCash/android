@@ -44,7 +44,7 @@ class TransactionAdapter(private val context: Context, private var transactions:
         var fiatValue = ""
 
         fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
-            val currentPrice = app.getCurrentPrice(context)
+            val currentPrice = app.getCurrentPrice()
             app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, currentPrice!![0].value!!))
         } else {
             app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, actualSelectedCoin.value!!))
@@ -102,20 +102,23 @@ class TransactionAdapter(private val context: Context, private var transactions:
     }
 
     private fun setDirectionColors(transactionViewHolder: TransactionViewHolder, i: Int) {
-        val direction = this.transactions!![i].direction.toString()
 
-        if (direction == "Sent") {
-            transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_paid)
-            val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_up, R.color.paidColor)
-            transactionViewHolder.icon.background = wrappedDrawable
-        } else if (direction == "Received") {
-            transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_receive)
-            val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.receiveColor)
-            transactionViewHolder.icon.background = wrappedDrawable
-        } else if (direction == "Awaiting") {
-            val wrappedDrawable = changeIconColor(R.drawable.bg_awaiting, R.color.awaitingColor)
-            transactionViewHolder.direction.background = wrappedDrawable
+        when (transactions!![i].direction.toString()) {
+            "Sent" -> {
+                transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_paid)
+                val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_up, R.color.paidColor)
+                transactionViewHolder.icon.background = wrappedDrawable
+            }
+            "Received" -> {
+                transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_receive)
+                val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.receiveColor)
+                transactionViewHolder.icon.background = wrappedDrawable
+            }
+            "Awaiting" -> {
+                val wrappedDrawable = changeIconColor(R.drawable.bg_awaiting, R.color.awaitingColor)
+                transactionViewHolder.direction.background = wrappedDrawable
 
+            }
         }
     }
 

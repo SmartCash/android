@@ -100,7 +100,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             if (Util.isNullOrEmpty(txtAmountCrypto).not())
                 amount = java.lang.Double.parseDouble(Util.getString(txtAmountCrypto))
 
-            val selectedWallet = smartCashApplication!!.getWallet(activity!!)
+            val selectedWallet = smartCashApplication!!.getWallet()
             val sendPayment = SendPayment()
             sendPayment.fromAddress = selectedWallet?.address
             sendPayment.toAddress = txtToAddress.text.toString()
@@ -141,7 +141,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         super.onViewCreated(view, savedInstanceState)
         EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), RC_CAMERA_PERM, *perms)
 
-        if (this.smartCashApplication!!.AppPreferences.WithoutPin) {
+        if (this.smartCashApplication!!.AppPreferences.withoutPin) {
             pinLabel.text = resources.getString(R.string.send_password_label)
             txtPassword.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             txtPassword.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PASSWORD))
@@ -240,7 +240,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         val recycler = walletListView.findViewById<RecyclerView>(R.id.show_wallets_dialog_wallet_list)
         val title = walletListView.findViewById<TextView>(R.id.show_wallets_dialog_title)
 
-        title.text = getString(R.string.send_wallet_dialog_title_label).replace("%s", this.smartCashApplication!!.AppPreferences.Wallet!!.size.toString())
+        title.text = getString(R.string.send_wallet_dialog_title_label).replace("%s", this.smartCashApplication!!.AppPreferences.wallet!!.size.toString())
 
         walletListDialog.setView(walletListView)
         val dialog = walletListDialog.create()
@@ -275,13 +275,13 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         }
 
         val amount: Double = java.lang.Double.parseDouble(Util.getString(txtAmountCrypto))
-        val selectedWallet = smartCashApplication!!.getWallet(activity!!)
+        val selectedWallet = smartCashApplication!!.getWallet()
 
         if (selectedWallet?.balance!! < amount) {
             Toast.makeText(context, getString(R.string.send_insufficient_balance_error_message), Toast.LENGTH_LONG).show()
             return
         }
-        if (amount.equals(0)) {
+        if (amount.equals(0.0)) {
             Toast.makeText(context, getString(R.string.send_min_amount_to_send_error_message), Toast.LENGTH_LONG).show()
             return
         }
@@ -295,7 +295,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             return
         }
 
-        password = if (this.smartCashApplication!!.AppPreferences.WithoutPin.not()) {
+        password = if (this.smartCashApplication!!.AppPreferences.withoutPin.not()) {
             verifyPin()
         } else {
             Util.getString(txtPassword)
@@ -394,7 +394,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
         recyclerView.adapter = walletAdapter
 
-        walletAdapter.setItems(this.smartCashApplication!!.AppPreferences.Wallet!!)
+        walletAdapter.setItems(this.smartCashApplication!!.AppPreferences.wallet!!)
 
     }
 
@@ -410,7 +410,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     private fun updateData() {
         ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
 
-            it.getUser(smartCashApplication!!.getToken(activity!!)!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
+            it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
                 if (response != null) {
                     Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
                     smartCashApplication!!.saveUser(activity!!, response)
@@ -431,7 +431,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
     private fun verifyPin(): String {
 
-        return if (this.smartCashApplication!!.AppPreferences.WithoutPin) {
+        return if (this.smartCashApplication!!.AppPreferences.withoutPin) {
             txtPassword.text.toString()
         } else this.smartCashApplication!!.getDecryptedPassword(activity!!, txtPassword.text.toString())
 
@@ -485,10 +485,8 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     }
 
     private fun afterSendSmartByTextTask(smartTextRoot: SmartTextRoot?) {
-
         if (smartTextRoot?.data != null) {
-
-            var sendPaymentResultFromSendByText = Util.fillSendSendSmartByWebWalletRequestBySmartTextReponse(smartTextRoot)?.apply {
+            val sendPaymentResultFromSendByText = Util.fillSendSendSmartByWebWalletRequestBySmartTextReponse(smartTextRoot)?.apply {
                 this.email = email
                 this.userKey = password
                 if (!Util.isNullOrEmpty(txtTwoFa)) this.code = Util.getString(txtTwoFa)
@@ -546,7 +544,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     private fun getCurrentFeeAndPrices() {
         if (isOnline) {
             val sendPaymetToCalculateFee = SendPayment()
-            sendPaymetToCalculateFee.fromAddress = smartCashApplication?.getWallet(activity!!)!!.address
+            sendPaymetToCalculateFee.fromAddress = smartCashApplication?.getWallet()!!.address
             sendPaymetToCalculateFee.toAddress = Util.getString(txtToAddress)
             CalculateFeeTask(context!!, ::beforeSendByWebWallet, ::afterCalculateFeeTask).execute(sendPaymetToCalculateFee)
         }

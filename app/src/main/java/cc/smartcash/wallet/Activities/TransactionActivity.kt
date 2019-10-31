@@ -90,13 +90,13 @@ class TransactionActivity : AppCompatActivity() {
 
         smartCashApplication = SmartCashApplication(applicationContext)
 
-        token = smartCashApplication!!.getToken(this)
+        token = smartCashApplication!!.getToken()
 
         details = TransactionDetails()
 
         hash = intent.getStringExtra(KEYS.KEY_TRANSACTION_HASH)
         details!!.amount = intent.getDoubleExtra(KEYS.KEY_TRANSACTION_AMOUNT, 0.0)
-        details!!.fromAddress = smartCashApplication!!.getWallet(this)?.address
+        details!!.fromAddress = smartCashApplication!!.getWallet()?.address
         details!!.toAddress = intent.getStringExtra(KEYS.KEY_TRANSACTION_TO_ADDRESS)
 
         if (hash != null)

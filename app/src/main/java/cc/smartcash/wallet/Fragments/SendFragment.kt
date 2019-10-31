@@ -38,7 +38,7 @@ class SendFragment : Fragment() {
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
 
-        walletList = smartCashApplication!!.getUser(context!!)!!.wallet
+        walletList = smartCashApplication!!.getUser()!!.wallet
         smartCashApplication!!.saveWallet(context!!, walletList!![0])
         val view = inflater.inflate(R.layout.fragment_send, container, false)
         ButterKnife.bind(this, view)
@@ -70,7 +70,7 @@ class SendFragment : Fragment() {
             }
         }
 
-        val savedWallet = smartCashApplication!!.getWallet(context!!)
+        val savedWallet = smartCashApplication!!.getWallet()
 
         if (savedWallet != null) {
             for (i in walletList!!.indices) {

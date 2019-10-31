@@ -79,7 +79,7 @@ class PinActivity : AppCompatActivity() {
                             .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                             .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton("OK") { dialog, id ->
+                            .setPositiveButton("OK") { _, _ ->
                                 finish()
                             }
 
@@ -123,7 +123,7 @@ class PinActivity : AppCompatActivity() {
                 val plainTextToEncrypt = this.currentPassword!!.toByteArray(StandardCharsets.UTF_8)
                 val pin = this.txtConfirmPin.text.toString().toByteArray(StandardCharsets.UTF_8)
                 val cipherTextToEncrypt = smartCashApplication!!.aead.encrypt(plainTextToEncrypt, pin)
-                smartCashApplication!!.saveByte(cipherTextToEncrypt, applicationContext, KEYS.KEY_PASSWORD)
+                smartCashApplication!!.saveByte(cipherTextToEncrypt, KEYS.KEY_PASSWORD)
                 navigateToMain()
             } catch (ex: Exception) {
                 Log.e(TAG, ex.message)
@@ -152,7 +152,7 @@ class PinActivity : AppCompatActivity() {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes) { dialog, whichButton ->
                     Toast.makeText(this@PinActivity, getString(R.string.main_redirect_to_login_toast), Toast.LENGTH_SHORT).show()
-                    smartCashApplication!!.deleteSharedPreferences(this@PinActivity)
+                    smartCashApplication!!.deleteSharedPreferences()
                     startActivity(Intent(this@PinActivity, LoginActivity::class.java))
                 }
                 .setNegativeButton(android.R.string.no, null).show()
@@ -166,7 +166,7 @@ class PinActivity : AppCompatActivity() {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes) { dialog, whichButton ->
                     Toast.makeText(this@PinActivity, getString(R.string.pin_continue_without_pin_dialog_redirect), Toast.LENGTH_SHORT).show()
-                    smartCashApplication!!.saveBoolean(this@PinActivity, true, KEYS.KEY_WITHOUT_PIN)
+                    smartCashApplication!!.saveWithoutPIN(this, true)
                     val intent = Intent(applicationContext, MainActivity::class.java)
                     startActivity(intent)
                 }
@@ -204,7 +204,7 @@ class PinActivity : AppCompatActivity() {
         if (extraPASSWORD != null && extraPASSWORD.isNotEmpty()) {
             this.currentPassword = extraPASSWORD
         } else {
-            encryptedPassword = this.smartCashApplication!!.getByte(applicationContext, KEYS.KEY_PASSWORD)
+            encryptedPassword = this.smartCashApplication!!.getByte(KEYS.KEY_PASSWORD)
         }
     }
 
@@ -218,7 +218,7 @@ class PinActivity : AppCompatActivity() {
     }
 
     private fun setNavigationWithoutPin() {
-        val withoutPin = smartCashApplication!!.getBoolean(this, KEYS.KEY_WITHOUT_PIN)!!
+        val withoutPin = smartCashApplication?.AppPreferences?.withoutPin ?: return
         if (withoutPin) {
             internetAvailable = NetworkUtil.getInternetStatus(this)
             if (!internetAvailable) navigateToLogin()
@@ -232,10 +232,10 @@ class PinActivity : AppCompatActivity() {
 
     private fun isOnLocalDB(withoutPin: Boolean): Boolean {
 
-        val token = smartCashApplication!!.getToken(this)
-        val user = smartCashApplication!!.getUser(this)
+        val token = smartCashApplication!!.getToken()
+        val user = smartCashApplication!!.getUser()
         return if (!withoutPin) {
-            val pin = smartCashApplication!!.getByte(this, KEYS.KEY_PASSWORD)
+            val pin = smartCashApplication!!.getByte(KEYS.KEY_PASSWORD)
             token != null && token.isNotEmpty() && user != null && pin != null
         } else {
             token != null && token.isNotEmpty() && user != null
@@ -244,7 +244,7 @@ class PinActivity : AppCompatActivity() {
 
     private fun navigateToLogin() {
         Toast.makeText(this@PinActivity, getString(R.string.login_network_status_change), Toast.LENGTH_SHORT).show()
-        smartCashApplication!!.deleteSharedPreferences(this@PinActivity)
+        smartCashApplication!!.deleteSharedPreferences()
         startActivity(Intent(this@PinActivity, LoginActivity::class.java))
     }
 

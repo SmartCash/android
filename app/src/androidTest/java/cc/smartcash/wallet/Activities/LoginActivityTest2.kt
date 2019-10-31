@@ -1,18 +1,12 @@
 package cc.smartcash.wallet.Activities
 
-
-import android.view.View
-import android.view.ViewGroup
-import android.widget.HorizontalScrollView
-import android.widget.ScrollView
-import androidx.core.widget.NestedScrollView
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
@@ -20,13 +14,9 @@ import androidx.test.runner.AndroidJUnit4
 import cc.smartcash.wallet.R
 import cc.smartcash.wallet.Utils.SmartCashApplication
 import cc.smartcash.wallet.Utils.Util
-import org.hamcrest.CoreMatchers.anyOf
-import org.hamcrest.Description
-import org.hamcrest.Matcher
+import cc.smartcash.wallet.ViewHolders.TransactionViewHolder
 import org.hamcrest.Matchers.anything
 import org.hamcrest.Matchers.containsString
-import org.hamcrest.TypeSafeMatcher
-import org.hamcrest.core.AllOf.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,34 +43,72 @@ class LoginActivityTest2 {
     @get:Rule
     var mActivityTestRule = ActivityTestRule(LoginActivity::class.java, false, true)
 
-    val constraints: Matcher<View>
-        get() = allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), isDescendantOfA(anyOf(
-                isAssignableFrom(ScrollView::class.java), isAssignableFrom(HorizontalScrollView::class.java), isAssignableFrom(NestedScrollView::class.java))))
+    @Test
+    fun testLoginWithPin() {
+        loginFirstTime(false)
+    }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
+    @Test
+    fun testLoginWithoutPin() {
+        loginFirstTime(true)
+    }
 
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
+    @Test
+    fun testSendingCoinsWithPin() {
+        sendCoins(false)
+    }
 
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return (parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position))
-            }
+    @Test
+    fun testSendingCoinsWithoutPin() {
+        sendCoins(true)
+    }
+
+    @Test
+    fun testLoginOnTwoFaAccountWithoutTypeTwoFa() {
+
+        try {
+            loginWithUserAndPassword("teste2famobile")
+            waitABit()
+        } catch (e: NoMatchingViewException) {
+            loginOnlyWithPIN()
+            waitABit()
         }
     }
 
     @Test
-    fun loginFirstTime() {
+    fun testNavigationOnDialogs() {
+
+        try {
+            loginWithUserAndPassword(null)
+            waitABit()
+        } catch (e: NoMatchingViewException) {
+            loginOnlyWithPIN()
+            waitABit()
+        }
+
+        try {
+
+            openSettings()
+
+            selectCoin()
+
+            closeSettings()
+
+
+        } finally {
+            waitABit()
+        }
+
+        waitABit()
+
+    }
+
+    private fun loginFirstTime(withoutPin: Boolean = false) {
 
         var u = userName
 
         try {
-            loginAndLogoutTwice(u, true)
+            loginAndLogoutTwice(u, true, withoutPin)
             println("Should pass: $u")
         } catch (ex: Exception) {
             println("UnExpected error for: " + u + " error: " + ex.message)
@@ -88,7 +116,7 @@ class LoginActivityTest2 {
 
         u = EXISTENT_EMAIL_ON_WEB_WALLET
         try {
-            loginAndLogoutTwice(u, true)
+            loginAndLogoutTwice(u, true, withoutPin)
             println("Should pass: $u")
         } catch (ex: Exception) {
             println("UnExpected error for: " + u + " error: " + ex.message)
@@ -96,7 +124,7 @@ class LoginActivityTest2 {
 
         u = NON_EXISTENT_EMAIL_ON_WEB_WALLET
         try {
-            loginAndLogoutTwice(u, false)
+            loginAndLogoutTwice(u, false, withoutPin)
             println("Should NOT pass: $u")
         } catch (ex: Exception) {
             println("Expected error for: " + u + " error: " + ex.message)
@@ -104,7 +132,7 @@ class LoginActivityTest2 {
 
         u = EXISTENT_SMS_ON_WEB_WALLET
         try {
-            loginAndLogoutTwice(u, true)
+            loginAndLogoutTwice(u, true, withoutPin)
             println("Should pass: $u")
         } catch (ex: Exception) {
             println("UnExpected error for: " + u + " error: " + ex.message)
@@ -112,7 +140,7 @@ class LoginActivityTest2 {
 
         u = NON_EXISTENT_SMS_ON_WEB_WALLET
         try {
-            loginAndLogoutTwice(u, false)
+            loginAndLogoutTwice(u, false, withoutPin)
             println("Should NOT pass: $u")
         } catch (ex: Exception) {
             println("Expected error for: " + u + " error: " + ex.message)
@@ -121,7 +149,7 @@ class LoginActivityTest2 {
 
         u = EXISTENT_USERNAME_ON_WEB_WALLET
         try {
-            loginAndLogoutTwice(u, true)
+            loginAndLogoutTwice(u, true, withoutPin)
             println("Should pass: $u")
         } catch (ex: Exception) {
             println("UnExpected error for: " + u + " error: " + ex.message)
@@ -130,7 +158,7 @@ class LoginActivityTest2 {
 
         u = NON_EXISTENT_USERNAME_ON_WEB_WALLET
         try {
-            loginAndLogoutTwice(u, false)
+            loginAndLogoutTwice(u, false, withoutPin)
             println("Should NOT pass: $u")
         } catch (ex: Exception) {
             println("Expected error for: " + u + " error: " + ex.message)
@@ -139,7 +167,7 @@ class LoginActivityTest2 {
 
         u = VALID_ADDRESS
         try {
-            loginAndLogoutTwice(u, true)
+            loginAndLogoutTwice(u, true, withoutPin)
             println("Should pass: $u")
         } catch (ex: Exception) {
             println("UnExpected error for: " + u + " error: " + ex.message)
@@ -147,7 +175,7 @@ class LoginActivityTest2 {
 
         u = INVALID_ADDRESS
         try {
-            loginAndLogoutTwice(u, false)
+            loginAndLogoutTwice(u, false, withoutPin)
             println("Should NOT pass: $u")
         } catch (ex: Exception) {
             println("Expected error for: " + u + " error: " + ex.message)
@@ -156,20 +184,22 @@ class LoginActivityTest2 {
         mActivityTestRule.finishActivity()
     }
 
-    fun loginAndLogoutTwice(user: String, shouldPass: Boolean) {
+    private fun loginAndLogoutTwice(user: String, shouldPass: Boolean, withoutPin: Boolean = false) {
         try {
-            firstTimeLogin(user)
+            loginWithUserAndPassword(user, withoutPin)
             waitABit()
         } catch (e: NoMatchingViewException) {
-            secondTimeLogin()
-            waitABit()
+            if (withoutPin) {
+                loginOnlyWithPIN()
+                waitABit()
+            }
         }
 
         if (shouldPass) {
             logout()
             waitABit()
 
-            firstTimeLogin(user)
+            loginWithUserAndPassword(user)
             waitABit()
 
             logout()
@@ -184,18 +214,17 @@ class LoginActivityTest2 {
         }
     }
 
-    @Test
-    fun sendCoinByAddress() {
+    private fun sendCoins(withoutPin: Boolean = false) {
 
         val activity = mActivityTestRule.activity
 
         val app = SmartCashApplication(activity)
 
         try {
-            firstTimeLogin(null)
+            loginWithUserAndPassword(null, withoutPin)
             waitABit()
         } catch (e: NoMatchingViewException) {
-            secondTimeLogin()
+            loginOnlyWithPIN()
             waitABit()
         }
 
@@ -213,25 +242,25 @@ class LoginActivityTest2 {
         selectOwnWalletToSend()
         waitABit()
 
-        val SAME_ADDRESS_AS_FROM = app.getUser(activity)!!.wallet!![0].address
+        val SAME_ADDRESS_AS_FROM = app.getUser()!!.wallet!![0].address
 
-        sendTo(SAME_ADDRESS_AS_FROM) //Should get an error
+        sendTo(SAME_ADDRESS_AS_FROM, withoutPin) //Should get an error
 
-        sendTo(EXISTENT_EMAIL_ON_WEB_WALLET) //Should send directly to web wallet account of the user
+        sendTo(EXISTENT_EMAIL_ON_WEB_WALLET, withoutPin) //Should send directly to web wallet account of the user
 
-        sendTo(NON_EXISTENT_EMAIL_ON_WEB_WALLET) //Should use SmartText to send to email box
+        sendTo(NON_EXISTENT_EMAIL_ON_WEB_WALLET, withoutPin) //Should use SmartText to send to email box
 
-        sendTo(EXISTENT_SMS_ON_WEB_WALLET) //Should send directly to web wallet account of the user
+        sendTo(EXISTENT_SMS_ON_WEB_WALLET, withoutPin) //Should send directly to web wallet account of the user
 
-        sendTo(NON_EXISTENT_SMS_ON_WEB_WALLET) //Should use SmartText to send to SMS message
+        sendTo(NON_EXISTENT_SMS_ON_WEB_WALLET, withoutPin) //Should use SmartText to send to SMS message
 
-        sendTo(EXISTENT_USERNAME_ON_WEB_WALLET) //Should send directly to web wallet account of the user
+        sendTo(EXISTENT_USERNAME_ON_WEB_WALLET, withoutPin) //Should send directly to web wallet account of the user
 
-        sendTo(NON_EXISTENT_USERNAME_ON_WEB_WALLET) //Should get an error
+        sendTo(NON_EXISTENT_USERNAME_ON_WEB_WALLET, withoutPin) //Should get an error
 
-        sendTo(VALID_ADDRESS) //Should send directly to web wallet account of the user
+        sendTo(VALID_ADDRESS, withoutPin) //Should send directly to web wallet account of the user
 
-        sendTo(INVALID_ADDRESS) //Should get an error
+        sendTo(INVALID_ADDRESS, withoutPin) //Should get an error
     }
 
     private fun clearSendFields() {
@@ -240,7 +269,7 @@ class LoginActivityTest2 {
         onView(withId(R.id.fragment_send_txt_amount_converted)).perform(scrollTo(), typeText("0"), closeSoftKeyboard())
     }
 
-    private fun sendTo(address: String?) {
+    private fun sendTo(address: String?, withoutPin: Boolean = false) {
 
         onView(withId(R.id.nav_send)).perform(click())
         waitABit()
@@ -258,10 +287,15 @@ class LoginActivityTest2 {
             println(e.viewMatcherDescription)
         }
 
-
-        //Type on field the password and check if it does match
-        onView(withId(R.id.login_main_txt_password)).perform(scrollTo(), replaceText(pin), closeSoftKeyboard())
-        waitABit()
+        if (withoutPin) {
+            //Type on field the password and check if it does match
+            onView(withId(R.id.login_main_txt_password)).perform(scrollTo(), replaceText(password), closeSoftKeyboard())
+            waitABit()
+        } else {
+            //Type on field the password and check if it does match
+            onView(withId(R.id.login_main_txt_password)).perform(scrollTo(), replaceText(pin), closeSoftKeyboard())
+            waitABit()
+        }
 
         try {
             onView(withId(R.id.send_button_fragment)).perform(scrollTo(), click())
@@ -271,9 +305,37 @@ class LoginActivityTest2 {
         }
 
         try {
+            tryToInteractWithTransactionHistory()
+        } finally {
+
+        }
+
+        try {
             Thread.sleep(60000)
         } catch (e: InterruptedException) {
             e.printStackTrace()
+        }
+
+    }
+
+    private fun tryToInteractWithTransactionHistory() {
+        waitABit()
+        waitABit()
+        try {
+            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(0, scrollTo()))
+            waitABit()
+
+            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.transaction_item_btn_open_details)))
+            waitABit()
+
+            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(1, scrollTo()))
+            waitABit()
+
+            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(1, MyViewAction.clickChildViewWithId(R.id.transaction_item_btn_open_details)))
+            waitABit()
+
+        } catch (e: NoMatchingViewException) {
+            println(e.viewMatcherDescription)
         }
 
     }
@@ -301,15 +363,12 @@ class LoginActivityTest2 {
         } catch (e: NoMatchingViewException) {
 
         }
-
     }
 
     private fun selectCoin() {
         try {
-            //            onView(withId(R.id.current_price_spinner)).perform(click());
-            //            waitABit();
-            //            onData(allOf(is(instanceOf(String.class)), is("BRL")))
-            //                    .inRoot(isPlatformPopup()).perform(click());//           waitABit();
+
+
         } finally {
 
         }
@@ -352,10 +411,9 @@ class LoginActivityTest2 {
         } catch (e: NoMatchingViewException) {
 
         }
-
     }
 
-    private fun firstTimeLogin(user: String?) {
+    private fun loginWithUserAndPassword(user: String?, withoutPin: Boolean = false) {
 
         //Click on button Enter/Login.
         onView(withId(R.id.login_main_btn_eye)).perform(click())
@@ -382,26 +440,13 @@ class LoginActivityTest2 {
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         waitABit()
 
-        savePin()
+        if (withoutPin)
+            clickOnContinueWithoutPin()
+        else
+            fillPINThenPinConfirmationAndSavePIN()
     }
 
-    private fun savePin() {
-        //Click on button Enter/Login.
-        onView(withId(R.id.pin_activity_btn_eye)).perform(click())
-
-        //Type on field the username and check if it does match
-        onView(withId(R.id.pin_activity_txt_pin)).perform(replaceText(pin))
-                .check(matches(withText(containsString(pin))))
-
-        //Type on field the password and check if it does match
-        onView(withId(R.id.pin_activity_txt_pin_confirmation)).perform(replaceText(pin), closeSoftKeyboard())
-                .check(matches(withText(containsString(pin))))
-
-        //Click on button Enter/Login.
-        onView(withId(R.id.pin_activity_btn_confirm)).perform(click())
-    }
-
-    private fun secondTimeLogin() {
+    private fun loginOnlyWithPIN() {
         //Click on button Enter/Login.
         onView(withId(R.id.pin_activity_btn_eye)).perform(click())
 
@@ -413,6 +458,30 @@ class LoginActivityTest2 {
                 .check(matches(withText(containsString(pin))))
 
         waitABit()
+
+        //Click on button Enter/Login.
+        onView(withId(R.id.pin_activity_btn_confirm)).perform(click())
+    }
+
+    private fun clickOnContinueWithoutPin() {
+        //Click on button Enter/Login.
+        onView(withId(R.id.pin_activity_continue_without_pin)).perform(click())
+
+        //Confirm the dialog clicking on OK
+        onView(withText("OK")).perform(click())
+    }
+
+    private fun fillPINThenPinConfirmationAndSavePIN() {
+        //Click on button Enter/Login.
+        onView(withId(R.id.pin_activity_btn_eye)).perform(click())
+
+        //Type on field the username and check if it does match
+        onView(withId(R.id.pin_activity_txt_pin)).perform(replaceText(pin))
+                .check(matches(withText(containsString(pin))))
+
+        //Type on field the password and check if it does match
+        onView(withId(R.id.pin_activity_txt_pin_confirmation)).perform(replaceText(pin), closeSoftKeyboard())
+                .check(matches(withText(containsString(pin))))
 
         //Click on button Enter/Login.
         onView(withId(R.id.pin_activity_btn_confirm)).perform(click())

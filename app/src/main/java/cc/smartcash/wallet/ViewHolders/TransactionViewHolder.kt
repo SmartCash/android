@@ -10,30 +10,18 @@ import cc.smartcash.wallet.R
 class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     var amount: TextView = itemView.findViewById(R.id.transaction_item_text_amount_crypto)
-    var hash: TextView
+    var hash: TextView = itemView.findViewById(R.id.txt_hash)
     var direction: TextView = itemView.findViewById(R.id.transaction_item_text_direction)
-    var timestamp: TextView
-    var btnDetails: ImageView
-    private var divider: View
-    private var hashTitle: TextView
-    var icon: ImageView
-    private var contentView: View
-    var idView: View
-    var price: TextView
-    var confirmations: TextView
+    var timestamp: TextView = itemView.findViewById(R.id.transaction_item_text_timestamp)
+    var btnDetails: ImageView = itemView.findViewById(R.id.transaction_item_btn_open_details)
+    private var divider: View = itemView.findViewById(R.id.divider)
+    private var hashTitle: TextView = itemView.findViewById(R.id.transaction_id_title)
+    var icon: ImageView = itemView.findViewById(R.id.transaction_item_ic_transaction)
+    private var contentView: View = itemView.findViewById(R.id.content_view)
+    var idView: View = itemView.findViewById(R.id.id_view)
+    var price: TextView = itemView.findViewById(R.id.transaction_item_text_amount_fiat)
+    var confirmations: TextView = itemView.findViewById(R.id.transaction_item_confirmation_text)
 
-    init {
 
-        timestamp = itemView.findViewById(R.id.transaction_item_text_timestamp)
-        hash = itemView.findViewById(R.id.txt_hash)
-        icon = itemView.findViewById(R.id.transaction_item_ic_transaction)
-        btnDetails = itemView.findViewById(R.id.transaction_item_btn_open_details)
-        divider = itemView.findViewById(R.id.divider)
-        hashTitle = itemView.findViewById(R.id.transaction_id_title)
-        contentView = itemView.findViewById(R.id.content_view)
-        idView = itemView.findViewById(R.id.id_view)
-        price = itemView.findViewById(R.id.transaction_item_text_amount_fiat)
-        confirmations = itemView.findViewById(R.id.transaction_item_confirmation_text)
-    }
 }
 

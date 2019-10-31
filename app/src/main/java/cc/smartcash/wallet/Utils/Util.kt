@@ -1,6 +1,7 @@
 package cc.smartcash.wallet.Utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.text.TextUtils
@@ -8,7 +9,9 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import cc.smartcash.wallet.Models.*
 import cc.smartcash.wallet.R
 import cc.smartcash.wallet.ViewModels.LoginViewModel
@@ -28,7 +31,7 @@ object Util {
     private const val prefixQueryStringQrCode = "smartcash:"
     private const val amountQueryStringQrCode = "?amount="
 
-    const val ZERO = "0"
+    private const val ZERO = "0"
 
     val date: String
         get() {
@@ -96,11 +99,11 @@ object Util {
         return view.text.toString()
     }
 
-    fun getBigDecimal(view: TextView): BigDecimal {
+    private fun getBigDecimal(view: TextView): BigDecimal {
         return BigDecimal.valueOf(getDouble(view))
     }
 
-    fun getDouble(view: TextView): Double {
+    private fun getDouble(view: TextView): Double {
         return try {
             java.lang.Double.parseDouble(getString(view))
         } catch (e: java.lang.Exception) {
@@ -114,7 +117,7 @@ object Util {
 
     @JvmStatic
     fun isNullOrEmpty(view: TextView): Boolean {
-        return view.text == null || view.text.toString() == null || view.text.toString().isEmpty()
+        return view.text == null || view.text.toString().isEmpty()
     }
 
     @JvmStatic
@@ -130,21 +133,21 @@ object Util {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
     }
 
-    fun amountInCoinConcatenation(context: Context, coinTick: String): String {
+    private fun amountInCoinConcatenation(context: Context, coinTick: String): String {
         return String.format(Locale.getDefault(), context.getString(R.string.send_amount_in_coin_label).replace("%s", coinTick))
     }
 
-    fun amountInDefaultCryptoConcatenation(context: Context): String {
+    private fun amountInDefaultCryptoConcatenation(context: Context): String {
         return amountInCoinConcatenation(context, context.getString(R.string.default_crypto))
     }
 
     fun fillSmartTextRequest(to: String, from: String, amount: String): SmartTextRequest {
 
-        var sendPayment = SmartTextRequest()
+        val sendPayment = SmartTextRequest()
         sendPayment.addressRefunded = from
         sendPayment.amountSmart = amount
         when {
-            Util.isValidEmail(to) -> {
+            isValidEmail(to) -> {
                 sendPayment.destinationEmail = to
                 sendPayment.typeSend = KEYS.KEY_SMARTTEXT_EMAIL
             }
@@ -158,11 +161,11 @@ object Util {
     }
 
     fun fillSmartTextRequest(sendPayment: SendPayment): SmartTextRequest {
-        var smartTextRequest = SmartTextRequest()
+        val smartTextRequest = SmartTextRequest()
         smartTextRequest.addressRefunded = sendPayment.fromAddress
         smartTextRequest.amountSmart = sendPayment.amount.toString()
         when {
-            Util.isValidEmail(sendPayment.toAddress.toString()) -> {
+            isValidEmail(sendPayment.toAddress.toString()) -> {
                 smartTextRequest.destinationEmail = sendPayment.toAddress.toString()
                 smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_EMAIL
             }
@@ -191,10 +194,6 @@ object Util {
 
             return sendPayment
         }
-        return null
-    }
-
-    fun fillSendSendSmartByWebWalletRequest(to: String, from: String, amount: String): SendPayment? {
         return null
     }
 
@@ -247,7 +246,7 @@ object Util {
     ) {
         val amountConverted: BigDecimal
         var actualSelected = smartCashApplication.getActualSelectedCoin(context)
-        val coins = smartCashApplication.AppPreferences.Coins
+        val coins = smartCashApplication.AppPreferences.coins
 
         amountLabel.text = amountInCoinConcatenation(context, actualSelected.name!!)
 
@@ -262,16 +261,16 @@ object Util {
             txtAmountCrypto.setText(ZERO)
         } else {
             if (actualSelected.name == context.getString(R.string.default_crypto)) {
-                amountConverted = smartCashApplication.multiplyBigDecimals(Util.getBigDecimal(txtAmountFiat), BigDecimal.valueOf(actualSelected.value!!))
-                amountLabel.text = Util.amountInDefaultCryptoConcatenation(context)
+                amountConverted = smartCashApplication.multiplyBigDecimals(getBigDecimal(txtAmountFiat), BigDecimal.valueOf(actualSelected.value!!))
+                amountLabel.text = amountInDefaultCryptoConcatenation(context)
             } else {
                 val currentPrice = actualSelected.value!!
-                val amountInTheField = Util.getDouble(txtAmountFiat)
+                val amountInTheField = getDouble(txtAmountFiat)
                 val ruleOfThree = amountInTheField / currentPrice
                 amountConverted = BigDecimal.valueOf(ruleOfThree)
             }
             txtAmountCrypto.setText(amountConverted.toString())
-            val amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee)
+            val amountWithFee = getBigDecimal(txtAmountCrypto).add(mainFee)
             if (sendButton != null)
                 sendButton.text = context.getString(R.string.send_button_label).replace("%f", smartCashApplication.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(amountWithFee.toString())))
         }
@@ -289,9 +288,9 @@ object Util {
 
         val amountConverted: BigDecimal
         var actualSelected = smartCashApplication.getActualSelectedCoin(context)
-        val coins = smartCashApplication.AppPreferences.Coins
+        val coins = smartCashApplication.AppPreferences.coins
 
-        amountLabel.text = Util.amountInCoinConcatenation(context, actualSelected.name!!)
+        amountLabel.text = amountInCoinConcatenation(context, actualSelected.name!!)
 
         for (i in coins!!.indices) {
             if (coins[i].name!!.equals(actualSelected.name!!, ignoreCase = true)) {
@@ -304,7 +303,7 @@ object Util {
             txtAmountFiat.setText(ZERO)
         } else {
             if (actualSelected.name == context.getString(R.string.default_crypto)) {
-                amountConverted = smartCashApplication.multiplyBigDecimals(Util.getBigDecimal(txtAmountCrypto), BigDecimal.valueOf(actualSelected.value!!))
+                amountConverted = smartCashApplication.multiplyBigDecimals(getBigDecimal(txtAmountCrypto), BigDecimal.valueOf(actualSelected.value!!))
                 amountLabel.text = amountInDefaultCryptoConcatenation(context)
             } else {
 
@@ -314,7 +313,7 @@ object Util {
                 amountConverted = BigDecimal.valueOf(ruleOfThree)
             }
             txtAmountFiat.setText(amountConverted.toString())
-            val amountWithFee = Util.getBigDecimal(txtAmountCrypto).add(mainFee)
+            val amountWithFee = getBigDecimal(txtAmountCrypto).add(mainFee)
 
             if (sendButton != null)
                 sendButton.text = context.getString(R.string.send_button_label).replace("%f", smartCashApplication.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(amountWithFee.toString())))
@@ -391,7 +390,7 @@ object Util {
 
     fun <T> getResponse(p: Call<WebWalletRootResponse<T>>): WebWalletRootResponse<T> {
 
-        var responseWebWalletRootResponse: WebWalletRootResponse<T> = WebWalletRootResponse()
+        val responseWebWalletRootResponse: WebWalletRootResponse<T> = WebWalletRootResponse()
 
         try {
             val r = p.execute()
@@ -403,7 +402,7 @@ object Util {
                 }
             } else {
                 try {
-                    var ex = Gson().fromJson<WebWalletException>(r.message(), WebWalletException::class.java)
+                    val ex = Gson().fromJson<WebWalletException>(r.message(), WebWalletException::class.java)
                     responseWebWalletRootResponse.errorDescription = ex.errorDescription
                     responseWebWalletRootResponse.error = ex.error
 
@@ -419,5 +418,10 @@ object Util {
             Log.e(LoginViewModel.TAG, e.message)
         }
         return responseWebWalletRootResponse
+    }
+
+    fun changeImage(image: ImageView, id: Int, context: Context) {
+        val iconEye: Drawable? = ContextCompat.getDrawable(context, id)
+        image.setImageDrawable(iconEye)
     }
 }

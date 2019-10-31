@@ -25,7 +25,7 @@ class CalculateFeeTask(context: Context, pre: () -> Unit, pos: (fee: WebWalletRo
     }
 
     override fun doInBackground(vararg users: SendPayment): WebWalletRootResponse<Double>? {
-        return WalletViewModel.getSyncFee(appContext, smartCashApplication.getToken(appContext)!!, users[0])
+        return WalletViewModel.getSyncFee(appContext, smartCashApplication.getToken()!!, users[0])
     }
 
     override fun onPostExecute(fee: WebWalletRootResponse<Double>?) {

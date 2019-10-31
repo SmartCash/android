@@ -12,14 +12,8 @@ class DashboardWalletListViewHolder(itemView: View) : RecyclerView.ViewHolder(it
 
     var name: TextView = itemView.findViewById(R.id.wallet_spinner_item_txt_name)
     var value: TextView = itemView.findViewById(R.id.txt_value)
-    var address: TextView
-    var btnCopy: ImageView
-    var roundIcon: CardView
+    var address: TextView = itemView.findViewById(R.id.txt_to_address)
+    var btnCopy: ImageView = itemView.findViewById(R.id.img_copy)
+    var roundIcon: CardView = itemView.findViewById(R.id.wallet_spinner_item_round_icon)
 
-    init {
-
-        address = itemView.findViewById(R.id.txt_to_address)
-        btnCopy = itemView.findViewById(R.id.img_copy)
-        roundIcon = itemView.findViewById(R.id.wallet_spinner_item_round_icon)
-    }
 }

@@ -5,44 +5,39 @@ import cc.smartcash.wallet.Utils.KEYS
 import cc.smartcash.wallet.Utils.SmartCashApplication
 import java.util.*
 
-class App(context: Context) {
+class App(val context: Context) {
 
-    val context = context
+
     val smartCashApplication: SmartCashApplication = SmartCashApplication(context)
 
-    val Wallet: ArrayList<Wallet>?
+    val wallet: ArrayList<Wallet>?
         get() {
-            val walletList = smartCashApplication.getUser(context)!!.wallet
-            return walletList
+            return smartCashApplication.getUser()!!.wallet
         }
 
-    val WithoutPin: Boolean
+    val withoutPin: Boolean
         get() {
-            val pin = smartCashApplication.getBoolean(context, KEYS.KEY_WITHOUT_PIN)
-            if (pin == null) {
-                return false
-            }
-            return pin
+            return smartCashApplication.getBoolean(KEYS.KEY_WITHOUT_PIN)!!
         }
 
-    val Coins: ArrayList<Coin>?
+    val coins: ArrayList<Coin>?
         get() {
-
-            return smartCashApplication.getCurrentPrice(context)
+            return smartCashApplication.getCurrentPrice()
         }
 
-    val Token: String?
+    val token: String?
         get() {
-            return smartCashApplication.getToken(context)
+            return smartCashApplication.getToken()
         }
 
-    val User: User?
+    val user: User?
         get() {
-            return smartCashApplication.getUser(context)
+            return smartCashApplication.getUser()
         }
 
-    val Email: String? get() = User?.email
+    val Email: String? get() = user?.email
 
     val ActualSelectedCoin: Coin
         get() = smartCashApplication.getActualSelectedCoin(context)
+
 }

@@ -54,7 +54,7 @@ class ReceiveFragment : Fragment() {
     lateinit var amountLabel: TextView
 
     @BindView(R.id.fragment_receive_amount_crypto_label)
-    lateinit var amount_with_label: TextView
+    lateinit var amountWithLabel: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -82,15 +82,15 @@ class ReceiveFragment : Fragment() {
 
         val walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
 
-        val walletAdapter = WalletSpinnerAdapter(context!!, smartCashApplication?.AppPreferences?.Wallet!!)
+        val walletAdapter = WalletSpinnerAdapter(context!!, smartCashApplication?.AppPreferences?.wallet!!)
 
         walletSpinner.adapter = walletAdapter
 
         walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
-                walletAddress.text = smartCashApplication?.AppPreferences?.Wallet!![position].address
-                smartCashApplication!!.saveWallet(context!!, smartCashApplication?.AppPreferences?.Wallet!![position])
+                walletAddress.text = smartCashApplication?.AppPreferences?.wallet!![position].address
+                smartCashApplication!!.saveWallet(context!!, smartCashApplication?.AppPreferences?.wallet!![position])
 
                 setQRCodeByAmount()
             }
@@ -100,11 +100,11 @@ class ReceiveFragment : Fragment() {
             }
         }
 
-        val savedWallet = smartCashApplication!!.getWallet(context!!)
+        val savedWallet = smartCashApplication!!.getWallet()
 
         if (savedWallet != null) {
-            for (i in smartCashApplication?.AppPreferences?.Wallet!!.indices) {
-                if (savedWallet.walletId == smartCashApplication?.AppPreferences?.Wallet!![i].walletId) {
+            for (i in smartCashApplication?.AppPreferences?.wallet!!.indices) {
+                if (savedWallet.walletId == smartCashApplication?.AppPreferences?.wallet!![i].walletId) {
                     walletSpinner.setSelection(i)
                 }
             }

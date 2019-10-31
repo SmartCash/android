@@ -16,7 +16,7 @@ object LoginViewModel {
 
     fun getSyncToken(userLogin: UserLogin, context: Context): WebWalletRootResponse<String?> {
 
-        var responseWebWalletRootResponse: WebWalletRootResponse<String?> = WebWalletRootResponse()
+        val responseWebWalletRootResponse: WebWalletRootResponse<String?> = WebWalletRootResponse()
 
         val localIP = SmartCashApplication.getIPAddress(true)
 
@@ -40,7 +40,7 @@ object LoginViewModel {
                 }
             } else {
                 try {
-                    var ex = Gson().fromJson<WebWalletException>(r.errorBody()?.string(), WebWalletException::class.java)
+                    val ex = Gson().fromJson<WebWalletException>(r.errorBody()?.string(), WebWalletException::class.java)
                     responseWebWalletRootResponse.errorDescription = ex.errorDescription
                     responseWebWalletRootResponse.error = ex.error
 

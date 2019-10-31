@@ -5,24 +5,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.Serializable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class SmartApiDefaultPrice : Serializable {
+data class SmartApiDefaultPrice(
 
+        var count: Int = 0,
 
-    var count: Int = 0
+        var items: List<SmartApiItem>? = null,
 
-    var items: List<SmartApiItem>? = null
+        var last: SmartApiLast? = null,
 
-    var last: SmartApiLast? = null
+        var isError: Boolean = false,
 
-    var isError: Boolean = false
+        var requestId: String? = null,
 
-    var requestId: String? = null
+        var resource: String? = null,
 
-    var resource: String? = null
+        var status: Int = 0,
 
-    var status: Int = 0
+        var version: String? = null,
 
-    var version: String? = null
+        var execution: Double = 0.toDouble()
 
-    var execution: Double = 0.toDouble()
-}
+) : Serializable

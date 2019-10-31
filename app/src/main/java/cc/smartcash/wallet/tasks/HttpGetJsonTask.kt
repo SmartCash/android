@@ -45,7 +45,7 @@ abstract class HttpGetJsonTask<T>(private val context: Context) : AsyncTask<Stri
 
     private fun setToDb(json: String, url: String) {
         try {
-            db?.saveString(context, json, url)
+            db?.saveString(json, url)
         } catch (ex: Exception) {
             ex.printStackTrace()
             Log.d("SET_TO_DB_ERROR", ex.message)

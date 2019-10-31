@@ -27,9 +27,6 @@ class UserViewModel : ViewModel() {
 
     private var userRecoveryKey: MutableLiveData<UserRecoveryKey>? = null
 
-    private val context: Context?
-        get() = null
-
     fun getToken(username: String, password: String, context: Context): LiveData<String> {
         token = MutableLiveData()
 
