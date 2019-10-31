@@ -180,4 +180,6 @@
     <string name="send_web_wallet_error_message">Er ging iets mis. Controleer je adres.</string>
     <string name="register_username_not_available_error_message">Deze gebruikersnaam bestaat al. Probeer een andere s.v.p.</string>
     <string name="transaction_item_confirmation_label">Confirmations:</string>
+    <string name="main_dialog_create_new_ping_title">Create a PIN</string>
+    <string name="main_dialog_create_new_ping_message">In order to create a new PIN, we will need to log you out, OK?</string>
 </resources>

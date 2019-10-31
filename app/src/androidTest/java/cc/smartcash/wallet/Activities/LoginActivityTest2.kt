@@ -103,6 +103,64 @@ class LoginActivityTest2 {
 
     }
 
+    @Test
+    fun testSetNewPINByToolSetting() {
+
+        try {
+            loginWithUserAndPassword(null, true)
+            waitABit()
+        } catch (e: NoMatchingViewException) {
+            loginOnlyWithPIN()
+            waitABit()
+        }
+
+        try {
+            openSettings()
+            clickOnSetNewPIN()
+        } finally {
+            waitABit()
+        }
+
+    }
+
+    @Test
+    fun testClickOnForgotPinByToolSetting() {
+        try {
+            loginWithUserAndPassword(null, false)
+            waitABit()
+        } catch (e: NoMatchingViewException) {
+            loginOnlyWithPIN()
+            waitABit()
+        }
+
+        try {
+            openSettings()
+            clickOnForgotMyPINOnToolSettings()
+        } finally {
+            waitABit()
+        }
+    }
+
+    private fun clickOnForgotMyPINOnToolSettings() {
+        try {
+            onView(withId(R.id.settings_modal_forgot_pin_btn)).perform(click())
+            onView(withText(R.string.main_dialog_forgot_pin_title)).check(matches(isDisplayed()))
+            onView(withId(android.R.id.button1)).perform(click())
+        } catch (e: NoMatchingViewException) {
+
+        }
+    }
+
+    private fun clickOnSetNewPIN() {
+        try {
+            onView(withId(R.id.settings_modal_create_pin)).perform(click())
+            onView(withText(R.string.main_dialog_create_new_ping_title)).check(matches(isDisplayed()))
+            onView(withId(android.R.id.button1)).perform(click())
+        } catch (e: NoMatchingViewException) {
+
+        }
+    }
+
     private fun loginFirstTime(withoutPin: Boolean = false) {
 
         var u = userName

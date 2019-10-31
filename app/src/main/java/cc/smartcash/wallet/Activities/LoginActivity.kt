@@ -210,8 +210,9 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
         if ((user.valid == null || !user.valid!! || user.data == null).not()) {
             navigateToPinActivity()
         }
+        if (user.error != null || user.errorDescription != null)
+            Toast.makeText(applicationContext, user.error + " : " + user.errorDescription, Toast.LENGTH_LONG).show()
 
-        Toast.makeText(applicationContext, user.error + " : " + user.errorDescription, Toast.LENGTH_LONG).show()
         endLoadingProcess()
     }
 

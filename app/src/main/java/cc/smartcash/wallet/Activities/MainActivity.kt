@@ -85,8 +85,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             if (smartCashApplication?.AppPreferences?.withoutPin!!) forgotPinBtn.visibility = View.GONE else createPinBtn.visibility = View.GONE
 
             createPinBtn.setOnClickListener {
-                this.smartCashApplication!!.saveWithoutPIN(this, false)
-                this.startActivity(Intent(this, PinActivity::class.java))
+
+                AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.main_dialog_create_new_ping_title))
+                        .setMessage(getString(R.string.main_dialog_create_new_ping_message))
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes) { _, _ -> navigateToLogin() }
+                        .setNegativeButton(android.R.string.no, null).show()
             }
 
             forgotPinBtn.setOnClickListener {
