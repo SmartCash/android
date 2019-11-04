@@ -65,7 +65,7 @@ object LoginViewModel {
         if (isInternetOn) {
             try {
                 val callUser = ApiUtil.userService.getUser("Bearer $token")
-                responseWebWalletRootResponse = Util.getResponse(callUser)
+                responseWebWalletRootResponse = Util.getWebWalletResponse(callUser)
 
             } catch (e: IOException) {
                 e.printStackTrace()

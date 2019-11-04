@@ -339,4 +339,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val TAG: String? = MainActivity::class.java.simpleName
     }
 
+    override fun onBackPressed() {
+        //Toast.makeText(applicationContext, "Back press disabled!", Toast.LENGTH_SHORT).show()
+    }
 }

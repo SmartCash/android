@@ -102,7 +102,7 @@ class WalletViewModel : ViewModel() {
         fun getSyncFee(context: Context, token: String, sendPayment: SendPayment): WebWalletRootResponse<Double>? {
 
             val feeRequest = WalletPaymentFeeRequest()
-            feeRequest.amount = sendPayment.amount
+            feeRequest.amount = sendPayment.amount ?: 0.0
             feeRequest.fromAddress = sendPayment.fromAddress
             feeRequest.toAddress = sendPayment.toAddress
             feeRequest.recurrenceType = 3
@@ -111,34 +111,17 @@ class WalletViewModel : ViewModel() {
             token.replace("\"", "")
 
             val callFee = ApiUtil.walletService.getFee("Bearer $token", feeRequest)
-
-            try {
-                val r = callFee.execute()
-                return r.body()
-
-            } catch (e: IOException) {
-                Log.e(TAG, e.message)
-            }
-
-            return null
+            return Util.getWebWalletResponse(callFee)
         }
 
         fun sendSyncTransaction(context: Context, token: String, sendPayment: SendPayment): WebWalletRootResponse<String>? {
             val callSendPayment = ApiUtil.walletService.sentPayment("Bearer $token", sendPayment)
-            try {
-                val response = callSendPayment.execute()
-                if (response.isSuccessful) {
-                    return response.body()
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            return null
+            return Util.getWebWalletResponse(callSendPayment)
         }
 
         fun sendSyncSmartText(context: Context, token: String, sendPayment: SmartTextRequest): SmartTextRoot? {
             val callSendPayment = Util.getProperty(KEYS.CONFIG_TOKEN_SEND_BY_TEXT, context)?.let { ApiUtil.smartTextService.sentPayment(it, sendPayment) }
+
             try {
                 val response = callSendPayment?.execute()
                 if (response?.isSuccessful!!) {
@@ -152,17 +135,8 @@ class WalletViewModel : ViewModel() {
         }
 
         fun isUserAvailable(user: String): WebWalletRootResponse<Boolean>? {
-
             val callFee = ApiUtil.webWalletAPIService.isUserAvailable(WebWalletUserAvailableRequest(user))
-
-            try {
-                val r = callFee.execute()
-                return r.body()
-            } catch (e: IOException) {
-                Log.e(TAG, e.message)
-            }
-
-            return null
+            return Util.getWebWalletResponse(callFee)
         }
     }
 

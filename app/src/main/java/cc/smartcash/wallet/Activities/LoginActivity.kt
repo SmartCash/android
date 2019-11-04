@@ -169,7 +169,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
     }
 
     override fun onBackPressed() {
-        Toast.makeText(applicationContext, "Back press disabled!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext, "Back press disabled!", Toast.LENGTH_SHORT).show()
     }
 
     private fun setDebugInfo() {

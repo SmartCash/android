@@ -110,15 +110,15 @@ class TransactionFragment : Fragment() {
             }
             R.id.btn_received -> {
                 changeUnderline(receivedUnderline)
-                setTransactions(getString(R.string.transaction_tab_received))
+                setTransactions("Received")
             }
             R.id.btn_awaiting -> {
                 changeUnderline(awaitingUnderline)
-                setTransactions(getString(R.string.transaction_tab_awaiting))
+                setTransactions("Awaiting")
             }
             R.id.btn_paid -> {
                 changeUnderline(paidUnderline)
-                setTransactions(getString(R.string.transaction_tab_sent))
+                setTransactions("Sent")
             }
             R.id.btn_att -> updateData()
         }

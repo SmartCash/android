@@ -69,7 +69,7 @@ class LoginActivityTest2 {
         try {
             loginWithUserAndPassword("teste2famobile")
             waitABit()
-        } catch (e: NoMatchingViewException) {
+        } catch (e: Exception) {
             loginOnlyWithPIN()
             waitABit()
         }
@@ -140,6 +140,98 @@ class LoginActivityTest2 {
             waitABit()
         }
     }
+
+    @Test
+    fun testUnexpectedClose() {
+
+        try {
+            loginWithUserAndPassword(userName, false)
+            waitABit()
+        } catch (e: NoMatchingViewException) {
+            loginOnlyWithPIN()
+            waitABit()
+        }
+        waitABit()
+
+        //clicar menu enviar
+        onView(withId(R.id.nav_send)).perform(click())
+        waitABit()
+
+        //clicar menu receber
+        onView(withId(R.id.nav_receive)).perform(click())
+        waitABit()
+
+        // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+        pressBack()
+        pressBack()
+        pressBack()
+        waitUntil(30000)
+    }
+    //função teste fechamento inesperado(){
+
+
+    //clicar menu receber
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // app encerra apresentando mensagem "Smartcash parou" Abrir aplicativo novamente.
+
+    //fazer o login com pin
+    //abrir app wallet
+    //esperar abrir
+    //clicar campo pin
+    //teclado numérico abre sozinho
+    //digitar o número de pin cadastrado
+    //clicar em salvar
+    // dashboard apresentado
+
+    //clicar menu enviar
+    //carrega tela
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // carrega tela apenas da carteira spending
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    //dashboard apresentado
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // tela sem textos apresentada
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // apresenta login de pin com caractere inserido
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    //mensagem back press disable
+    //clicar em salvar
+    //clicar menu enviar
+    // aguardar carregar tela
+    //clicar menu receber
+    //clicar menu transacões
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // app encerra apresentando mensagem "Smartcash parou" Abrir aplicativavo novamente.
+    // clicar Abrir aplicativavo novamente.
+    // tela de login com pin com caractere inserido.
+    //clicar em salvar
+    // dashboard apresentado
+    //clicar menu enviar
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // app encerra apresentando mensagem "Smartcash parou" Abrir aplicativo novamente.
+
+
+    //abrir app wallet
+    //esperar abrir
+    //clicar campo pin
+    //teclado numérico abre sozinho
+    //digitar o número de pin cadastrado
+    //clicar em salvar
+    // dashboard apresentado
+    // pressionar botão físico de voltar no aparelho Samsung Galaxys7
+    // tela sem textos apresentada
+// aguardar 1 segundo
+// girar celular (usar acelerômetro "giroscópio")
+    // dashboard apresentado
+// clicar enviar
+// pressinar botão fisico aparelho samsung galaxys7
+// tela sem textos apresentada
+// girar celular (usar aceleremotro "giroscópio")
+// app encerra apresentando mensagem "Smartcash parou" Abrir aplicativavo novamente.
+
+    //Obs: Caso pressione outros menus sem clicar depois em dashboard o app fecha, minha sugestão é desabilitar o uso do botão físico “voltar” para retornar entre telas.
+    //Para sair do app e continuar usando pin cadastrado deve adicionar parâmetro de “segurar botão físico” (sugestão de um programador zero á esquerda kkkkk)
+
 
     private fun clickOnForgotMyPINOnToolSettings() {
         try {
@@ -505,10 +597,10 @@ class LoginActivityTest2 {
     }
 
     private fun loginOnlyWithPIN() {
-        //Click on button Enter/Login.
+        //Click on IMAGE of the eye
         onView(withId(R.id.pin_activity_btn_eye)).perform(click())
 
-        //Click on button Enter/Login.
+        //Click on IMAGE of the eye
         onView(withId(R.id.pin_activity_btn_eye)).perform(click())
 
         //Type on field the password and check if it does match
@@ -548,6 +640,15 @@ class LoginActivityTest2 {
     private fun waitABit() {
         try {
             Thread.sleep(700)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun waitUntil(time: Long) {
+        try {
+            Thread.sleep(time)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
