@@ -7,15 +7,13 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import cc.smartcash.wallet.Models.*
 import cc.smartcash.wallet.R
 import cc.smartcash.wallet.ViewModels.LoginViewModel
 import com.google.gson.Gson
+import org.json.JSONObject
 import retrofit2.Call
 import java.io.IOException
 import java.math.BigDecimal
@@ -388,7 +386,7 @@ object Util {
 
     }
 
-    fun <T> getResponse(p: Call<WebWalletRootResponse<T>>): WebWalletRootResponse<T> {
+    fun <T> getWebWalletResponse(p: Call<WebWalletRootResponse<T>>): WebWalletRootResponse<T> {
 
         val responseWebWalletRootResponse: WebWalletRootResponse<T> = WebWalletRootResponse()
 
@@ -401,15 +399,75 @@ object Util {
                     responseWebWalletRootResponse.data = body.data
                 }
             } else {
-                try {
-                    val ex = Gson().fromJson<WebWalletException>(r.message(), WebWalletException::class.java)
-                    responseWebWalletRootResponse.errorDescription = ex.errorDescription
-                    responseWebWalletRootResponse.error = ex.error
 
-                } catch (e: Exception) {
-                    responseWebWalletRootResponse.errorDescription = e.message
-                    responseWebWalletRootResponse.error = e.toString()
-                    Log.e(LoginViewModel.TAG, e.message)
+                var error = r.errorBody()?.string()
+                var message = r.message()
+
+                responseWebWalletRootResponse.errorDescription = error
+                responseWebWalletRootResponse.error = message
+
+                Log.e(TAG, error)
+                Log.e(TAG, message)
+
+                //{"error":"","error_description":""}
+                if (error != null && error.contains("error", true) && error.contains("error_description", true)) {
+
+                    try {
+                        val parsedError = Gson().fromJson<WebWalletException>(error, WebWalletException::class.java)
+                        responseWebWalletRootResponse.errorDescription = parsedError.errorDescription
+                        responseWebWalletRootResponse.error = parsedError.error
+                    } catch (e: Exception) {
+                        responseWebWalletRootResponse.errorDescription = error
+                        responseWebWalletRootResponse.error = "Unexpected"
+                    }
+                }
+                //{"data":null,"error":{"message":"The amount exceeds your balance!"},"status":"BadRequest","isValid":false}
+                if (
+                        error != null
+                        && error.contains("data", true)
+                        && error.contains("error", true)
+                        && error.contains("message", true)
+                        && error.contains("status", true)
+                        && error.contains("isValid", true)
+                ) {
+                    try {
+                        val parsedError = JSONObject(error)
+                        responseWebWalletRootResponse.error = parsedError.getString("status")
+                        responseWebWalletRootResponse.errorDescription = parsedError.getJSONObject("error").getString("message")
+                    } catch (e: Exception) {
+                        responseWebWalletRootResponse.errorDescription = error
+                        responseWebWalletRootResponse.error = "Unexpected"
+                    }
+                }
+                //{"code":"Property_Required","message":",","details":["amount"]}
+                if (
+                        error != null
+                        && error.contains("code", true)
+                        && error.contains("message", true)
+                        && error.contains("details", true)
+                ) {
+                    try {
+                        val parsedError = JSONObject(error)
+                        responseWebWalletRootResponse.error = parsedError.getString("code")
+
+                        var details = StringBuilder()
+
+                        if (error != null && error.contains("message", true)) {
+                            details.append(parsedError.getString("message")).append(" ")
+                        }
+
+                        val detailsJson = parsedError.getJSONArray("details")
+                        if (detailsJson != null) {
+                            for (i in 0 until detailsJson.length()) {
+                                val item = detailsJson.getString(i)
+                                details.append(item).append(" ")
+                            }
+                        }
+                        responseWebWalletRootResponse.errorDescription = details.toString()
+                    } catch (e: Exception) {
+                        responseWebWalletRootResponse.errorDescription = error
+                        responseWebWalletRootResponse.error = "Unexpected"
+                    }
                 }
             }
         } catch (e: IOException) {
@@ -418,6 +476,36 @@ object Util {
             Log.e(LoginViewModel.TAG, e.message)
         }
         return responseWebWalletRootResponse
+    }
+
+
+    fun <T> showWebWalletException(result: WebWalletRootResponse<T>?, context: Context): Boolean {
+
+        var hasError = false
+        val genericError = "The result is null on WebWallet API"
+
+        if (result == null) {
+            hasError = true
+            Toast.makeText(context, genericError, Toast.LENGTH_LONG).show()
+            return hasError
+        }
+        if (!isNullOrEmpty(result.error) || !isNullOrEmpty(result.errorDescription)) {
+            hasError = true
+            Toast.makeText(context, result.error + " : " + result.errorDescription, Toast.LENGTH_LONG).show()
+            return hasError
+        }
+        if (result.valid != null && (result.valid!!.not())) {
+            hasError = true
+            Toast.makeText(context, genericError, Toast.LENGTH_LONG).show()
+            return hasError
+        }
+        if (result.data != null) {
+            hasError = false
+        } else {
+            hasError = true
+            Toast.makeText(context, genericError, Toast.LENGTH_LONG).show()
+        }
+        return hasError
     }
 
     fun changeImage(image: ImageView, id: Int, context: Context) {

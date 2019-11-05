@@ -290,8 +290,13 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
             showConfirmationFields()
 
-            txtPassword.error = getString(R.string.send_pin_error_message)
-            Toast.makeText(context, getString(R.string.send_pin_error_message), Toast.LENGTH_LONG).show()
+            if (this.smartCashApplication!!.AppPreferences.withoutPin.not()) {
+                txtPassword.error = getString(R.string.send_pin_error_message)
+                Toast.makeText(context, getString(R.string.send_pin_error_message), Toast.LENGTH_LONG).show()
+            } else {
+                txtPassword.error = getString(R.string.login_password_error_message)
+                Toast.makeText(context, getString(R.string.login_password_error_message), Toast.LENGTH_LONG).show()
+            }
             return
         }
 
@@ -454,23 +459,18 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     }
 
     private fun afterSendByWebWallet(result: WebWalletRootResponse<String>?) {
-        if (result == null) {
+        /*if (result == null) {
             Toast.makeText(context, getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show()
+            unlockSendButton()
+            return
+        }
+        if (!Util.isNullOrEmpty(result.error) || !Util.isNullOrEmpty(result.errorDescription)) {
+            Toast.makeText(context, result.error + " : " + result.errorDescription, Toast.LENGTH_LONG).show()
             unlockSendButton()
             return
         }
         if (result.valid != null && (result.valid!!.not())) {
             Toast.makeText(context, getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show()
-            unlockSendButton()
-            return
-        }
-        if (!Util.isNullOrEmpty(result.error)) {
-            Toast.makeText(context, result.error, Toast.LENGTH_LONG).show()
-            unlockSendButton()
-            return
-        }
-        if (!Util.isNullOrEmpty(result.errorDescription)) {
-            Toast.makeText(context, result.errorDescription, Toast.LENGTH_LONG).show()
             unlockSendButton()
             return
         }
@@ -480,7 +480,15 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             Log.d(TAG, result.data)
         } else {
             Toast.makeText(context, getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show()
+        }*/
+        val hasError = Util.showWebWalletException(result, context!!)
+
+        if (hasError.not()) {
+            updateData()
+            clearInputs()
+            Log.d(TAG, result?.data)
         }
+
         unlockSendButton()
     }
 
@@ -515,18 +523,13 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     }
 
     private fun afterCalculateFeeTask(fee: WebWalletRootResponse<Double>?) {
-        if (fee != null) {
-            if (fee.data != null) {
-                mainFee = BigDecimal.valueOf(fee.data!!)
-                setFeeOnButton()
-                Log.d(TAG, fee.data!!.toString())
-            } else if (fee.error!!.isNotEmpty()) {
-                Log.e(TAG, fee.error)
-            }
-            unlockSendButton()
-        } else {
-            unlockSendButton()
+        val hasError = Util.showWebWalletException(fee, context!!)
+        if (hasError.not()) {
+            mainFee = BigDecimal.valueOf(fee?.data!!)
+            setFeeOnButton()
+            Log.d(TAG, fee.data.toString())
         }
+        unlockSendButton()
     }
 
     private fun setFeeOnButton(fee: String = mainFee!!.toString()) {

@@ -50,7 +50,7 @@ class PinActivity : AppCompatActivity() {
     lateinit var btnEye: ImageView
 
     override fun onBackPressed() {
-        Toast.makeText(applicationContext, "Back press disabled!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext, "Back press disabled!", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
