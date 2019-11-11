@@ -3,7 +3,7 @@ package cc.smartcash.wallet.tasks
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
-import cc.smartcash.wallet.Utils.SmartCashApplication
+import cc.smartcash.wallet.utils.SmartCashApplication
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
@@ -36,7 +36,7 @@ abstract class HttpGetJsonTask<T>(private val context: Context) : AsyncTask<Stri
 
     private fun getFromDb(url: String): T? {
         try {
-            return SmartCashApplication.SharedEditor<T>().get(context, db?.mPrefs!!, url)
+            return SmartCashApplication.SharedEditor<T>().get(db?.mPrefs!!, url)
         } catch (e: JSONException) {
             e.printStackTrace()
         }

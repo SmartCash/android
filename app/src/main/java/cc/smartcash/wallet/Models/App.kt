@@ -1,8 +1,8 @@
 package cc.smartcash.wallet.Models
 
 import android.content.Context
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
 import java.util.*
 
 class App(val context: Context) {
@@ -35,9 +35,9 @@ class App(val context: Context) {
             return smartCashApplication.getUser()
         }
 
-    val Email: String? get() = user?.email
+    val email: String? get() = user?.email
 
-    val ActualSelectedCoin: Coin
+    val actualSelectedCoin: Coin
         get() = smartCashApplication.getActualSelectedCoin(context)
 
 }

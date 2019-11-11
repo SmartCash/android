@@ -6,7 +6,7 @@ import cc.smartcash.wallet.Models.User
 import cc.smartcash.wallet.Models.UserLogin
 import cc.smartcash.wallet.Models.WebWalletException
 import cc.smartcash.wallet.Models.WebWalletRootResponse
-import cc.smartcash.wallet.Utils.*
+import cc.smartcash.wallet.utils.*
 import com.google.gson.Gson
 import java.io.IOException
 

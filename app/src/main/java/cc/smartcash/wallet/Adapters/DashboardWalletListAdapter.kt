@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import cc.smartcash.wallet.Models.Wallet
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
 import cc.smartcash.wallet.ViewHolders.DashboardWalletListViewHolder
+import cc.smartcash.wallet.utils.SmartCashApplication
 import java.util.*
 
 class DashboardWalletListAdapter(private val context: Context, private var wallets: ArrayList<Wallet>?) : RecyclerView.Adapter<DashboardWalletListViewHolder>() {

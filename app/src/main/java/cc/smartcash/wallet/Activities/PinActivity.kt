@@ -16,10 +16,10 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.NetworkUtil
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.NetworkUtil
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import com.google.crypto.tink.Aead
 import java.nio.charset.StandardCharsets
 
@@ -98,7 +98,7 @@ class PinActivity : AppCompatActivity() {
                             .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                             .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes) { dialog, whichButton -> dialog.cancel() }
+                            .setPositiveButton(android.R.string.yes) { dialog, _ -> dialog.cancel() }
                             .setNegativeButton(android.R.string.no, null).show()
             }
         } else if (Util.compareString(txtPin, txtConfirmPin)) {
@@ -111,7 +111,7 @@ class PinActivity : AppCompatActivity() {
                         .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                         .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton("OK") { dialog, id ->
+                        .setPositiveButton("OK") { _, _ ->
                             finish()
                         }
                 return
@@ -137,7 +137,7 @@ class PinActivity : AppCompatActivity() {
                     .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                     .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("OK") { dialog, id ->
+                    .setPositiveButton("OK") { _, _ ->
                         finish()
                     }
             return
@@ -150,7 +150,7 @@ class PinActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.main_dialog_forgot_pin_title))
                 .setMessage(getString(R.string.main_dialog_forgot_pin_message))
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes) { dialog, whichButton ->
+                .setPositiveButton(android.R.string.yes) { _, _ ->
                     Toast.makeText(this@PinActivity, getString(R.string.main_redirect_to_login_toast), Toast.LENGTH_SHORT).show()
                     smartCashApplication!!.deleteSharedPreferences()
                     startActivity(Intent(this@PinActivity, LoginActivity::class.java))
@@ -164,9 +164,9 @@ class PinActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.pin_continue_without_pin_dialog_title))
                 .setMessage(getString(R.string.pin_continue_without_pin_dialog_message))
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes) { dialog, whichButton ->
+                .setPositiveButton(android.R.string.yes) { _, _ ->
                     Toast.makeText(this@PinActivity, getString(R.string.pin_continue_without_pin_dialog_redirect), Toast.LENGTH_SHORT).show()
-                    smartCashApplication!!.saveWithoutPIN(this, true)
+                    smartCashApplication!!.saveWithoutPIN(true)
                     val intent = Intent(applicationContext, MainActivity::class.java)
                     startActivity(intent)
                 }
@@ -179,12 +179,12 @@ class PinActivity : AppCompatActivity() {
             txtPin.transformationMethod = PasswordTransformationMethod.getInstance()
             txtConfirmPin.transformationMethod = PasswordTransformationMethod.getInstance()
             isPasswordVisible = false
-            btnEye.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+            Util.changeImage(btnEye, R.drawable.ic_eye, applicationContext)
         } else {
             txtPin.transformationMethod = HideReturnsTransformationMethod.getInstance()
             txtConfirmPin.transformationMethod = HideReturnsTransformationMethod.getInstance()
             isPasswordVisible = true
-            btnEye.setImageDrawable(resources.getDrawable(R.drawable.eye_off))
+            Util.changeImage(btnEye, R.drawable.eye_off, applicationContext)
         }
 
         txtPin.setSelection(txtPin.text.length)
@@ -260,7 +260,7 @@ class PinActivity : AppCompatActivity() {
                 .setTitle(title)
                 .setMessage(message)
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes) { dialog, whichButton ->
+                .setPositiveButton(android.R.string.yes) { dialog, _ ->
                     dialog.dismiss()
                     dialog.cancel()
                 }.show()

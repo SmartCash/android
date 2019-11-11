@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import cc.smartcash.wallet.Models.FullTransaction
 import cc.smartcash.wallet.Models.TransactionDetails
 import cc.smartcash.wallet.Models.TransactionResponse
-import cc.smartcash.wallet.Utils.ApiUtil
-import cc.smartcash.wallet.Utils.URLS
+import cc.smartcash.wallet.utils.ApiUtil
+import cc.smartcash.wallet.utils.URLS
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback

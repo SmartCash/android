@@ -1,8 +1,6 @@
-package cc.smartcash.wallet.Utils
+package cc.smartcash.wallet.utils
 
 object URLS {
-
-    const val URL_API_EXPLORER = "https://api-explorer.smartcash.cc/api/smartexplorer/"
 
     const val URL_API_SAPI = "http://sapi2.smartcash.org/v1/"
 
@@ -10,11 +8,7 @@ object URLS {
 
     const val URL_API_PRICE = "https://api.smartcash.cc/v1/"
 
-    const val URL_API_PRICE_HITBTC = "https://api.smartcash.cc/v1/exchange/currencies?exchange=hitbtc"
-
-    const val URL_API_PRICE_COINGECKO = "https://api.smartcash.cc/v1/exchange/currencies?exchange=coingecko"
-
-    const val URL_API_ = ""
+    const val URL_API_BUSINESS = "https://api.smartcash.cc/v1d/"
 
     const val URL_INSIGHT_EXPLORER_API = "https://insight.smartcash.cc/api/tx/"
 

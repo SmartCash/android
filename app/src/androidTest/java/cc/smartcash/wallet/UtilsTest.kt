@@ -1,6 +1,6 @@
 package cc.smartcash.wallet
 
-import cc.smartcash.wallet.Utils.Util
+import cc.smartcash.wallet.utils.Util
 import org.junit.Assert
 import org.junit.Test
 

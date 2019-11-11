@@ -1,6 +1,6 @@
 package cc.smartcash.wallet.Services
 
-import cc.smartcash.wallet.Utils.URLS
+import cc.smartcash.wallet.utils.URLS
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 

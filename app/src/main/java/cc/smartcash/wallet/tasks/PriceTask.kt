@@ -5,10 +5,10 @@ import android.os.AsyncTask
 import android.util.Log
 import cc.smartcash.wallet.Activities.LoginActivity
 import cc.smartcash.wallet.Models.Coin
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.ViewModels.CurrentPriceViewModel
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import java.util.*
 
 class PriceTask(context: Context, pre: () -> Unit, pos: (coins: ArrayList<Coin>?) -> Unit) : AsyncTask<Void, Int, ArrayList<Coin>>() {
@@ -40,7 +40,7 @@ class PriceTask(context: Context, pre: () -> Unit, pos: (coins: ArrayList<Coin>?
                         ?: return this.smartCashApplication.getCurrentPrice()
 
                 this.smartCashApplication.saveString(Util.date, KEYS.KEY_TIME_PRICE_WAS_UPDATED)
-                this.smartCashApplication.saveCurrentPrice(this.appContext, syncPrices)
+                this.smartCashApplication.saveCurrentPrice(syncPrices)
             }
             return this.smartCashApplication.getCurrentPrice()
         } catch (e: Exception) {

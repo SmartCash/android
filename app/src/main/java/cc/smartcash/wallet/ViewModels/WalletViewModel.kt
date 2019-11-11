@@ -7,9 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cc.smartcash.wallet.Models.*
-import cc.smartcash.wallet.Utils.ApiUtil
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.Util
+import cc.smartcash.wallet.utils.ApiUtil
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.Util
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback

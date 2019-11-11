@@ -18,8 +18,8 @@ import cc.smartcash.wallet.Fragments.SendFragment
 import cc.smartcash.wallet.Fragments.TransactionFragment
 import cc.smartcash.wallet.Models.Coin
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
@@ -244,13 +244,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun saveSelectedCoin(coin: Coin?) {
 
-        smartCashApplication!!.saveActualSelectedCoin(this@MainActivity, coin!!)
+        smartCashApplication!!.saveActualSelectedCoin(coin!!)
         setWalletValue()
         reloadCurrentFragment()
     }
 
     private fun setSelectedCoinOnSpinner(currentPriceSpinner: Spinner, coins: ArrayList<Coin>) {
-        val selectedCoin = smartCashApplication!!.AppPreferences.ActualSelectedCoin
+        val selectedCoin = smartCashApplication!!.AppPreferences.actualSelectedCoin
         coins.indices.forEach { i ->
             if (selectedCoin.value == coins[i].value && selectedCoin.name == coins[i].name) currentPriceSpinner.setSelection(i)
         }
@@ -290,7 +290,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         val wallets = user.wallet ?: return
 
-        val selectedCoin = smartCashApplication?.AppPreferences?.ActualSelectedCoin ?: return
+        val selectedCoin = smartCashApplication?.AppPreferences?.actualSelectedCoin ?: return
 
         val coins = smartCashApplication?.AppPreferences?.coins ?: return
 
@@ -302,7 +302,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             for (auxCoin in coins) {
                 if (auxCoin.name!!.equals(selectedCoin.name!!, ignoreCase = true)) {
                     selectedCoin.value = auxCoin.value
-                    smartCashApplication!!.saveActualSelectedCoin(this, auxCoin)
+                    smartCashApplication!!.saveActualSelectedCoin(auxCoin)
                     break
                 }
             }

@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
@@ -19,10 +18,13 @@ import cc.smartcash.wallet.Activities.MainActivity
 import cc.smartcash.wallet.Adapters.TransactionAdapter
 import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter
 import cc.smartcash.wallet.Models.Transaction
+import cc.smartcash.wallet.Models.User
 import cc.smartcash.wallet.Models.Wallet
+import cc.smartcash.wallet.Models.WebWalletRootResponse
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.ViewModels.UserViewModel
+import cc.smartcash.wallet.tasks.UserTask
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import java.util.*
 
 class TransactionFragment : Fragment() {
@@ -81,7 +83,7 @@ class TransactionFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val clickedItem = parent.getItemAtPosition(position) as Wallet
                 transactions = clickedItem.transactions
-                smartCashApplication!!.saveWallet(context!!, walletList!![position])
+                smartCashApplication!!.saveWallet(walletList!![position])
                 setTransactions(activeFilter)
             }
 
@@ -136,7 +138,8 @@ class TransactionFragment : Fragment() {
     }
 
     private fun updateData() {
-        ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
+        UserTask(context!!, ::preloadUser, ::posloadUser)
+        /*ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
 
             it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
                 if (response != null) {
@@ -147,7 +150,25 @@ class TransactionFragment : Fragment() {
                     Log.e(TAG, getString(R.string.transaction_update_error_message))
                 }
             })
+        }*/
+    }
+
+    private fun preloadUser() {
+
+        Toast.makeText(context, "loading...", Toast.LENGTH_LONG).show()
+
+    }
+
+    private fun posloadUser(result: WebWalletRootResponse<User?>) {
+
+        val hasError = Util.showWebWalletException(result, context!!)
+
+        if (hasError.not()) {
+            (activity as MainActivity).setWalletValue()
+            Log.d(TAG, result.data.toString())
         }
+
+        //unlockSendButton()
     }
 
     fun setTransactions(filtro: String?) {

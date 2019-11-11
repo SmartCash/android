@@ -18,14 +18,14 @@ import butterknife.OnClick
 import cc.smartcash.wallet.BuildConfig
 import cc.smartcash.wallet.Models.*
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.ViewModels.LoginViewModel
 import cc.smartcash.wallet.ViewModels.UserViewModel
 import cc.smartcash.wallet.ViewModels.WalletViewModel
 import cc.smartcash.wallet.tasks.LoginTask
 import cc.smartcash.wallet.tasks.PriceTask
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import java.nio.charset.StandardCharsets
 import java.util.*
 

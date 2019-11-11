@@ -1,4 +1,4 @@
-package cc.smartcash.wallet.Utils
+package cc.smartcash.wallet.utils
 
 import cc.smartcash.wallet.Services.*
 
@@ -27,5 +27,11 @@ object ApiUtil {
 
     val webWalletAPIService: WebWalletAPIService
         get() = RetrofitConfig.getClient(URLS.URL_API_WEBWALLET).create(WebWalletAPIService::class.java)
+
+    val businessAPIService: BusinessAPIService
+        get() = RetrofitConfig.getClient(URLS.URL_API_BUSINESS).create(BusinessAPIService::class.java)
+
+    val smartApiService: SmartAPIService
+        get() = RetrofitConfig.getClient(URLS.URL_API_PRICE).create(SmartAPIService::class.java)
 
 }

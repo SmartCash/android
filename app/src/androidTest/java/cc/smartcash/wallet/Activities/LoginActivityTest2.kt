@@ -12,9 +12,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.ViewHolders.TransactionViewHolder
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import org.hamcrest.Matchers.anything
 import org.hamcrest.Matchers.containsString
 import org.junit.Rule

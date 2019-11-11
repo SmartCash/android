@@ -1,4 +1,4 @@
-package cc.smartcash.wallet.Utils
+package cc.smartcash.wallet.utils
 
 import android.app.Application
 import android.content.ClipData
@@ -112,7 +112,7 @@ class SmartCashApplication(context: Context) : Application() {
             if (coinAux != null)
                 coin = coinAux
             else
-                saveActualSelectedCoin(context, coin)
+                saveActualSelectedCoin(coin)
         }
         return coin
     }
@@ -218,24 +218,24 @@ class SmartCashApplication(context: Context) : Application() {
 
     //region Save to Shared Preferences
 
-    fun saveActualSelectedCoin(context: Context, coin: Coin) =
-            SharedEditor<Coin>().saveGson(context, this.mPrefs!!, coin, KEYS.KEY_CURRENT_SELECTED_COIN)
+    fun saveActualSelectedCoin(coin: Coin) =
+            SharedEditor<Coin>().saveGson(this.mPrefs!!, coin, KEYS.KEY_CURRENT_SELECTED_COIN)
 
-    fun saveCurrentPrice(context: Context, coins: ArrayList<Coin>) =
-            SharedEditor<ArrayList<Coin>>().saveGson(context, this.mPrefs!!, coins, KEYS.KEY_CURRENT_PRICES)
+    fun saveCurrentPrice(coins: ArrayList<Coin>) =
+            SharedEditor<ArrayList<Coin>>().saveGson(this.mPrefs!!, coins, KEYS.KEY_CURRENT_PRICES)
 
-    fun saveUser(context: Context, user: User) =
-            SharedEditor<User>().saveGson(context, this.mPrefs!!, user, KEYS.KEY_USER)
+    fun saveUser(user: User) =
+            SharedEditor<User>().saveGson(this.mPrefs!!, user, KEYS.KEY_USER)
 
-    fun saveBoolean(context: Context, bool: Boolean, key: String) =
-            SharedEditor<Boolean?>().saveBoolean(context, this.mPrefs!!, bool, key)
+    fun saveBoolean(bool: Boolean, key: String) =
+            SharedEditor<Boolean?>().saveBoolean(this.mPrefs!!, bool, key)
 
-    fun saveWallet(context: Context, wallet: Wallet) =
-            SharedEditor<Wallet>().saveGson(context, this.mPrefs!!, wallet, KEYS.KEY_WALLET)
+    fun saveWallet(wallet: Wallet) =
+            SharedEditor<Wallet>().saveGson(this.mPrefs!!, wallet, KEYS.KEY_WALLET)
 
-    fun saveToken(context: Context, token: String) = SharedEditor<String>().saveString(context, this.mPrefs!!, token, KEYS.KEY_TOKEN)
+    fun saveToken(token: String) = SharedEditor<String>().saveString(this.mPrefs!!, token, KEYS.KEY_TOKEN)
 
-    fun saveWithoutPIN(context: Context, flag: Boolean) = SharedEditor<String>().saveBoolean(context, this.mPrefs!!, flag, KEYS.KEY_WITHOUT_PIN)
+    fun saveWithoutPIN(flag: Boolean) = SharedEditor<String>().saveBoolean(this.mPrefs!!, flag, KEYS.KEY_WITHOUT_PIN)
 
     fun saveMSK(bytes: ByteArray) =
             this.context!!.getSharedPreferences(KEYS.KEY_MSK, Context.MODE_PRIVATE).edit().putString(KEYS.KEY_MSK, String(bytes, Charset.forName("ISO-8859-1"))).apply()
@@ -302,7 +302,7 @@ class SmartCashApplication(context: Context) : Application() {
 
 
     fun formatNumberBySelectedCurrencyCode(numberToFormat: Double): String {
-        val currency = if (getActualSelectedCoin(context!!) == null || getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
+        val currency = if (this.getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
             Currency.getInstance(context!!.getString(R.string.default_fiat))
 
         } else {
@@ -421,29 +421,29 @@ class SmartCashApplication(context: Context) : Application() {
 
     class SharedEditor<T> {
 
-        fun save(context: Context, sharedPreferences: SharedPreferences, obj: T, key: String) {
+        fun save(sharedPreferences: SharedPreferences, obj: T, key: String) {
             val prefsEditor = sharedPreferences.edit()
             val json = Gson().toJson(obj)
             prefsEditor?.putString(key, json)
             prefsEditor?.apply()
         }
 
-        fun saveGson(context: Context, sharedPreferences: SharedPreferences, obj: T, key: String) {
+        fun saveGson(sharedPreferences: SharedPreferences, obj: T, key: String) {
             val prefsEditor = sharedPreferences.edit()
             val json = Gson().toJson(obj)
             prefsEditor?.putString(key, json)
             prefsEditor?.apply()
         }
 
-        fun saveString(context: Context, sharedPreferences: SharedPreferences, obj: String, key: String) {
+        fun saveString(sharedPreferences: SharedPreferences, obj: String, key: String) {
             sharedPreferences.edit().putString(key, obj).apply()
         }
 
-        fun saveBoolean(context: Context, sharedPreferences: SharedPreferences, obj: Boolean, key: String) {
+        fun saveBoolean(sharedPreferences: SharedPreferences, obj: Boolean, key: String) {
             sharedPreferences.edit().putBoolean(key, obj).apply()
         }
 
-        fun <T> get(context: Context, sharedPreferences: SharedPreferences, key: String): T? {
+        fun <T> get(sharedPreferences: SharedPreferences, key: String): T? {
             val stringSharedPreferences = sharedPreferences.getString(key, "")
             if (Util.isNullOrEmpty(stringSharedPreferences)) return null
             val turnsType = object : TypeToken<T>() {}.type

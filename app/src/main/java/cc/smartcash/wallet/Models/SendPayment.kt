@@ -17,7 +17,7 @@ data class SendPayment(
         var userKey: String? = null,
         @SerializedName("code")
         var code: String? = null,
-        @SerializedName("Email")
+        @SerializedName("email")
         var email: String? = null
 
 ) : Serializable

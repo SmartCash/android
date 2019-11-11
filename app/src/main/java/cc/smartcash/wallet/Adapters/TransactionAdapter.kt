@@ -16,10 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import cc.smartcash.wallet.Models.FullTransaction
 import cc.smartcash.wallet.Models.Transaction
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.URLS
 import cc.smartcash.wallet.ViewHolders.TransactionViewHolder
 import cc.smartcash.wallet.ViewModels.TransactionViewModel
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.URLS
 import java.util.*
 
 class TransactionAdapter(private val context: Context, private var transactions: ArrayList<Transaction>?) : RecyclerView.Adapter<TransactionViewHolder>() {

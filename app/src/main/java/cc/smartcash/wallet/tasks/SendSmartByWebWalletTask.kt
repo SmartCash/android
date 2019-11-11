@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.AsyncTask
 import cc.smartcash.wallet.Models.SendPayment
 import cc.smartcash.wallet.Models.WebWalletRootResponse
-import cc.smartcash.wallet.Utils.SmartCashApplication
 import cc.smartcash.wallet.ViewModels.WalletViewModel
+import cc.smartcash.wallet.utils.SmartCashApplication
 
 
 class SendSmartByWebWalletTask(context: Context, pre: () -> Unit, pos: (result: WebWalletRootResponse<String>?) -> Unit) : AsyncTask<SendPayment, Int, WebWalletRootResponse<String>>() {

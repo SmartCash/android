@@ -1,4 +1,4 @@
-package cc.smartcash.wallet.Utils
+package cc.smartcash.wallet.utils
 
 object KEYS {
 
@@ -14,7 +14,7 @@ object KEYS {
 
     const val KEY_CURRENT_PRICES = "CurrentPrices"
 
-    const val KEY_CURRENT_SELECTED_COIN = "ActualSelectedCoin"
+    const val KEY_CURRENT_SELECTED_COIN = "actualSelectedCoin"
 
     const val KEY_PASSWORD = "PASSWORD"
 

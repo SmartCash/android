@@ -18,10 +18,10 @@ import butterknife.OnClick
 import cc.smartcash.wallet.Models.FullTransaction
 import cc.smartcash.wallet.Models.TransactionDetails
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.URLS
 import cc.smartcash.wallet.ViewModels.TransactionViewModel
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.URLS
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,7 +51,7 @@ class TransactionActivity : AppCompatActivity() {
     lateinit var minedTimeLabel: TextView
 
     @BindView(R.id.inclued_in_block_label)
-    lateinit var incluedInBlockLabel: TextView
+    lateinit var includedInBlockLabel: TextView
 
     @BindView(R.id.transaction_hash)
     lateinit var transactionHash: TextView
@@ -127,7 +127,7 @@ class TransactionActivity : AppCompatActivity() {
             txtReceivedTime.visibility = View.VISIBLE
             minedTimeLabel.visibility = View.VISIBLE
             txtMinedTime.visibility = View.VISIBLE
-            incluedInBlockLabel.visibility = View.VISIBLE
+            includedInBlockLabel.visibility = View.VISIBLE
             txtIncludedInBlock.visibility = View.VISIBLE
             btnDetails.visibility = View.VISIBLE
             loader.visibility = View.GONE

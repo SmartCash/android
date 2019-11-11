@@ -11,7 +11,7 @@ import butterknife.ButterKnife
 import cc.smartcash.wallet.Adapters.DashboardWalletListAdapter
 import cc.smartcash.wallet.Models.Wallet
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
+import cc.smartcash.wallet.utils.SmartCashApplication
 import java.util.*
 
 

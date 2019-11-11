@@ -5,9 +5,9 @@ import android.os.AsyncTask
 import cc.smartcash.wallet.Models.SendPayment
 import cc.smartcash.wallet.Models.SmartTextRequest
 import cc.smartcash.wallet.Models.SmartTextRoot
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.ViewModels.WalletViewModel
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 
 class SendSmartByTextTask(context: Context, sendPayment: SendPayment, pre: () -> Unit, pos: (smartTextRoot: SmartTextRoot?) -> Unit) : AsyncTask<SmartTextRequest, Int, SmartTextRoot>() {
 
@@ -33,7 +33,7 @@ class SendSmartByTextTask(context: Context, sendPayment: SendPayment, pre: () ->
 
     override fun onPostExecute(smartTextRoot: SmartTextRoot?) {
         super.onPostExecute(smartTextRoot)
-        val sendPayment = smartTextRoot?.let { Util.fillSendSendSmartByWebWalletRequestBySmartTextReponse(it) }
+        val sendPayment = smartTextRoot?.let { Util.fillSendSendSmartByWebWalletRequestBySmartTextResponse(it) }
         sendPayment?.apply {
             this.email = sendPaymentRequest.email
             this.userKey = sendPaymentRequest.userKey

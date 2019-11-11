@@ -15,7 +15,7 @@ import butterknife.ButterKnife
 import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter
 import cc.smartcash.wallet.Models.Wallet
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
+import cc.smartcash.wallet.utils.SmartCashApplication
 import java.util.*
 
 class SendFragment : Fragment() {
@@ -39,7 +39,7 @@ class SendFragment : Fragment() {
             smartCashApplication = SmartCashApplication(context!!)
 
         walletList = smartCashApplication!!.getUser()!!.wallet
-        smartCashApplication!!.saveWallet(context!!, walletList!![0])
+        smartCashApplication!!.saveWallet(walletList!![0])
         val view = inflater.inflate(R.layout.fragment_send, container, false)
         ButterKnife.bind(this, view)
         return view
@@ -61,7 +61,7 @@ class SendFragment : Fragment() {
 
         walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                smartCashApplication!!.saveWallet(context!!, walletList!![position])
+                smartCashApplication!!.saveWallet(walletList!![position])
                 Log.e(TAG, walletList!![position].address)
             }
 

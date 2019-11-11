@@ -21,8 +21,8 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import cc.smartcash.wallet.Adapters.WalletSpinnerAdapter
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -90,7 +90,7 @@ class ReceiveFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
                 walletAddress.text = smartCashApplication?.AppPreferences?.wallet!![position].address
-                smartCashApplication!!.saveWallet(context!!, smartCashApplication?.AppPreferences?.wallet!![position])
+                smartCashApplication!!.saveWallet(smartCashApplication?.AppPreferences?.wallet!![position])
 
                 setQRCodeByAmount()
             }

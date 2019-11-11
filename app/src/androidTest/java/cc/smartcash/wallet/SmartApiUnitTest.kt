@@ -1,6 +1,6 @@
 package cc.smartcash.wallet
 
-import cc.smartcash.wallet.Services.SmartAPIConfig
+import cc.smartcash.wallet.utils.ApiUtil
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.IOException
@@ -10,7 +10,7 @@ class SmartApiUnitTest {
     @Test
     fun GetDefaultPrices() {
 
-        val call = SmartAPIConfig().smartApiService.getDefaultPrices()
+        val call = ApiUtil.smartApiService.getDefaultPrices()
 
         assertNotNull("Call OK", call)
 

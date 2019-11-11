@@ -2,16 +2,14 @@ package cc.smartcash.wallet.tasks
 
 import android.content.Context
 import android.os.AsyncTask
-import cc.smartcash.wallet.Models.Coin
 import cc.smartcash.wallet.Models.User
 import cc.smartcash.wallet.Models.UserLogin
 import cc.smartcash.wallet.Models.WebWalletRootResponse
-import cc.smartcash.wallet.R
 import cc.smartcash.wallet.ViewModels.LoginViewModel
 import cc.smartcash.wallet.utils.SmartCashApplication
 import cc.smartcash.wallet.utils.Util
 
-class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResponse<User?>) -> Unit) : AsyncTask<UserLogin, Int, WebWalletRootResponse<User?>>() {
+class UserTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResponse<User?>) -> Unit) : AsyncTask<UserLogin, Int, WebWalletRootResponse<User?>>() {
 
     private var appContext: Context = context
     private var smartCashApplication: SmartCashApplication
@@ -30,26 +28,16 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
 
     override fun doInBackground(vararg users: UserLogin): WebWalletRootResponse<User?> {
 
-        var token: String? = ""
-
-        var webWalletGetSyncTokenRootResponse: WebWalletRootResponse<String?> = WebWalletRootResponse()
-
         val webWalletGetSyncUserRootResponse: WebWalletRootResponse<User?> = WebWalletRootResponse()
 
-        if (users.isEmpty()) {
-            token = smartCashApplication.getToken()
-        } else {
-            webWalletGetSyncTokenRootResponse = LoginViewModel.getSyncToken(users[0], this.appContext)
-        }
-        if (webWalletGetSyncTokenRootResponse.valid!!) {
-            token = webWalletGetSyncTokenRootResponse.data
-        }
+        var token: String? = smartCashApplication.getToken()
+
         if (!Util.isNullOrEmpty(token)) {
 
             val user = LoginViewModel.getSyncUser(token!!, this.appContext)
 
             return if (user.valid!!) {
-                saveUser(token, user.data, appContext, smartCashApplication)
+                saveUser(user.data, appContext, smartCashApplication)
                 webWalletGetSyncUserRootResponse.valid = user.valid
                 webWalletGetSyncUserRootResponse.error = user.error
                 webWalletGetSyncUserRootResponse.errorDescription = user.errorDescription
@@ -64,22 +52,19 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
             }
 
         } else {
-            webWalletGetSyncUserRootResponse.valid = webWalletGetSyncTokenRootResponse.valid
-            webWalletGetSyncUserRootResponse.error = webWalletGetSyncTokenRootResponse.error
-            webWalletGetSyncUserRootResponse.errorDescription = webWalletGetSyncTokenRootResponse.errorDescription
+            webWalletGetSyncUserRootResponse.valid = false
+            webWalletGetSyncUserRootResponse.error = "No token"
+            webWalletGetSyncUserRootResponse.errorDescription = "You need a fresh token"
             smartCashApplication.deleteSharedPreferences()
         }
         return webWalletGetSyncUserRootResponse
     }
 
     companion object {
-        fun saveUser(token: String, user: User?, appContext: Context, smartCashApplication: SmartCashApplication) {
+        fun saveUser(user: User?, appContext: Context, smartCashApplication: SmartCashApplication) {
             if (user != null) {
-                smartCashApplication.saveToken(token)
                 smartCashApplication.saveUser(user)
                 smartCashApplication.saveWallet(user.wallet!![0])
-                smartCashApplication.saveActualSelectedCoin(Coin(appContext.getString(R.string.default_crypto), 0.0))
-                smartCashApplication.saveWithoutPIN(false)
             } else {
                 smartCashApplication.deleteSharedPreferences()
             }

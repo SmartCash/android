@@ -181,6 +181,7 @@
     <string name="transaction_item_confirmation_label">Confirmations:</string>
     <string name="main_dialog_create_new_ping_title">Create a PIN</string>
     <string name="main_dialog_create_new_ping_message">In order to create a new PIN, we will need to log you out, OK?</string>
+    <string name="fragment_business_list_of_places_item_confirmation_label" />
 
 
 </resources>

@@ -1,4 +1,4 @@
-package cc.smartcash.wallet.Utils
+package cc.smartcash.wallet.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

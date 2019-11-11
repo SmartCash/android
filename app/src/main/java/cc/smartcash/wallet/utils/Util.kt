@@ -1,6 +1,7 @@
-package cc.smartcash.wallet.Utils
+package cc.smartcash.wallet.utils
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
@@ -176,7 +177,7 @@ object Util {
         return smartTextRequest
     }
 
-    fun fillSendSendSmartByWebWalletRequestBySmartTextReponse(smartTextRoot: SmartTextRoot): SendPayment? {
+    fun fillSendSendSmartByWebWalletRequestBySmartTextResponse(smartTextRoot: SmartTextRoot): SendPayment? {
 
         if (smartTextRoot.data != null) {
 
@@ -452,7 +453,7 @@ object Util {
 
                         var details = StringBuilder()
 
-                        if (error != null && error.contains("message", true)) {
+                        if (error.contains("message", true)) {
                             details.append(parsedError.getString("message")).append(" ")
                         }
 
@@ -481,7 +482,7 @@ object Util {
 
     fun <T> showWebWalletException(result: WebWalletRootResponse<T>?, context: Context): Boolean {
 
-        var hasError = false
+        var hasError: Boolean
         val genericError = "The result is null on WebWallet API"
 
         if (result == null) {
@@ -511,5 +512,19 @@ object Util {
     fun changeImage(image: ImageView, id: Int, context: Context) {
         val iconEye: Drawable? = ContextCompat.getDrawable(context, id)
         image.setImageDrawable(iconEye)
+    }
+
+    fun sendEmail(to: String, subject: String, message: String, context: Context) {
+
+        var email: Intent = Intent(Intent.ACTION_SEND)
+        email.putExtra(Intent.EXTRA_EMAIL, arrayOf(to))
+        email.putExtra(Intent.EXTRA_SUBJECT, subject)
+        email.putExtra(Intent.EXTRA_TEXT, message)
+
+        //need this to prompts email client only
+        email.type = "message/rfc822"
+
+        context.startActivity(Intent.createChooser(email, "Choose an email client :"))
+
     }
 }

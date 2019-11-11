@@ -2,21 +2,25 @@ package cc.smartcash.wallet
 
 import android.content.Context
 import android.util.Log
+import androidx.test.filters.LargeTest
+import androidx.test.runner.AndroidJUnit4
 import cc.smartcash.wallet.Models.LoginResponse
 import cc.smartcash.wallet.Models.UserRegisterRequest
 import cc.smartcash.wallet.Models.WalletPaymentFeeRequest
 import cc.smartcash.wallet.Models.WebWalletUserAvailableRequest
-import cc.smartcash.wallet.Services.WebWalletAPIConfig
-import cc.smartcash.wallet.Utils.ApiUtil
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.ViewModels.WalletViewModel
+import cc.smartcash.wallet.utils.ApiUtil
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.Util
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.IOException
 import java.util.*
 
+@LargeTest
+@RunWith(AndroidJUnit4::class)
 class WebWalletApiUnitTest {
 
     private val context: Context?
@@ -27,7 +31,7 @@ class WebWalletApiUnitTest {
 
         val localIP = SmartCashApplication.getIPAddress(true)
 
-        val call = WebWalletAPIConfig().webWalletAPIService.getToken(
+        val call = ApiUtil.webWalletAPIService.getToken(
                 Util.getProperty(KEYS.CONFIG_TEST_USER, context!!)!!,
                 Util.getProperty(KEYS.CONFIG_TEST_PASS, context!!)!!,
                 "password",
@@ -72,7 +76,7 @@ class WebWalletApiUnitTest {
 
         var token: String? = ""
 
-        val call = WebWalletAPIConfig().webWalletAPIService.getToken(
+        val call = ApiUtil.webWalletAPIService.getToken(
                 Util.getProperty(KEYS.CONFIG_TEST_USER, context!!)!!,
                 Util.getProperty(KEYS.CONFIG_TEST_PASS, context!!)!!,
                 "password",
@@ -109,7 +113,7 @@ class WebWalletApiUnitTest {
 
         try {
 
-            val callUser = WebWalletAPIConfig().webWalletAPIService.getUser("Bearer " + token!!)
+            val callUser = ApiUtil.webWalletAPIService.getUser("Bearer " + token!!)
 
             val apiResponse = callUser.execute()
 
@@ -139,7 +143,7 @@ class WebWalletApiUnitTest {
 
         var token: String? = ""
 
-        val call = WebWalletAPIConfig().webWalletAPIService.getToken(
+        val call = ApiUtil.webWalletAPIService.getToken(
                 Util.getProperty(KEYS.CONFIG_TEST_USER, context!!)!!,
                 Util.getProperty(KEYS.CONFIG_TEST_PASS, context!!)!!,
                 "password",
@@ -178,7 +182,7 @@ class WebWalletApiUnitTest {
 
             //token = "DBBCE3vsTIL-CM8XAVkCd2XNVdaL5QGwn3GdV1pg-GPVrxHGsPKL6K6LDcec6WQvFYlg0jAUuLyaTRSYSJ-JXK1Z29G6x2ktzcLgq9RrCm049s6gVLZLuq1pathUbINPmmOPSVKrtDEBcyc8ypW_j0zERXnkGOHYIFJBAbjfbRxv963DLvv0NZIE9ZyfFFB0CoWH_eCPuBYqmdoWrX7b5-kR9hM3XiSaQeqvtqXSI1CLMebyAZuogMSlKtHHWxmTVMNuV5Ye4rDu6J6Q8KaegXg0ypO63rZ61OWxi9hofG1Ig0Sf98IgsLXSqjIp7pL789qrG2FqtEZXv6qFCDR9RZdbGFk7ZYaAOerIX6EREkG62rxIdWVOfXuqLsQniOwmnHvqwwOmkyC3pA7GUr3Vvw";
 
-            val callUser = WebWalletAPIConfig().webWalletAPIService.getUserContacts("Bearer " + token!!)
+            val callUser = ApiUtil.webWalletAPIService.getUserContacts("Bearer " + token!!)
 
             val apiResponse = callUser.execute()
 
@@ -214,7 +218,7 @@ class WebWalletApiUnitTest {
 
         try {
 
-            val callUser = WebWalletAPIConfig().webWalletAPIService.newMasterSecurityKey
+            val callUser = ApiUtil.webWalletAPIService.newMasterSecurityKey
 
             val apiResponse = callUser.execute()
 
@@ -241,7 +245,7 @@ class WebWalletApiUnitTest {
 
         try {
 
-            val callUserRecoveryKey = WebWalletAPIConfig().webWalletAPIService.newMasterSecurityKey
+            val callUserRecoveryKey = ApiUtil.webWalletAPIService.newMasterSecurityKey
 
             val apiResponseUserRecoveryKey = callUserRecoveryKey.execute()
 
@@ -260,7 +264,7 @@ class WebWalletApiUnitTest {
 
             Log.d(TAG, useruuid)
 
-            val callUser = WebWalletAPIConfig().webWalletAPIService.setUser(newUser)
+            val callUser = ApiUtil.webWalletAPIService.setUser(newUser)
 
             val apiResponse = callUser.execute()
 
@@ -287,7 +291,7 @@ class WebWalletApiUnitTest {
 
         try {
 
-            val callUserRecoveryKey = WebWalletAPIConfig().webWalletAPIService.isUserAvailable(WebWalletUserAvailableRequest("fcb016e9-0408-4e4f-8a01-d86151fc605e@testeandroidmobile.com"))
+            val callUserRecoveryKey = ApiUtil.webWalletAPIService.isUserAvailable(WebWalletUserAvailableRequest("fcb016e9-0408-4e4f-8a01-d86151fc605e@testeandroidmobile.com"))
 
             val response = callUserRecoveryKey.execute()
 
@@ -325,7 +329,7 @@ class WebWalletApiUnitTest {
 
         val localIP = SmartCashApplication.getIPAddress(true)
 
-        val call = WebWalletAPIConfig().webWalletAPIService.getToken(
+        val call = ApiUtil.webWalletAPIService.getToken(
                 Util.getProperty(KEYS.CONFIG_TEST_USER, context!!)!!,
                 Util.getProperty(KEYS.CONFIG_TEST_PASS, context!!)!!,
                 "password",

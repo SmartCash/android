@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import cc.smartcash.wallet.Models.Wallet
 import cc.smartcash.wallet.R
-import cc.smartcash.wallet.Utils.SmartCashApplication
+import cc.smartcash.wallet.utils.SmartCashApplication
 import java.util.*
 
 class WalletSpinnerAdapter(context: Context, private val wallets: ArrayList<Wallet>) : ArrayAdapter<Wallet>(context, 0, wallets) {
@@ -66,15 +66,12 @@ class WalletSpinnerAdapter(context: Context, private val wallets: ArrayList<Wall
             val app = SmartCashApplication(context)
             val actualSelectedCoin = app.getActualSelectedCoin(context)
 
-            var fiatValue = ""
-
-            fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
+            var fiatValue = if (actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
                 val currentPrice = app.getCurrentPrice()
                 app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.balance!!, currentPrice!![0].value!!))
             } else {
                 app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.balance!!, actualSelectedCoin.value!!))
             }
-
 
             textViewName.text = currentItem.displayName
             textViewBalance.text = app.formatNumberByDefaultCrypto(currentItem.balance!!) + " (" + fiatValue + ")"

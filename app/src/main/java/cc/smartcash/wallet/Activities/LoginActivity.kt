@@ -17,12 +17,12 @@ import cc.smartcash.wallet.Models.Coin
 import cc.smartcash.wallet.Models.User
 import cc.smartcash.wallet.Models.UserLogin
 import cc.smartcash.wallet.Models.WebWalletRootResponse
-import cc.smartcash.wallet.Utils.KEYS
-import cc.smartcash.wallet.Utils.SmartCashApplication
-import cc.smartcash.wallet.Utils.URLS
-import cc.smartcash.wallet.Utils.Util
 import cc.smartcash.wallet.tasks.LoginTask
 import cc.smartcash.wallet.tasks.PriceTask
+import cc.smartcash.wallet.utils.KEYS
+import cc.smartcash.wallet.utils.SmartCashApplication
+import cc.smartcash.wallet.utils.URLS
+import cc.smartcash.wallet.utils.Util
 import java.util.*
 
 class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
