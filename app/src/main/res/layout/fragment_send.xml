@@ -9,7 +9,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:context="cc.smartcash.wallet.Fragments.SendFragment">
+    tools:context="cc.smartcash.smarthub.Fragments.SendFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout"

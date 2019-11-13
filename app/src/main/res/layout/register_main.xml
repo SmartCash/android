@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        tools:context="cc.smartcash.wallet.Activities.LoginActivity">
+        tools:context="cc.smartcash.smarthub.Activities.LoginActivity">
 
         <ImageView
             android:id="@+id/register_main_activity_img_logo"
