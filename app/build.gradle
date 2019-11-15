@@ -6,11 +6,11 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "cc.smartcash.wallet"
+        applicationId "cc.smartcash.smarthub"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "0.2.9-alpha"
+        versionName "0.3.0-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -76,7 +76,7 @@ dependencies {
     compile "androidx.core:core-ktx:+"
     compile "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha05"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
+    implementation 'com.github.kenglxn.QRGen:android:2.6.0'
 }
 repositories {
     mavenCentral()

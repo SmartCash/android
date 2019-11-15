@@ -8,179 +8,177 @@
     <string name="default_crypto">SMART</string>
 
     <!-- dashboard xml -->
-    <string name="dashboard_title">Here are your %1$d SmartCash addresses. You can use them to receive and send SmartCash.</string>
+    <string name="dashboard_title">HAqui estan tus %1$d direcciones de Smarctash. Puedes usarlas para recibir y enviar Smartcash.</string>
 
     <!-- Enrique's strings -->
 
     <!-- main xml -->
-    <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
-    <string name="main_backup_label">Backup your wallet!</string>
-    <string name="main_network_status_offline_label">You are off-line.</string>
+    <string name="main_toolbox_smartcash_logo">Logo de Smartcash</string>
+    <string name="main_backup_label">Respalda tu cartera!</string>
+    <string name="main_network_status_offline_label">Estas sin conexion.</string>
 
-    <string name="main_dialog_forgot_pin_title">Forgot your PIN?</string>
-    <string name="main_dialog_forgot_pin_message">Are you sure you want to change your PIN?</string>
+    <string name="main_dialog_forgot_pin_title">Olvidaste tu PIN?</string>
+    <string name="main_dialog_forgot_pin_message">Estas seguro que quieres cambiar tu PIN?</string>
 
-    <string name="main_dialog_backup_wallet_title">Backup your wallet</string>
-    <string name="main_dialog_backup_wallet_message">Write down on paper the code:</string>
+    <string name="main_dialog_backup_wallet_title">Respalda tu cartera</string>
+    <string name="main_dialog_backup_wallet_message">Escribe y guarda de manera segura este codigo:</string>
 
-    <string name="main_dialog_logout_title">Logout?</string>
-    <string name="main_dialog_logout_message">Are you sure you want to logout?</string>
+    <string name="main_dialog_logout_title">Salir?</string>
+    <string name="main_dialog_logout_message">Estas seguro que quieres salir?</string>
 
-    <string name="main_redirect_to_login_toast">Redirecting to login...</string>
+    <string name="main_redirect_to_login_toast">Redireccionando para iniciar sesion...</string>
 
 
-    <string name="main_dialog_master_security_code_title">Your code is OK!</string>
-    <string name="main_dialog_master_security_code_message">*We don\'t recommend to keep it on the device.</string>
-    <string name="main_dialog_master_security_code_error_message">Not the same code please re-enter.</string>
-    <string name="main_dialog_master_security_code_positive_button">OK, It is now safe. To delete from device.</string>
-    <string name="main_dialog_master_security_code_negative_button">Not yet. Keep it there for a while.</string>
+    <string name="main_dialog_master_security_code_title">Tu codigo es correcto!</string>
+    <string name="main_dialog_master_security_code_message">*No recomendamos mantenerlo en el dispositivo.</string>
+    <string name="main_dialog_master_security_code_error_message">El codigo no coincide por favor intente de nuevo.</string>
+    <string name="main_dialog_master_security_code_positive_button">OK, es seguro ahora eliminarlo del dispositivo.</string>
+    <string name="main_dialog_master_security_code_negative_button">Aun no, mantenerlo por unos momentos.</string>
 
     <!-- main xml => settings modal -->
-    <string name="main_toolbox_settings_title_label">Settings</string>
-    <string name="main_toolbox_settings_close_button">Close</string>
-    <string name="main_toolbox_settings_pin_forgot_pin_label">I forgot my PIN</string>
-    <string name="main_toolbox_settings_pin_create_pin_label">I want to create a PIN</string>
+    <string name="main_toolbox_settings_title_label">Configuracion</string>
+    <string name="main_toolbox_settings_close_button">Cerrar</string>
+    <string name="main_toolbox_settings_pin_forgot_pin_label">Olvide mi PIN</string>
+    <string name="main_toolbox_settings_pin_create_pin_label">Quiero crear un PIN</string>
 
     <!-- pin xml -->
     <string name="pin_pin_label">PIN</string>
-    <string name="pin_forgot_pin_label">I forgot my PIN</string>
-    <string name="pin_continue_without_pin_label">I want to continue without a PIN</string>
-    <string name="pin_pin_error_message">The PIN can\'t be empty.</string>
-    <string name="pin_pin_confirmation_error_message">The PIN must be the same.</string>
+    <string name="pin_forgot_pin_label">Olvide mi PIN</string>
+    <string name="pin_continue_without_pin_label">Quiero continuar sin  PIN</string>
+    <string name="pin_pin_error_message">El PIN no puede estar vacio</string>
+    <string name="pin_pin_confirmation_error_message">El PIN debe ser el mismo.</string>
 
-    <string name="pin_wrong_pin_dialog_title">Wrong PIN!</string>
+    <string name="pin_wrong_pin_dialog_title">PIN erroneo!</string>
 
-    <string name="pin_wrong_pin_dialog_message">You did not type your PIN correctly, please try again.</string>
-    <string name="pin_wrong_pin_dialog_message2">If you don\'t want to use PIN, click on continue without a PIN</string>
-    <string name="pin_wrong_pin_dialog_message3">Click the eye icon to check your PIN.</string>
-
-
-    <string name="pin_continue_without_pin_dialog_title">Continue WITHOUT a PIN?</string>
-
-    <string name="pin_continue_without_pin_dialog_message">Are you sure you want to proceed without a PIN? You won\'t be able to use the wallet off-line.</string>
+    <string name="pin_wrong_pin_dialog_message">Ingresaste un Pin incorrecto, por favor intenta de nuevo.</string>
+    <string name="pin_wrong_pin_dialog_message2">Si no quieres usar PIN, haga click en Continuar sin un PIN</string>
+    <string name="pin_wrong_pin_dialog_message3">Para visualizar tu PIN haga click en el icono del Ojo.</string>
 
 
-    <string name="pin_continue_without_pin_dialog_redirect">Redirecting to dashboard...</string>
+    <string name="pin_continue_without_pin_dialog_title">Continuar sin un PIN?</string>
+
+    <string name="pin_continue_without_pin_dialog_message">Estas seguro que quieres continuar sin un PIN?. No podras usar la cartera sin conexion.</string>
+
+
+    <string name="pin_continue_without_pin_dialog_redirect">Redireccionando al Panel Principal...</string>
 
 
     <!-- send xml -->
     <string name="send_pin_label">PIN:</string>
-    <string name="send_address_label">Send by E-mail, Username, SMS Number or Address: </string>
-    <string name="send_amount_in_smartcash_label">Amount in SMART</string>
-    <string name="send_amount_in_fiat_label">Amount in FIAT</string>
-    <string name="send_button_label">SEND %f SMART</string>
-    <string name="send_icon_wallet_select_content_description">Select your wallet address</string>
-    <string name="send_icon_qrcode_scan_content_description">Scan your QRCode</string>
-    <string name="send_save_button_network_error_message">You must be on-line to send.</string>
-    <string name="send_save_button_loading_status">loading...</string>
-    <string name="send_password_label">Password:</string>
-    <string name="send_qr_code_dialog_title">Scan your QR CODE</string>
-    <string name="send_camera_permission_label">Smart Hub needs permission to access your camera.</string>
-    <string name="send_wallet_dialog_title_label">You have %s wallets to select:</string>
-    <string name="send_amount_in_coin_label">Amount in %s</string>
-    <string name="send_amount_crypto_error_message">The amount in SMART is mandatory.</string>
-    <string name="send_amount_fiat_error_message">The amount in FIAT is mandatory.</string>
-    <string name="send_address_error_message">The destination is mandatory. You can use an email, username, SMS number or a SMART address.</string>
-    <string name="send_pin_error_message">The PIN is mandatory.</string>
-    <string name="send_insufficient_balance_error_message">Your balance is insufficient.</string>
-    <string name="send_min_amount_to_send_error_message">Please, select more than zero SMART to send.</string>
-    <string name="send_different_address_to_send_error_message">The sender address and the recipient must be different.</string>
-    <string name="send_pin_verification_dialog_title_error_message">Wrong PIN/Password</string>
-    <string name="send_pin_verification_dialog_message_error_message">The PIN/Password does not match.</string>
-    <string name="send_pin_verification_dialog_ok_button">Close</string>
-    <string name="send_wallets_modal_close_button">Cancel</string>
-    <string name="send_wallets_modal_title">Wallets</string>
+    <string name="send_address_label">Enviar por E-mail, Nombre de Usuario, SMS o Direccion: </string>
+    <string name="send_amount_in_smartcash_label">Monto en Smartcash</string>
+    <string name="send_amount_in_fiat_label">Monto en FIAT</string>
+    <string name="send_button_label">Enviar %f SMART</string>
+    <string name="send_icon_wallet_select_content_description">Selecciona la direccion de tu cartera</string>
+    <string name="send_icon_qrcode_scan_content_description">Escanea tu codigo QR</string>
+    <string name="send_save_button_network_error_message">Debes estar en linea para poder enviar.</string>
+    <string name="send_save_button_loading_status">Cargando...</string>
+    <string name="send_password_label">Contrasena:</string>
+    <string name="send_qr_code_dialog_title">Escanea tu codigo QR</string>
+    <string name="send_camera_permission_label">Smart Hub necesita permisos para acceder a tu camara.</string>
+    <string name="send_wallet_dialog_title_label">Tienes para seleccionar %s carteras:</string>
+    <string name="send_amount_in_coin_label">Monto en %s</string>
+    <string name="send_amount_crypto_error_message">El monto en SMART es obligatorio.</string>
+    <string name="send_amount_fiat_error_message">El monto en FIAT es obligatorio.</string>
+    <string name="send_address_error_message">El destino es obligatorio. Puedes usar E-mail, Nombre de Usuario, SMS o una direcciona de Smartcash.</string>
+    <string name="send_pin_error_message">El PIN es obligatorio.</string>
+    <string name="send_insufficient_balance_error_message">Fondos insuficientes.</string>
+    <string name="send_min_amount_to_send_error_message">Por favor, la cantidad de SMART a enviar debe ser mayor a cero.</string>
+    <string name="send_different_address_to_send_error_message">La direccion de envio y destino deben ser diferentes.</string>
+    <string name="send_pin_verification_dialog_title_error_message">Contrasena o PIN incorrecto</string>
+    <string name="send_pin_verification_dialog_message_error_message">La contrasena o PIN no coincide.</string>
+    <string name="send_pin_verification_dialog_ok_button">Cerrar</string>
+    <string name="send_wallets_modal_close_button">Cancelar</string>
+    <string name="send_wallets_modal_title">Carteras</string>
 
 
-    <string name="send_message_success_return">Success</string>
+    <string name="send_message_success_return">Exitoso</string>
 
-    <string name="send_message_error_return">Error getting the user.</string>
+    <string name="send_message_error_return">Error al cargar el Usuario</string>
 
 
     <!-- receive xml -->
-    <string name="receive_amount_in_smartcash_label">Amount in SMART</string>
-    <string name="receive_amount_in_fiat_label">Amount in FIAT</string>
-    <string name="receive_fragment_title">Use the address below to receive SMART</string>
+    <string name="receive_amount_in_smartcash_label">Monto en SMART</string>
+    <string name="receive_amount_in_fiat_label">Monto en FIAT</string>
+    <string name="receive_fragment_title">Usa la direccion que se muestra debajo para poder recibir SMART</string>
 
     <!-- login xml -->
-    <string name="login_username_label">Username or email:</string>
-    <string name="login_password_label">Password:</string>
-    <string name="login_2fa_label">2FA Code:</string>
-    <string name="login_username_error_message">The username is mandatory.</string>
-    <string name="login_password_error_message">The password is mandatory.</string>
-    <string name="login_2fa_error_message">" 2FA error"</string>
-    <string name="login_register_button">Register</string>
-    <string name="login_enter_button">Enter</string>
-    <string name="login_forgot_the_password_button">Forgot the password</string>
-    <string name="login_enter_button_network_error_message">You must be on-line to login.</string>
-    <string name="login_network_error_message">You must be on-line to login.</string>
-    <string name="login_network_status_change">The status of the network has changed.</string>
-    <string name="login_enter_button_loading_status">loading...</string>
+    <string name="login_username_label">Nombre de Usuario o Correo Electronico:</string>
+    <string name="login_password_label">Contrasena:</string>
+    <string name="login_2fa_label">Codigo de Autenticacion de dos pasos:</string>
+    <string name="login_username_error_message">El nombre de usuario es obligatorio.</string>
+    <string name="login_password_error_message">La contrasena es obligatoria.</string>
+    <string name="login_2fa_error_message">"Error de autenticacion de dos pasos"</string>
+    <string name="login_register_button">Registrase</string>
+    <string name="login_enter_button">Entrar</string>
+    <string name="login_forgot_the_password_button">Olvide contrasena</string>
+    <string name="login_enter_button_network_error_message">Debes estar en linea para poder ingresar.</string>
+    <string name="login_network_error_message">Debes estar en linea para poder ingresar.</string>
+    <string name="login_network_status_change">El estado de la red ha cambiado.</string>
+    <string name="login_enter_button_loading_status">Cargando...</string>
 
     <!-- register xml -->
     <string name="register_username_label">E-mail:</string>
-    <string name="register_username_error_message">The e-mail is mandatory.</string>
-    <string name="register_username_pattern_error_message">The e-mail is not valid.</string>
-    <string name="register_password_label">Password:</string>
-    <string name="register_password_confirmation_label">Password Confirmation:</string>
-    <string name="register_password_error_message">The password is mandatory.</string>
-    <string name="register_password_confirmation_error_message">The password confirmation is mandatory.</string>
-    <string name="register_password_match_error_message">The password does not match.</string>
+    <string name="register_username_error_message">El E-mail es obligatorio.</string>
+    <string name="register_username_pattern_error_message">El E-mail no es valido.</string>
+    <string name="register_password_label">Cotrasena:</string>
+    <string name="register_password_confirmation_label">Confirme contrasena:</string>
+    <string name="register_password_error_message">La contrasena es obligatoria</string>
+    <string name="register_password_confirmation_error_message">La confirmacionde la contrasena es obligatoria</string>
+    <string name="register_password_match_error_message">Las contrasenas no coinciden.</string>
     <string name="register_pin_label">PIN:</string>
-    <string name="register_pin_confirmation_label">PIN Confirmation:</string>
-    <string name="register_pin_error_message">The PIN is mandatory.</string>
-    <string name="register_pin_confirmation_error_message">The PIN confirmation is mandatory.</string>
-    <string name="register_pin_match_error_message">The PIN does not match.</string>
-    <string name="register_save_button">Save</string>
-    <string name="register_save_button_network_error_message">You must be on-line to register.</string>
-    <string name="register_network_error_message">You must be on-line to register.</string>
-    <string name="register_network_status_change">The status of the network has changed.</string>
-    <string name="register_save_button_loading_status">loading...</string>
+    <string name="register_pin_confirmation_label">Confirmacion de PIN:</string>
+    <string name="register_pin_error_message">El PIN es obligatorio.</string>
+    <string name="register_pin_confirmation_error_message">La confirmacion del PIN es obligatoria.</string>
+    <string name="register_pin_match_error_message">El PIN no coincide.</string>
+    <string name="register_save_button">Guardar</string>
+    <string name="register_save_button_network_error_message">Debes estar en linea para registrarte.</string>
+    <string name="register_network_error_message">Debes estar en linea para registrarte.</string>
+    <string name="register_network_status_change">El estado de la red ha cambiado.</string>
+    <string name="register_save_button_loading_status">Cargando...</string>
 
-    <string name="menu_dashboard">Dashboard</string>
-    <string name="menu_send">Send</string>
-    <string name="menu_receive">Receive</string>
-    <string name="menu_transactions">Transactions</string>
+    <string name="menu_dashboard">Panel Principal</string>
+    <string name="menu_send">Enviar</string>
+    <string name="menu_receive">Recibir</string>
+    <string name="menu_transactions">Transacciones</string>
 
     <!-- String related to transaction fragment -->
-    <string name="btn_all_transactions">All Transactions</string>
-    <string name="btn_received">Received</string>
-    <string name="btn_awaiting">Awaiting</string>
-    <string name="btn_paid">Paid</string>
+    <string name="btn_all_transactions">Todas las Transacciones</string>
+    <string name="btn_received">Recibidas</string>
+    <string name="btn_awaiting">En Espera</string>
+    <string name="btn_paid">Pagadas</string>
 
     <!-- Transaction item -->
-    <string name="label_received">Received</string>
-    <string name="label_awaiting">Awaiting</string>
-    <string name="label_sent">Sent</string>
-    <string name="transaction_id_title">Transaction ID</string>
+    <string name="label_received">Recibidas</string>
+    <string name="label_awaiting">En Espera</string>
+    <string name="label_sent">Enviadas</string>
+    <string name="transaction_id_title">Identificacion de la Transaccion</string>
 
 
     <!-- Transaction Activity -->
-    <string name="transaction_activity_title">Transaction</string>
-    <string name="transaction_summary_title">Summary</string>
-    <string name="transaction_label_size">Size</string>
-    <string name="transaction_label_fee_rate">Fee Rate</string>
-    <string name="transaction_label_received_time">Received Time</string>
-    <string name="transaction_label_mined_time">Mined Time</string>
-    <string name="transaction_label_included_in_block">Included in Block</string>
-    <string name="transaction_label_details">Details</string>
+    <string name="transaction_activity_title">Transaccion</string>
+    <string name="transaction_summary_title">Resumen</string>
+    <string name="transaction_label_size">Tamano</string>
+    <string name="transaction_label_fee_rate">Comision</string>
+    <string name="transaction_label_received_time">Tiempo de recibo</string>
+    <string name="transaction_label_mined_time">Tiempo de minado</string>
+    <string name="transaction_label_included_in_block">Incluido en Bloque</string>
+    <string name="transaction_label_details">Detalles</string>
 
-    <string name="transaction_updated_message">Updated!</string>
+    <string name="transaction_updated_message">Actualizado!</string>
 
-    <string name="transaction_tab_received">Received</string>
-    <string name="transaction_tab_awaiting">Awaiting</string>
-    <string name="transaction_tab_sent">Sent</string>
+    <string name="transaction_tab_received">Recibido</string>
+    <string name="transaction_tab_awaiting">En Espera</string>
+    <string name="transaction_tab_sent">Enviado</string>
 
-    <string name="transaction_error_message">Error getting the transaction.</string>
-    <string name="transaction_detail_error_message">Error getting the transaction details.</string>
+    <string name="transaction_error_message">Error en obtener la transaccion.</string>
+    <string name="transaction_detail_error_message">Error en obtener los detalles de la transaccion.</string>
 
-    <string name="transaction_update_error_message">Error getting the users updated data details.</string>
-    <string name="register_save_button_error_message">It was not possible to save that user. It already exists.</string>
-    <string name="register_username_not_available_error_message">This username is already taken. Please, use another one.</string>
-    <string name="send_web_wallet_error_message">Something went wrong. Please check your address.</string>
-    <string name="transaction_item_confirmation_label">Confirmations:</string>
-    <string name="main_dialog_create_new_ping_title">Create a PIN</string>
-    <string name="main_dialog_create_new_ping_message">In order to create a new PIN, we will need to log you out, OK?</string>
-    <string name="fragment_business_list_of_places_item_confirmation_label" />
-
+    <string name="transaction_update_error_message">Error obteniendo los detalles de la informacion actualizada de los usuarios.</string>
+    <string name="register_save_button_error_message">Usuario ya existente</string>
+    <string name="register_username_not_available_error_message">El nombre de usuario ya existe, por favor ingrese uno nuevo.</string>
+    <string name="send_web_wallet_error_message">Error, por favor verifica tu direccion.</string>
+    <string name="transaction_item_confirmation_label">Confirmaciones:</string>
+    <string name="main_dialog_create_new_ping_title">Crea un PIN</string>
+    <string name="main_dialog_create_new_ping_message">Para crear un PIN se cerrara la sesion, De acuerdo?</string>
 </resources>
