@@ -39,7 +39,6 @@ class SendSmartByTextTask(context: Context, sendPayment: SendPayment, pre: () ->
             this.userKey = sendPaymentRequest.userKey
             this.code = sendPaymentRequest.code
         }
-        //TODO:Send using web smarthub
         posLoad(smartTextRoot)
     }
 }

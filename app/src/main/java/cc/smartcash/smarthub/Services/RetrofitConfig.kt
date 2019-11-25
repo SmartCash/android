@@ -11,11 +11,7 @@ object RetrofitConfig {
 
     fun getClient(url: String): Retrofit {
 
-        var tlsSpecs: List<*> = listOf(ConnectionSpec.MODERN_TLS)
-        if (Build.VERSION.SDK_INT < 21) {
-            tlsSpecs = listOf(ConnectionSpec.COMPATIBLE_TLS)
-        }
-
+        val tlsSpecs: List<*> = listOf(ConnectionSpec.MODERN_TLS)
 
         val okHttpClient = OkHttpClient.Builder()
                 .connectTimeout(3, TimeUnit.SECONDS)

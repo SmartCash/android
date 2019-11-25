@@ -140,28 +140,7 @@ class SmartCashApplication(context: Context) : Application() {
     fun getToken(): String? = this.mPrefs?.getString(KEYS.KEY_TOKEN, "")
 
     fun getDecryptedMSK(pin: String): String {
-
-        var decryptedText = ""
-        val encryptedPassword = this.msk
-
-        if (encryptedPassword != null) {
-
-            try {
-
-                aead = getOrGenerateNewKeysetHandle(context).getPrimitive(Aead::class.java)
-
-                val decryptedPin = aead.decrypt(encryptedPassword, pin.toByteArray(StandardCharsets.UTF_8))
-
-                decryptedText = String(decryptedPin, StandardCharsets.UTF_8)
-
-
-            } catch (ex: Exception) {
-                decryptedText = ""
-                Log.e(TAG, ex.message)
-            }
-
-        }
-        return decryptedText
+        return decrypt(this.msk, this.context!!, pin)
     }
 
     fun getByte(key: String): ByteArray? {
@@ -188,10 +167,11 @@ class SmartCashApplication(context: Context) : Application() {
     }
 
     fun getDecryptedPassword(context: Context, pin: String): String {
+        return decrypt(this.getByte(KEYS.KEY_PASSWORD), context, pin)
+    }
 
-        var decryptedText = ""
-        val encryptedPassword = this.getByte(KEYS.KEY_PASSWORD)
-
+    private fun decrypt(encryptedPassword: ByteArray?, context: Context, pin: String): String {
+        var decryptedText1 = ""
         if (encryptedPassword != null) {
 
             try {
@@ -200,16 +180,16 @@ class SmartCashApplication(context: Context) : Application() {
 
                 val decryptedPin = aead.decrypt(encryptedPassword, pin.toByteArray(StandardCharsets.UTF_8))
 
-                decryptedText = String(decryptedPin, StandardCharsets.UTF_8)
+                decryptedText1 = String(decryptedPin, StandardCharsets.UTF_8)
 
 
             } catch (ex: Exception) {
-                decryptedText = ""
+                decryptedText1 = ""
                 Log.e(TAG, ex.message)
             }
 
         }
-        return decryptedText
+        return decryptedText1
     }
 
     fun getString(key: String): String? = this.mPrefs?.getString(key, "")
@@ -302,7 +282,7 @@ class SmartCashApplication(context: Context) : Application() {
 
 
     fun formatNumberBySelectedCurrencyCode(numberToFormat: Double): String {
-        val currency = if (getActualSelectedCoin(context!!) == null || getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
+        val currency = if (getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
             Currency.getInstance(context!!.getString(R.string.default_fiat))
 
         } else {
@@ -397,36 +377,11 @@ class SmartCashApplication(context: Context) : Application() {
 
             return coins
         }
-
-
-        // We use TreeMap so that the order of the data in the map sorted
-        // based on the country name.
-        // when the locale is not supported
-        val availableCurrencies: Map<String, String>
-            get() {
-                val locales = Locale.getAvailableLocales()
-                val currencies = TreeMap<String, String>()
-                for (locale in locales) {
-                    try {
-                        currencies[locale.displayCountry] = Currency.getInstance(locale).currencyCode
-                    } catch (e: Exception) {
-                    }
-
-                }
-                return currencies
-            }
     }
 
     //endregion
 
     class SharedEditor<T> {
-
-        fun save(context: Context, sharedPreferences: SharedPreferences, obj: T, key: String) {
-            val prefsEditor = sharedPreferences.edit()
-            val json = Gson().toJson(obj)
-            prefsEditor?.putString(key, json)
-            prefsEditor?.apply()
-        }
 
         fun saveGson(context: Context, sharedPreferences: SharedPreferences, obj: T, key: String) {
             val prefsEditor = sharedPreferences.edit()

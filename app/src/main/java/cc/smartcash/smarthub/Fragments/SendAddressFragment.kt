@@ -459,28 +459,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     }
 
     private fun afterSendByWebWallet(result: WebWalletRootResponse<String>?) {
-        /*if (result == null) {
-            Toast.makeText(context, getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show()
-            unlockSendButton()
-            return
-        }
-        if (!Util.isNullOrEmpty(result.error) || !Util.isNullOrEmpty(result.errorDescription)) {
-            Toast.makeText(context, result.error + " : " + result.errorDescription, Toast.LENGTH_LONG).show()
-            unlockSendButton()
-            return
-        }
-        if (result.valid != null && (result.valid!!.not())) {
-            Toast.makeText(context, getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show()
-            unlockSendButton()
-            return
-        }
-        if (result.data != null) {
-            updateData()
-            clearInputs()
-            Log.d(TAG, result.data)
-        } else {
-            Toast.makeText(context, getString(R.string.send_web_wallet_error_message), Toast.LENGTH_LONG).show()
-        }*/
+
         val hasError = Util.showWebWalletException(result, context!!)
 
         if (hasError.not()) {

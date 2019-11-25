@@ -63,12 +63,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun sendPKByEmail() {
 
-        var message = StringBuilder()
+        val message = StringBuilder()
         message.appendln("We are not responsible for that").appendln().appendln()
         message.appendln("My Private Key: ").appendln().append(smartCashApplication!!.getDecryptedMSK(pin!!)).appendln().appendln()
         message.appendln("Access ").append("https://wallet.smartcash.cc").append(" to recover your coins")
 
-        var email = Intent(Intent.ACTION_SEND)
+        val email = Intent(Intent.ACTION_SEND)
 
         if (smartCashApplication!!.AppPreferences.Email != null && smartCashApplication!!.AppPreferences.Email.isNullOrEmpty().not()) {
             email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.AppPreferences.Email))
@@ -218,16 +218,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
             txtMSC.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-
+                    //I don't need to do anything after the text is changed
                 }
 
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                    //I don't need to do anything before the text is changed
+                }
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-
                     if (msk.trim { it <= ' ' } != txtMSC.text.toString().trim { it <= ' ' })
                         txtMSC.error = getString(R.string.main_dialog_master_security_code_error_message)
-
                 }
             })
 
@@ -263,11 +263,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         setSelectedCoinOnSpinner(currentPriceSpinner, coins)
 
         currentPriceSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View,
-                                        position: Int, id: Long) =
-                    saveSelectedCoin(adapter!!.getItem(position))
 
-            override fun onNothingSelected(adapter: AdapterView<*>) {}
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View, position: Int, id: Long) = saveSelectedCoin(adapter!!.getItem(position))
+
+            override fun onNothingSelected(adapter: AdapterView<*>) {
+                //If nothing is selected, then I need to do nothing
+            }
         }
     }
 
