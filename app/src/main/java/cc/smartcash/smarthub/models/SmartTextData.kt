@@ -16,7 +16,7 @@ data class SmartTextData(
         @JsonProperty("amoutSmart")
         @get:JsonProperty("amoutSmart")
         @set:JsonProperty("amoutSmart")
-        var amoutSmart: Int? = null,
+        var amountSmart: Int? = null,
 
         @JsonProperty("createDate")
         @get:JsonProperty("createDate")

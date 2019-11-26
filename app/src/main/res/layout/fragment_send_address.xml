@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
@@ -111,26 +110,21 @@
 
         <EditText
             android:id="@+id/fragment_send_txt_amount_fiat"
-
             android:layout_width="0dp"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent=".35"
-
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             android:inputType="numberDecimal"
-
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_weight="1"
-
             android:autofillHints="0"
             android:scrollHorizontally="false"
             android:singleLine="false"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/fragment_send_amount_crypto_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -145,30 +139,24 @@
 
         <EditText
             android:id="@+id/fragment_send_txt_amount_converted"
-
             android:layout_width="0dp"
             android:inputType="numberDecimal"
             app:layout_constraintWidth_default="percent"
-
             app:layout_constraintWidth_percent=".35"
-
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
-
             app:layout_constraintStart_toStartOf="parent"
             android:layout_weight="1"
-
             android:autofillHints="0"
             android:scrollHorizontally="false"
             android:singleLine="false"
             app:layout_constraintTop_toTopOf="parent"
-
             />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/third_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -199,7 +187,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
-            android:id="@+id/relativelayout"
+            android:id="@+id/fragment_send_address_relative_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -220,6 +208,7 @@
                 android:inputType="numberPassword"
                 android:maxLength="4"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:autofillHints=""
                 app:layout_constraintStart_toStartOf="@id/login_main_btn_eye" />
 
             <ImageView
@@ -235,12 +224,10 @@
                 android:background="@drawable/ic_eye"
                 android:backgroundTint="#333" />
 
-
         </RelativeLayout>
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/relativelayout2"
+            android:id="@+id/fragment_send_address_relative_layout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -249,20 +236,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativelayout">
+            app:layout_constraintTop_toBottomOf="@+id/fragment_send_address_relative_layout">
 
             <EditText
                 android:id="@+id/txt_two_fa"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:layout_alignParentTop="true"
-
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:inputType="numberPassword"
                 app:layout_constraintEnd_toStartOf="@+id/btn_eye2"
                 app:layout_constraintStart_toStartOf="parent"
+                android:autofillHints=""
                 app:layout_constraintTop_toBottomOf="@+id/pin_label2" />
 
             <TextView
@@ -279,7 +265,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
             <ImageView
                 android:id="@+id/btn_eye2"
                 android:layout_width="30dp"
@@ -293,8 +278,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pin_label2" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
@@ -312,13 +295,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativelayout2"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_send_address_relative_layout2"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
-        android:id="@+id/login_main_loader"
+        android:id="@+id/transaction_login_main_loader"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

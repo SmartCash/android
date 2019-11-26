@@ -103,26 +103,27 @@ class LoginActivityTest2 {
 
     }
 
-    @Test
-    fun testSetNewPINByToolSetting() {
+    /*
+        @Test
+        fun testSetNewPINByToolSetting() {
 
-        try {
-            loginWithUserAndPassword(null, true)
-            waitABit()
-        } catch (e: NoMatchingViewException) {
-            loginOnlyWithPIN()
-            waitABit()
+            try {
+                loginWithUserAndPassword(null, true)
+                waitABit()
+            } catch (e: NoMatchingViewException) {
+                loginOnlyWithPIN()
+                waitABit()
+            }
+
+            try {
+                openSettings()
+                clickOnSetNewPIN()
+            } finally {
+                waitABit()
+            }
+
         }
-
-        try {
-            openSettings()
-            clickOnSetNewPIN()
-        } finally {
-            waitABit()
-        }
-
-    }
-
+    */
     @Test
     fun testClickOnForgotPinByToolSetting() {
         try {
@@ -472,16 +473,16 @@ class LoginActivityTest2 {
         waitABit()
         waitABit()
         try {
-            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(0, scrollTo()))
+            onView(withId(R.id.transaction_recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(0, scrollTo()))
             waitABit()
 
-            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.transaction_item_btn_open_details)))
+            onView(withId(R.id.transaction_recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(0, MyViewAction.clickChildViewWithId(R.id.transaction_item_btn_open_details)))
             waitABit()
 
-            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(1, scrollTo()))
+            onView(withId(R.id.transaction_recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(1, scrollTo()))
             waitABit()
 
-            onView(withId(R.id.transaction_recyclerview)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(1, MyViewAction.clickChildViewWithId(R.id.transaction_item_btn_open_details)))
+            onView(withId(R.id.transaction_recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<TransactionViewHolder>(1, MyViewAction.clickChildViewWithId(R.id.transaction_item_btn_open_details)))
             waitABit()
 
         } catch (e: NoMatchingViewException) {

@@ -17,9 +17,9 @@ import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import cc.smartcash.smarthub.Adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.R.id.fragment_receive_qrcode_image
+import cc.smartcash.smarthub.adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.utils.SmartCashApplication
 import cc.smartcash.smarthub.utils.Util
 import com.facebook.drawee.view.SimpleDraweeView
@@ -61,7 +61,7 @@ class ReceiveFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_receive, container, false)
 
-        qrCodeImage = view.findViewById(R.id.fragment_receive_qrcode_image)
+        qrCodeImage = view.findViewById(fragment_receive_qrcode_image)
 
         ButterKnife.bind(this, view)
 
@@ -80,15 +80,15 @@ class ReceiveFragment : Fragment() {
 
         val walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
 
-        val walletAdapter = WalletSpinnerAdapter(context!!, smartCashApplication?.AppPreferences?.wallet!!)
+        val walletAdapter = WalletSpinnerAdapter(context!!, smartCashApplication?.appPreferences?.wallet!!)
 
         walletSpinner.adapter = walletAdapter
 
         walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
 
-                walletAddress.text = smartCashApplication?.AppPreferences!!.wallet!![position].address
-                smartCashApplication!!.saveWallet(smartCashApplication?.AppPreferences!!.wallet!![position])
+                walletAddress.text = smartCashApplication?.appPreferences!!.wallet!![position].address
+                smartCashApplication!!.saveWallet(smartCashApplication?.appPreferences!!.wallet!![position])
 
                 setQRCodeByAmount()
             }
@@ -101,8 +101,8 @@ class ReceiveFragment : Fragment() {
         val savedWallet = smartCashApplication!!.getWallet()
 
         if (savedWallet != null) {
-            for (i in smartCashApplication?.AppPreferences!!.wallet!!.indices) {
-                if (savedWallet.walletId == smartCashApplication?.AppPreferences!!.wallet!![i].walletId) {
+            for (i in smartCashApplication?.appPreferences!!.wallet!!.indices) {
+                if (savedWallet.walletId == smartCashApplication?.appPreferences!!.wallet!![i].walletId) {
                     walletSpinner.setSelection(i)
                 }
             }
@@ -142,18 +142,18 @@ class ReceiveFragment : Fragment() {
     }
 
 
-    private fun qR(qrCodeData: String, qrCodeheight: Int, qrCodewidth: Int): Bitmap? {
+    private fun qR(qrCodeData: String, qrCodeHeight: Int, qrCodeWidth: Int): Bitmap? {
         return QRCode.from(qrCodeData)
-                .withSize(qrCodewidth, qrCodeheight)
+                .withSize(qrCodeWidth, qrCodeHeight)
                 .bitmap()
     }
 
-    private fun createQRCode(qrCodeData: String, charset: String, hintMap: Map<*, *>, qrCodeheight: Int, qrCodewidth: Int) {
+    private fun createQRCode(qrCodeData: String, charset: String, hintMap: Map<*, *>, qrCodeHeight: Int, qrCodeWidth: Int) {
         try {
             //getting the logo
             val logo = BitmapFactory.decodeResource(resources, R.drawable.logo_qrcode)
             //setting bitmap to image view
-            qrCodeImage.setImageBitmap(mergeBitmaps(logo, qR(qrCodeData, qrCodeheight, qrCodewidth)!!))
+            qrCodeImage.setImageBitmap(mergeBitmaps(logo, qR(qrCodeData, qrCodeHeight, qrCodeWidth)!!))
         } catch (er: Exception) {
             Log.e(TAG, er.message)
         }

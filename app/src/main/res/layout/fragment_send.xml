@@ -12,7 +12,6 @@
     tools:context="cc.smartcash.smarthub.fragments.SendFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

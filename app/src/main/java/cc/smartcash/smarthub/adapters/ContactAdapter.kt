@@ -1,4 +1,4 @@
-package cc.smartcash.smarthub.Adapters
+package cc.smartcash.smarthub.adapters
 
 import android.content.Context
 import android.database.Cursor
@@ -23,7 +23,7 @@ class ContactAdapter(context: Context, c: Cursor) : CursorAdapter(context, c) {
 
     override fun bindView(view: View, context: Context, cursor: Cursor) {
         val txtNome = view.findViewById<TextView>(R.id.txtContactName)
-        val quickContactBadge = view.findViewById<QuickContactBadge>(R.id.qcbFoto)
+        val quickContactBadge = view.findViewById<QuickContactBadge>(R.id.qcbPhoto)
         val uriContact = ContactsContract.Contacts.getLookupUri(cursor.getLong(indices!![0]), cursor.getString(indices!![1]))
         txtNome.text = cursor.getString(indices!![2])
         quickContactBadge.assignContactUri(uriContact)

@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
     @BindView(R.id.login_main_txt_two_factor_auth)
     lateinit var txt2fa: EditText
 
-    @BindView(R.id.login_main_loader)
+    @BindView(R.id.transaction_login_main_loader)
     lateinit var loader: ProgressBar
 
     @BindView(R.id.login_main_login_content)
@@ -186,7 +186,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
     private fun startLoadingProcess() {
         findViewById<View>(R.id.login_main_login_content).visibility = View.GONE
         findViewById<View>(R.id.login_main_login_content).visibility = View.INVISIBLE
-        findViewById<View>(R.id.login_main_loader).visibility = View.VISIBLE
+        findViewById<View>(R.id.transaction_login_main_loader).visibility = View.VISIBLE
 
         btnLogin.isEnabled = false
         btnLogin.text = getString(R.string.login_enter_button_loading_status)
@@ -195,8 +195,8 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
     }
 
     private fun endLoadingProcess() {
-        findViewById<View>(R.id.login_main_loader).visibility = View.GONE
-        findViewById<View>(R.id.login_main_loader).visibility = View.INVISIBLE
+        findViewById<View>(R.id.transaction_login_main_loader).visibility = View.GONE
+        findViewById<View>(R.id.transaction_login_main_loader).visibility = View.INVISIBLE
         findViewById<View>(R.id.login_main_login_content).visibility = View.VISIBLE
 
         btnLogin.isEnabled = true

@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/login_main_loader"
+        android:id="@+id/transaction_login_main_loader"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/activity_title"
+        android:id="@+id/transaction_activity_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/summary_title"
+        android:id="@+id/transaction_summary_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/transaction_hash" />
 
     <TextView
-        android:id="@+id/size_label"
+        android:id="@+id/transaction_size_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -59,10 +59,10 @@
         android:textColor="@android:color/black"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/summary_title" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_summary_title" />
 
     <TextView
-        android:id="@+id/fee_rate_label"
+        android:id="@+id/transaction_fee_rate_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -71,10 +71,10 @@
         android:textColor="@android:color/black"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/size_label" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_size_label" />
 
     <TextView
-        android:id="@+id/received_time_label"
+        android:id="@+id/transaction_received_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -83,10 +83,10 @@
         android:textColor="@android:color/black"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fee_rate_label" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_fee_rate_label" />
 
     <TextView
-        android:id="@+id/mined_time_label"
+        android:id="@+id/transaction_mined_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -95,10 +95,10 @@
         android:textColor="@android:color/black"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/received_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_received_time_label" />
 
     <TextView
-        android:id="@+id/inclued_in_block_label"
+        android:id="@+id/transaction_includedInBlockLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -107,20 +107,20 @@
         android:textColor="@android:color/black"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mined_time_label" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_mined_time_label" />
 
     <Button
-        android:id="@+id/btn_details"
+        android:id="@+id/transaction_btn_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@color/btnYellon"
+        android:background="@color/btnYellow"
         android:text="@string/transaction_label_details"
         android:textColor="@color/colorPrimary"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_included_in_block" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_txt_included_in_block" />
 
     <TextView
         android:id="@+id/transaction_hash"
@@ -132,10 +132,10 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_title" />
+        app:layout_constraintTop_toBottomOf="@+id/transaction_activity_title" />
 
     <TextView
-        android:id="@+id/txt_size"
+        android:id="@+id/transaction_txt_size"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -143,11 +143,11 @@
         android:layout_marginEnd="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/size_label"
-        app:layout_constraintTop_toBottomOf="@+id/summary_title" />
+        app:layout_constraintStart_toEndOf="@+id/transaction_size_label"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_summary_title" />
 
     <TextView
-        android:id="@+id/txt_fee_rate"
+        android:id="@+id/transaction_txt_fee_rate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -155,11 +155,11 @@
         android:layout_marginEnd="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fee_rate_label"
-        app:layout_constraintTop_toBottomOf="@+id/txt_size" />
+        app:layout_constraintStart_toEndOf="@+id/transaction_fee_rate_label"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_txt_size" />
 
     <TextView
-        android:id="@+id/txt_received_time"
+        android:id="@+id/transaction_txt_received_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -167,11 +167,11 @@
         android:layout_marginEnd="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/received_time_label"
-        app:layout_constraintTop_toBottomOf="@+id/txt_fee_rate" />
+        app:layout_constraintStart_toEndOf="@+id/transaction_received_time_label"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_txt_fee_rate" />
 
     <TextView
-        android:id="@+id/txt_mined_time"
+        android:id="@+id/transaction_txt_mined_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -179,11 +179,11 @@
         android:layout_marginEnd="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/mined_time_label"
-        app:layout_constraintTop_toBottomOf="@+id/txt_received_time" />
+        app:layout_constraintStart_toEndOf="@+id/transaction_mined_time_label"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_txt_received_time" />
 
     <TextView
-        android:id="@+id/txt_included_in_block"
+        android:id="@+id/transaction_txt_included_in_block"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -191,7 +191,7 @@
         android:layout_marginEnd="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/inclued_in_block_label"
-        app:layout_constraintTop_toBottomOf="@+id/txt_mined_time" />
+        app:layout_constraintStart_toEndOf="@+id/transaction_includedInBlockLabel"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_txt_mined_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

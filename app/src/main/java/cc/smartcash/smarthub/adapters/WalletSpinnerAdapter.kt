@@ -1,4 +1,4 @@
-package cc.smartcash.smarthub.Adapters
+package cc.smartcash.smarthub.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -51,7 +51,7 @@ class WalletSpinnerAdapter(context: Context, private val wallets: ArrayList<Wall
                 count2++
             }
             wallets[position].position!! % 3 == 2 -> {
-                @SuppressLint("ResourceType") val color = convertView.resources.getString(R.color.btnYellon)
+                @SuppressLint("ResourceType") val color = convertView.resources.getString(R.color.btnYellow)
                 roundIcon.setCardBackgroundColor(Color.parseColor(color))
                 count2++
             }

@@ -1,21 +1,17 @@
 <resources>
     <string name="app_name">SmartCash</string>
     <string name="smartCash">\u03A3</string>
-    <string name="app_version">v0.2.2-alpha</string>
 
     <!-- Preferences -->
     <string name="default_fiat">USD</string>
     <string name="default_crypto">SMART</string>
 
     <!-- dashboard xml -->
-    <string name="dashboard_title">Dưới đây là địa chỉ smartcash %1$d của bạn. Bạn có thể sử dụng chúng để nhận và gửi smartcash</string>
 
     <!-- Enrique's strings -->
 
     <!-- main xml -->
-    <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
     <string name="main_backup_label">Sao lưu ví của bạn!</string>
-    <string name="main_network_status_offline_label">Bạn đang ngoại tuyến.</string>
 
     <string name="main_dialog_forgot_pin_title">Quên mã PIN?</string>
     <string name="main_dialog_forgot_pin_message">Bạn có chắc chắn muốn thay đổi mã PIN của mình?</string>
@@ -26,7 +22,7 @@
     <string name="main_dialog_logout_title">Đăng xuất?</string>
     <string name="main_dialog_logout_message">Bạn có chắc chắn bạn muốn thoát?</string>
 
-    <string name="main_redirect_to_login_toast">Chuyển hướng để đăng nhập ...</string>
+    <string name="main_redirect_to_login_toast">Chuyển hướng để đăng nhập …</string>
 
 
     <string name="main_dialog_master_security_code_title">Mã của bạn là OK!</string>
@@ -42,7 +38,6 @@
     <string name="main_toolbox_settings_pin_create_pin_label">Tôi muốn tạo mã PIN</string>
 
     <!-- pin xml -->
-    <string name="pin_pin_label">PIN</string>
     <string name="pin_forgot_pin_label">Tôi quên mã PIN</string>
     <string name="pin_continue_without_pin_label">Tôi muốn tiếp tục mà không cần mã PIN</string>
     <string name="pin_pin_error_message">Mã PIN không thể để trống.</string>
@@ -60,7 +55,7 @@
     <string name="pin_continue_without_pin_dialog_message">Bạn có chắc chắn muốn tiếp tục mà không cần mã PIN? Bạn sẽ không thể sử dụng ví ngoại tuyến.</string>
 
 
-    <string name="pin_continue_without_pin_dialog_redirect">Chuyển hướng đến bảng điều khiển ...</string>
+    <string name="pin_continue_without_pin_dialog_redirect">Chuyển hướng đến bảng điều khiển …</string>
 
 
     <!-- send xml -->
@@ -72,7 +67,7 @@
     <string name="send_icon_wallet_select_content_description">Chọn địa chỉ ví của bạn</string>
     <string name="send_icon_qrcode_scan_content_description">Quét mã QR của bạn</string>
     <string name="send_save_button_network_error_message">Bạn phải trực tuyến để gửi.</string>
-    <string name="send_save_button_loading_status">Đang tải...</string>
+    <string name="send_save_button_loading_status">Đang tải…</string>
     <string name="send_password_label">Mật khẩu:</string>
     <string name="send_qr_code_dialog_title">Quét mã QR của bạn</string>
     <string name="send_camera_permission_label">Smart Hub cần có quyền truy cập vào máy ảnh của bạn.</string>
@@ -92,11 +87,6 @@
     <string name="send_wallets_modal_title">Ví</string>
 
 
-    <string name="send_message_success_return">Thành công</string>
-
-    <string name="send_message_error_return">Lỗi nhận người dùng.</string>
-
-
     <!-- receive xml -->
     <string name="receive_amount_in_smartcash_label">Số tiền SMART</string>
     <string name="receive_amount_in_fiat_label">Số tiền FIAT</string>
@@ -108,14 +98,12 @@
     <string name="login_2fa_label">Mã 2FA:</string>
     <string name="login_username_error_message">Tên người dùng là bắt buộc.</string>
     <string name="login_password_error_message">Mật khẩu là bắt buộc.</string>
-    <string name="login_2fa_error_message">" lỗi 2FA"</string>
     <string name="login_register_button">Ghi danh</string>
     <string name="login_enter_button">Đi vào</string>
     <string name="login_forgot_the_password_button">Quên mật khẩu</string>
-    <string name="login_enter_button_network_error_message">Bạn phải trực tuyến để đăng nhập.</string>
     <string name="login_network_error_message">Bạn phải trực tuyến để đăng nhập.</string>
     <string name="login_network_status_change">Tình trạng của mạng đã thay đổi.</string>
-    <string name="login_enter_button_loading_status">Đang tải...</string>
+    <string name="login_enter_button_loading_status">Đang tải…</string>
 
     <!-- register xml -->
     <string name="register_username_label">E-mail:</string>
@@ -132,10 +120,7 @@
     <string name="register_pin_confirmation_error_message">Việc xác nhận mã PIN là bắt buộc.</string>
     <string name="register_pin_match_error_message">Mã PIN không khớp.</string>
     <string name="register_save_button">Lưu</string>
-    <string name="register_save_button_network_error_message">Bạn phải trực tuyến để đăng ký.</string>
-    <string name="register_network_error_message">Bạn phải trực tuyến để đăng ký.</string>
-    <string name="register_network_status_change">Tình trạng của mạng đã thay đổi.</string>
-    <string name="register_save_button_loading_status">đang tải...</string>
+    <string name="register_save_button_loading_status">đang tải…</string>
 
     <string name="menu_dashboard">Bảng điều khiển</string>
     <string name="menu_send">Gửi</string>
@@ -150,8 +135,6 @@
 
     <!-- Transaction item -->
     <string name="label_received">Đã nhận</string>
-    <string name="label_awaiting">Đang đợi</string>
-    <string name="label_sent">Gửi</string>
     <string name="transaction_id_title">ID giao dịch</string>
 
 
@@ -165,17 +148,9 @@
     <string name="transaction_label_included_in_block">Bao gồm trong khối</string>
     <string name="transaction_label_details">Chi tiết</string>
 
-    <string name="transaction_updated_message">Đã cập nhật!</string>
-
-    <string name="transaction_tab_received">Đã nhận</string>
-    <string name="transaction_tab_awaiting">Đang đợi</string>
-    <string name="transaction_tab_sent">Gửi</string>
-
     <string name="transaction_error_message">Lỗi khi nhận giao dịch.</string>
     <string name="transaction_detail_error_message">Lỗi khi nhận chi tiết giao dịch.</string>
 
-    <string name="transaction_update_error_message">Lỗi khi người dùng cập nhật chi tiết dữ liệu.</string>
-    <string name="register_save_button_error_message">Không thể lưu người dùng đó. Nó đã tồn tại.</string>
     <string name="register_username_not_available_error_message">Tên người dùng này đã được sử dụng. Xin vui lòng, sử dụng một số khác.</string>
     <string name="send_web_wallet_error_message">Đã xảy ra lỗi. Vui lòng kiểm tra địa chỉ của bạn.</string>
     <string name="transaction_item_confirmation_label">Xác nhận:</string>

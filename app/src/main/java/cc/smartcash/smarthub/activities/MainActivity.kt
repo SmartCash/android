@@ -11,8 +11,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import cc.smartcash.smarthub.Adapters.CoinSpinnerAdapter
 import cc.smartcash.smarthub.R
+import cc.smartcash.smarthub.adapters.CoinSpinnerAdapter
 import cc.smartcash.smarthub.fragments.DashboardFragment
 import cc.smartcash.smarthub.fragments.ReceiveFragment
 import cc.smartcash.smarthub.fragments.SendFragment
@@ -70,12 +70,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         val email = Intent(Intent.ACTION_SEND)
 
-        if (smartCashApplication!!.AppPreferences.email != null && smartCashApplication!!.AppPreferences.email.isNullOrEmpty().not()) {
-            email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.AppPreferences.email))
-        } else if (smartCashApplication!!.AppPreferences.user?.email != null && smartCashApplication!!.AppPreferences.user?.email.isNullOrEmpty().not()) {
-            email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.AppPreferences.user?.email))
-        } else if (smartCashApplication!!.AppPreferences.user?.username != null && Util.isValidEmail(smartCashApplication!!.AppPreferences.user?.username!!)) {
-            email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.AppPreferences.user?.username!!))
+        if (smartCashApplication!!.appPreferences.email != null && smartCashApplication!!.appPreferences.email.isNullOrEmpty().not()) {
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.appPreferences.email))
+        } else if (smartCashApplication!!.appPreferences.user?.email != null && smartCashApplication!!.appPreferences.user?.email.isNullOrEmpty().not()) {
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.appPreferences.user?.email))
+        } else if (smartCashApplication!!.appPreferences.user?.username != null && Util.isValidEmail(smartCashApplication!!.appPreferences.user?.username!!)) {
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf(smartCashApplication!!.appPreferences.user?.username!!))
         }
 
         email.putExtra(Intent.EXTRA_SUBJECT, "My SmartHub private key (insecure):")
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             val forgotPinBtn = settingsView.findViewById<TextView>(R.id.settings_modal_forgot_pin_btn)
             val createPinBtn = settingsView.findViewById<TextView>(R.id.settings_modal_create_pin)
 
-            if (smartCashApplication?.AppPreferences?.withoutPin!!) forgotPinBtn.visibility = View.GONE else createPinBtn.visibility = View.GONE
+            if (smartCashApplication?.appPreferences?.withoutPin!!) forgotPinBtn.visibility = View.GONE else createPinBtn.visibility = View.GONE
 
             createPinBtn.setOnClickListener {
 
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         btnExit = findViewById(R.id.toolbar_button_exit)
         btnSettings = findViewById(R.id.toolbar_button_settings)
         setBtnExitClick()
-        linearLayoutBkp = findViewById(R.id.bkpwallet)
+        linearLayoutBkp = findViewById(R.id.bkpWallet)
         setLinearLayoutBkpClick()
 
     }
@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun setSpinner(currentPriceSpinner: Spinner) {
 
-        val coins = smartCashApplication?.AppPreferences?.coins
+        val coins = smartCashApplication?.appPreferences?.coins
 
         this.adapter = CoinSpinnerAdapter(this, android.R.layout.simple_spinner_item, coins!!)
 
@@ -279,7 +279,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun setSelectedCoinOnSpinner(currentPriceSpinner: Spinner, coins: ArrayList<Coin>) {
-        val selectedCoin = smartCashApplication!!.AppPreferences.actualSelectedCoin
+        val selectedCoin = smartCashApplication!!.appPreferences.actualSelectedCoin
         coins.indices.forEach { i ->
             if (selectedCoin.value == coins[i].value && selectedCoin.name == coins[i].name) currentPriceSpinner.setSelection(i)
         }
@@ -315,13 +315,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     fun setWalletValue() {
 
-        val user = smartCashApplication?.AppPreferences?.user ?: return
+        val user = smartCashApplication?.appPreferences?.user ?: return
 
         val wallets = user.wallet ?: return
 
-        val selectedCoin = smartCashApplication?.AppPreferences?.actualSelectedCoin ?: return
+        val selectedCoin = smartCashApplication?.appPreferences?.actualSelectedCoin ?: return
 
-        val coins = smartCashApplication?.AppPreferences!!.coins ?: return
+        val coins = smartCashApplication?.appPreferences?.coins ?: return
 
         var amount: Double? = 0.0
 

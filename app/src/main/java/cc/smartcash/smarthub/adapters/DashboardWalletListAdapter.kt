@@ -1,9 +1,8 @@
-package cc.smartcash.smarthub.Adapters
+package cc.smartcash.smarthub.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -27,14 +26,13 @@ class DashboardWalletListAdapter(private val context: Context, private var walle
         return DashboardWalletListViewHolder(view)
     }
 
+    @SuppressLint("ResourceType")
     override fun onBindViewHolder(walletViewHolder: DashboardWalletListViewHolder, i: Int) {
 
         val app = SmartCashApplication(context)
         val actualSelectedCoin = app.getActualSelectedCoin(context)
 
-        var fiatValue = ""
-
-        fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
+        val fiatValue = if (actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
             val currentPrice = app.getCurrentPrice()
             app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, currentPrice!![0].value!!))
         } else {
@@ -42,31 +40,30 @@ class DashboardWalletListAdapter(private val context: Context, private var walle
         }
 
         walletViewHolder.name.text = this.wallets!![i].displayName
-        walletViewHolder.value.text = app.formatNumberByDefaultCrypto(this.wallets!![i].balance!!) + " (" + fiatValue + ")"
+        walletViewHolder.value.text = String.format("%s (%s)", app.formatNumberByDefaultCrypto(this.wallets!![i].balance!!), fiatValue)
         walletViewHolder.address.text = this.wallets!![i].address
         walletViewHolder.btnCopy.setOnClickListener { v -> SmartCashApplication.copyToClipboard(context, this.wallets!![i].address!!) }
 
         when (count) {
             0 -> {
-                @SuppressLint("ResourceType") val color = context.resources.getString(R.color.btnGreen)
-                walletViewHolder.roundIcon.setCardBackgroundColor(Color.parseColor(color))
-                Log.e("cont", count.toString())
+                setBackgroundColor(walletViewHolder, context.resources.getString(R.color.btnGreen))
                 count++
             }
             1 -> {
-                @SuppressLint("ResourceType") val color = context.resources.getString(R.color.btnYellon)
-                walletViewHolder.roundIcon.setCardBackgroundColor(Color.parseColor(color))
-                Log.e("cont", count.toString())
+                setBackgroundColor(walletViewHolder, context.resources.getString(R.color.btnYellow))
                 count++
             }
             2 -> {
-                @SuppressLint("ResourceType") val color = context.resources.getString(R.color.btnRed)
-                walletViewHolder.roundIcon.setCardBackgroundColor(Color.parseColor(color))
-                Log.e("cont", count.toString())
+                setBackgroundColor(walletViewHolder, context.resources.getString(R.color.btnRed))
                 count = 0
             }
         }
     }
+
+    private fun setBackgroundColor(walletViewHolder: DashboardWalletListViewHolder, colorName: String) {
+        walletViewHolder.roundIcon.setCardBackgroundColor(Color.parseColor(colorName))
+    }
+
 
     override fun getItemCount(): Int {
         return wallets!!.size

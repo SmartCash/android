@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.ButterKnife
-import cc.smartcash.smarthub.Adapters.DashboardWalletListAdapter
 import cc.smartcash.smarthub.R
+import cc.smartcash.smarthub.adapters.DashboardWalletListAdapter
 import cc.smartcash.smarthub.models.Wallet
 import cc.smartcash.smarthub.utils.SmartCashApplication
 import java.util.*

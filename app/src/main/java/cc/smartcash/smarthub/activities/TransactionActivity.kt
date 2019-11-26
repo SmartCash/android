@@ -32,49 +32,49 @@ class TransactionActivity : AppCompatActivity() {
     private var smartCashApplication: SmartCashApplication? = null
     private var details: TransactionDetails? = null
 
-    @BindView(R.id.activity_title)
+    @BindView(R.id.transaction_activity_title)
     lateinit var activityTitle: TextView
 
-    @BindView(R.id.summary_title)
+    @BindView(R.id.transaction_summary_title)
     lateinit var summaryTitle: TextView
 
-    @BindView(R.id.size_label)
+    @BindView(R.id.transaction_size_label)
     lateinit var sizeLabel: TextView
 
-    @BindView(R.id.fee_rate_label)
+    @BindView(R.id.transaction_fee_rate_label)
     lateinit var feeRateLabel: TextView
 
-    @BindView(R.id.received_time_label)
+    @BindView(R.id.transaction_received_time_label)
     lateinit var receivedTimeLabel: TextView
 
-    @BindView(R.id.mined_time_label)
+    @BindView(R.id.transaction_mined_time_label)
     lateinit var minedTimeLabel: TextView
 
-    @BindView(R.id.inclued_in_block_label)
+    @BindView(R.id.transaction_includedInBlockLabel)
     lateinit var includedInBlockLabel: TextView
 
     @BindView(R.id.transaction_hash)
     lateinit var transactionHash: TextView
 
-    @BindView(R.id.txt_size)
+    @BindView(R.id.transaction_txt_size)
     lateinit var txtSize: TextView
 
-    @BindView(R.id.txt_fee_rate)
+    @BindView(R.id.transaction_txt_fee_rate)
     lateinit var txtFeeRate: TextView
 
-    @BindView(R.id.txt_received_time)
+    @BindView(R.id.transaction_txt_received_time)
     lateinit var txtReceivedTime: TextView
 
-    @BindView(R.id.txt_mined_time)
+    @BindView(R.id.transaction_txt_mined_time)
     lateinit var txtMinedTime: TextView
 
-    @BindView(R.id.txt_included_in_block)
+    @BindView(R.id.transaction_txt_included_in_block)
     lateinit var txtIncludedInBlock: TextView
 
-    @BindView(R.id.login_main_loader)
+    @BindView(R.id.transaction_login_main_loader)
     lateinit var loader: ProgressBar
 
-    @BindView(R.id.btn_details)
+    @BindView(R.id.transaction_btn_details)
     lateinit var btnDetails: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +108,7 @@ class TransactionActivity : AppCompatActivity() {
         return true
     }
 
-    @OnClick(R.id.btn_details)
+    @OnClick(R.id.transaction_btn_details)
     fun onViewClicked() {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.hash!!))
         this.startActivity(browserIntent)

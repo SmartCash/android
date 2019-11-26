@@ -1,6 +1,7 @@
 package cc.smartcash.smarthub.activities
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -67,6 +68,13 @@ class PinActivity : AppCompatActivity() {
         setNavigationWithoutPin()
     }
 
+    private fun createAlertDialog(context: Context, title: String, message: String): AlertDialog.Builder {
+        return AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+    }
+
     @OnClick(R.id.pin_activity_btn_confirm)
     fun onViewClicked() {
         if (encryptedPassword != null) {
@@ -75,14 +83,14 @@ class PinActivity : AppCompatActivity() {
 
                 if (Util.isNullOrEmpty(txtPin)) {
                     txtPin.error = getString(R.string.pin_pin_error_message)
-                    AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
-                            .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton("OK") { _, _ ->
-                                finish()
-                            }
 
+                    createAlertDialog(
+                            this,
+                            getString(R.string.pin_wrong_pin_dialog_title),
+                            getString(R.string.pin_wrong_pin_dialog_message)
+                    ).setPositiveButton("OK") { _, _ ->
+                        finish()
+                    }
                     return
                 }
                 smartCashApplication!!.aead = smartCashApplication!!.getOrGenerateNewKeysetHandle(applicationContext).getPrimitive(Aead::class.java)
@@ -98,22 +106,26 @@ class PinActivity : AppCompatActivity() {
                             .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                             .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes) { dialog, whichButton -> dialog.cancel() }
+                            .setPositiveButton(android.R.string.yes) { dialog, _ -> dialog.cancel() }
                             .setNegativeButton(android.R.string.no, null).show()
             }
         } else if (Util.compareString(txtPin, txtConfirmPin)) {
 
             if (Util.isNullOrEmpty(txtPin) || Util.isNullOrEmpty(txtConfirmPin)) {
+
                 txtPin.error = getString(R.string.pin_pin_error_message)
                 txtConfirmPin.error = getString(R.string.pin_pin_error_message)
+
                 alertDialog(getString(R.string.pin_pin_error_message), getString(R.string.pin_wrong_pin_dialog_message2))
-                AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
-                        .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton("OK") { dialog, id ->
-                            finish()
-                        }
+
+                createAlertDialog(
+                        this,
+                        getString(R.string.pin_wrong_pin_dialog_title),
+                        getString(R.string.pin_wrong_pin_dialog_message)
+                ).setPositiveButton("OK") { _, _ ->
+                    finish()
+                }
+
                 return
             }
 
@@ -218,7 +230,7 @@ class PinActivity : AppCompatActivity() {
     }
 
     private fun setNavigationWithoutPin() {
-        val withoutPin = smartCashApplication?.AppPreferences?.withoutPin ?: return
+        val withoutPin = smartCashApplication?.appPreferences?.withoutPin ?: return
         if (withoutPin) {
             internetAvailable = NetworkUtil.getInternetStatus(this)
             if (!internetAvailable) navigateToLogin()

@@ -1,4 +1,4 @@
-package cc.smartcash.smarthub.Adapters
+package cc.smartcash.smarthub.adapters
 
 import android.content.Context
 import android.graphics.Color

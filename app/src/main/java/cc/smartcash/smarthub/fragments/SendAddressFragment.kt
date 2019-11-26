@@ -25,9 +25,9 @@ import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import cc.smartcash.smarthub.Adapters.WalletDialogAdapter
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.activities.MainActivity
+import cc.smartcash.smarthub.adapters.WalletDialogAdapter
 import cc.smartcash.smarthub.models.SendPayment
 import cc.smartcash.smarthub.models.SmartTextRoot
 import cc.smartcash.smarthub.models.User
@@ -71,7 +71,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     @BindView(R.id.fragment_send_txt_amount_fiat)
     lateinit var txtAmountFiat: EditText
 
-    @BindView(R.id.login_main_loader)
+    @BindView(R.id.transaction_login_main_loader)
     lateinit var loader: ProgressBar
 
     @BindView(R.id.btn_eye2)
@@ -101,7 +101,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             sendPayment.fromAddress = selectedWallet?.address
             sendPayment.toAddress = txtToAddress.text.toString()
             sendPayment.amount = amount
-            sendPayment.email = this.smartCashApplication!!.AppPreferences.email
+            sendPayment.email = this.smartCashApplication!!.appPreferences.email
             sendPayment.userKey = password
 
             if (!Util.isNullOrEmpty(txtTwoFa))
@@ -137,7 +137,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         super.onViewCreated(view, savedInstanceState)
         EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), RC_CAMERA_PERM, *perms)
 
-        if (this.smartCashApplication!!.AppPreferences.withoutPin) {
+        if (this.smartCashApplication!!.appPreferences.withoutPin) {
             pinLabel.text = resources.getString(R.string.send_password_label)
             txtPassword.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
             txtPassword.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PASSWORD))
@@ -236,7 +236,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         val recycler = walletListView.findViewById<RecyclerView>(R.id.show_wallets_dialog_wallet_list)
         val title = walletListView.findViewById<TextView>(R.id.show_wallets_dialog_title)
 
-        title.text = getString(R.string.send_wallet_dialog_title_label).replace("%s", this.smartCashApplication!!.AppPreferences.wallet!!.size.toString())
+        title.text = getString(R.string.send_wallet_dialog_title_label).replace("%s", this.smartCashApplication!!.appPreferences.wallet!!.size.toString())
 
         walletListDialog.setView(walletListView)
         val dialog = walletListDialog.create()
@@ -286,7 +286,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
             showConfirmationFields()
 
-            if (this.smartCashApplication!!.AppPreferences.withoutPin.not()) {
+            if (this.smartCashApplication!!.appPreferences.withoutPin.not()) {
                 txtPassword.error = getString(R.string.send_pin_error_message)
                 Toast.makeText(context, getString(R.string.send_pin_error_message), Toast.LENGTH_LONG).show()
             } else {
@@ -296,7 +296,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             return
         }
 
-        password = if (this.smartCashApplication!!.AppPreferences.withoutPin.not()) {
+        password = if (this.smartCashApplication!!.appPreferences.withoutPin.not()) {
             verifyPin()
         } else {
             Util.getString(txtPassword)
@@ -365,9 +365,9 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
         view!!.findViewById<View>(R.id.pin_label).visibility = View.GONE
 
-        view!!.findViewById<View>(R.id.relativelayout).visibility = View.GONE
+        view!!.findViewById<View>(R.id.fragment_send_address_relative_layout).visibility = View.GONE
 
-        view!!.findViewById<View>(R.id.relativelayout2).visibility = View.GONE
+        view!!.findViewById<View>(R.id.fragment_send_address_relative_layout2).visibility = View.GONE
     }
 
     private fun showConfirmationFields() {
@@ -378,9 +378,9 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
         view!!.findViewById<View>(R.id.pin_label).visibility = View.VISIBLE
 
-        view!!.findViewById<View>(R.id.relativelayout).visibility = View.VISIBLE
+        view!!.findViewById<View>(R.id.fragment_send_address_relative_layout).visibility = View.VISIBLE
 
-        view!!.findViewById<View>(R.id.relativelayout2).visibility = View.VISIBLE
+        view!!.findViewById<View>(R.id.fragment_send_address_relative_layout2).visibility = View.VISIBLE
 
 
     }
@@ -395,7 +395,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
         recyclerView.adapter = walletAdapter
 
-        walletAdapter.setItems(this.smartCashApplication!!.AppPreferences.wallet!!)
+        walletAdapter.setItems(this.smartCashApplication!!.appPreferences.wallet!!)
 
     }
 
@@ -440,7 +440,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
     private fun verifyPin(): String {
 
-        return if (this.smartCashApplication!!.AppPreferences.withoutPin) {
+        return if (this.smartCashApplication!!.appPreferences.withoutPin) {
             txtPassword.text.toString()
         } else this.smartCashApplication!!.getDecryptedPassword(activity!!, txtPassword.text.toString())
 

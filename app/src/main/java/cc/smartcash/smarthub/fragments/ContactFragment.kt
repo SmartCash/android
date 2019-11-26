@@ -11,7 +11,7 @@ import androidx.fragment.app.ListFragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
-import cc.smartcash.smarthub.Adapters.ContactAdapter
+import cc.smartcash.smarthub.adapters.ContactAdapter
 
 class ContactFragment : ListFragment(), LoaderManager.LoaderCallbacks<Cursor> {
 

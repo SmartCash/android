@@ -10,7 +10,7 @@ data class SmartTextRequest(
         @JsonProperty("userWebwallet")
         @get:JsonProperty("userWebwallet")
         @set:JsonProperty("userWebwallet")
-        var userWebwallet: String? = null,
+        var userWebWallet: String? = null,
 
         @JsonProperty("destinationEmail")
         @get:JsonProperty("destinationEmail")

@@ -48,7 +48,7 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
 
             val user = LoginViewModel.getSyncUser(token!!, this.appContext)
 
-            return if (user != null && user.valid!!) {
+            return if (user.valid!!) {
                 saveUser(token, user.data, appContext, smartCashApplication)
                 webWalletGetSyncUserRootResponse.valid = user.valid
                 webWalletGetSyncUserRootResponse.error = user.error

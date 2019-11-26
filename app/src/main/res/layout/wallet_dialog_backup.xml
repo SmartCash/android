@@ -20,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtMSC" />
 
-
     <Button
         android:id="@+id/wallet_dialog_bkp_btnGoToCheckMSC"
         android:layout_width="wrap_content"
@@ -36,7 +35,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wallet_dialog_bkp_labelMSC" />
 
-
     <EditText
         android:id="@+id/txtMSC"
         android:layout_width="0dp"
@@ -49,6 +47,8 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:autofillHints=""
+        android:inputType=""
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

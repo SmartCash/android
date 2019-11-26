@@ -2,21 +2,17 @@
 <resources>
     <string name="app_name">SmartCash</string>
     <string name="smartCash">\u03A3</string>
-    <string name="app_version">v0.2.2-alpha</string>
 
     <!-- Preferences -->
     <string name="default_fiat">USD</string>
     <string name="default_crypto">SMART</string>
 
     <!-- dashboard xml -->
-    <string name="dashboard_title">Hier zijn je %1$d SmartCash adressen. Gebruik deze om SmartCash te ontvangen of te verzenden.</string>
 
     <!-- Enrique's strings -->
 
     <!-- main xml -->
-    <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
     <string name="main_backup_label">Backup je Wallet!</string>
-    <string name="main_network_status_offline_label">Je bent offline.</string>
 
     <string name="main_dialog_forgot_pin_title">PIN vergeten?</string>
     <string name="main_dialog_forgot_pin_message">Wil je zeker je PIN veranderen?</string>
@@ -27,7 +23,7 @@
     <string name="main_dialog_logout_title">uitloggen?</string>
     <string name="main_dialog_logout_message">Wil je werkelijk uitloggen?</string>
 
-    <string name="main_redirect_to_login_toast">Login verwerken...</string>
+    <string name="main_redirect_to_login_toast">Login verwerken…</string>
 
 
     <string name="main_dialog_master_security_code_title">Je code is juist!</string>
@@ -43,7 +39,6 @@
     <string name="main_toolbox_settings_pin_create_pin_label">Ik wil mijn PIN ingeven.</string>
 
     <!-- pin xml -->
-    <string name="pin_pin_label">PIN</string>
     <string name="pin_forgot_pin_label">Ik ben mijn PIN vergeten.</string>
     <string name="pin_continue_without_pin_label">Ik wil verder gaan zonder PIN.</string>
     <string name="pin_pin_error_message">In de PIN moeten tekens zijn.</string>
@@ -61,7 +56,7 @@
     <string name="pin_continue_without_pin_dialog_message">Wil je werkelijk verder zonder PIN? Je zult niet in staat zijn om je Wallet offline te gebruiken!</string>
 
 
-    <string name="pin_continue_without_pin_dialog_redirect">Dashboard doorverwijzing...</string>
+    <string name="pin_continue_without_pin_dialog_redirect">Dashboard doorverwijzing…</string>
 
 
     <!-- send xml -->
@@ -73,7 +68,7 @@
     <string name="send_icon_wallet_select_content_description">Kies je Wallet-adres.</string>
     <string name="send_icon_qrcode_scan_content_description">Scan de QRCode.</string>
     <string name="send_save_button_network_error_message">Om te verzenden moet je online zijn.</string>
-    <string name="send_save_button_loading_status">Laden...</string>
+    <string name="send_save_button_loading_status">Laden…</string>
     <string name="send_password_label">Wachtwoord:</string>
     <string name="send_qr_code_dialog_title">Scan je QR CODE</string>
     <string name="send_camera_permission_label">SmartHup heeft toestemming nodig om de camera te kunnen gebruiken.</string>
@@ -93,11 +88,6 @@
     <string name="send_wallets_modal_title">Wallets</string>
 
 
-    <string name="send_message_success_return">Geslaagd</string>
-
-    <string name="send_message_error_return">Gebruiker niet gevonden.</string>
-
-
     <!-- receive xml -->
     <string name="receive_amount_in_smartcash_label">Bedrag in SMART</string>
     <string name="receive_amount_in_fiat_label">Bedrag in FIAT</string>
@@ -109,14 +99,12 @@
     <string name="login_2fa_label">2FA Code:</string>
     <string name="login_username_error_message">De gebruikersnaam is vereist.</string>
     <string name="login_password_error_message">Het wachtwoord is vereist.</string>
-    <string name="login_2fa_error_message">" 2FA error"</string>
     <string name="login_register_button">Registratie</string>
     <string name="login_enter_button">Invoer</string>
     <string name="login_forgot_the_password_button">Wachtwoord vergeten.</string>
-    <string name="login_enter_button_network_error_message">Je moet online zijn om te kunnen inloggen.</string>
     <string name="login_network_error_message">Je bent niet online.</string>
     <string name="login_network_status_change">De Netwerkstatus is gewijzigd.</string>
-    <string name="login_enter_button_loading_status">Laden...</string>
+    <string name="login_enter_button_loading_status">Laden…</string>
 
     <!-- register xml -->
     <string name="register_username_label">E-mail:</string>
@@ -133,10 +121,7 @@
     <string name="register_pin_confirmation_error_message">PIN invoeren noodzakelijk.</string>
     <string name="register_pin_match_error_message">De PIN komt niet overeen.</string>
     <string name="register_save_button">Opslaan</string>
-    <string name="register_save_button_network_error_message">Je moet online zijn om te kunnen registreren.</string>
-    <string name="register_network_error_message">Je moet online zijn.</string>
-    <string name="register_network_status_change">De Netwerkstatus is gewijzigd.</string>
-    <string name="register_save_button_loading_status">Laden...</string>
+    <string name="register_save_button_loading_status">Laden…</string>
 
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_send">Verzenden</string>
@@ -151,8 +136,6 @@
 
     <!-- Transaction item -->
     <string name="label_received">Ontvangen</string>
-    <string name="label_awaiting">Wachten</string>
-    <string name="label_sent">Verzonden</string>
     <string name="transaction_id_title">Transactie ID</string>
 
 
@@ -166,17 +149,9 @@
     <string name="transaction_label_included_in_block">Geverifieerd in Block</string>
     <string name="transaction_label_details">Details</string>
 
-    <string name="transaction_updated_message">Up to date!</string>
-
-    <string name="transaction_tab_received">Ontvangen</string>
-    <string name="transaction_tab_awaiting">Wachtrij</string>
-    <string name="transaction_tab_sent">Verzonden</string>
-
     <string name="transaction_error_message">Transactie mislukt!.</string>
     <string name="transaction_detail_error_message">Er werden geen transactie-details gevonden.</string>
 
-    <string name="transaction_update_error_message">Er kon geen transactie-informatie verkregen worden.</string>
-    <string name="register_save_button_error_message">Het was niet mogelijk om deze gebruiker op te slaan. Misschien is die al opgeslagen.</string>
     <string name="send_web_wallet_error_message">Er ging iets mis. Controleer je adres.</string>
     <string name="register_username_not_available_error_message">Deze gebruikersnaam bestaat al. Probeer een andere s.v.p.</string>
     <string name="transaction_item_confirmation_label">Confirmations:</string>

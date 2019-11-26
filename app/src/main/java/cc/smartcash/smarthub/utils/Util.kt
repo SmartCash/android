@@ -148,13 +148,13 @@ object Util {
         when {
             isValidEmail(to) -> {
                 sendPayment.destinationEmail = to
-                sendPayment.typeSend = KEYS.KEY_SMARTTEXT_EMAIL
+                sendPayment.typeSend = KEYS.KEY_SMART_TEXT_EMAIL
             }
             PhoneNumberUtils.isGlobalPhoneNumber(to) -> {
                 sendPayment.phoneNumber = to
-                sendPayment.typeSend = KEYS.KEY_SMARTTEXT_SMS
+                sendPayment.typeSend = KEYS.KEY_SMART_TEXT_SMS
             }
-            else -> sendPayment.typeSend = KEYS.KEY_SMARTTEXT_LINK
+            else -> sendPayment.typeSend = KEYS.KEY_SMART_TEXT_LINK
         }
         return sendPayment
     }
@@ -166,13 +166,13 @@ object Util {
         when {
             isValidEmail(sendPayment.toAddress.toString()) -> {
                 smartTextRequest.destinationEmail = sendPayment.toAddress.toString()
-                smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_EMAIL
+                smartTextRequest.typeSend = KEYS.KEY_SMART_TEXT_EMAIL
             }
             PhoneNumberUtils.isGlobalPhoneNumber(sendPayment.toAddress.toString()) -> {
                 smartTextRequest.phoneNumber = sendPayment.toAddress.toString()
-                smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_SMS
+                smartTextRequest.typeSend = KEYS.KEY_SMART_TEXT_SMS
             }
-            else -> smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_LINK
+            else -> smartTextRequest.typeSend = KEYS.KEY_SMART_TEXT_LINK
         }
         return smartTextRequest
     }
@@ -245,7 +245,7 @@ object Util {
     ) {
         val amountConverted: BigDecimal
         var actualSelected = smartCashApplication.getActualSelectedCoin(context)
-        val coins = smartCashApplication.AppPreferences.coins
+        val coins = smartCashApplication.appPreferences.coins
 
         amountLabel.text = amountInCoinConcatenation(context, actualSelected.name!!)
 
@@ -287,7 +287,7 @@ object Util {
 
         val amountConverted: BigDecimal
         var actualSelected = smartCashApplication.getActualSelectedCoin(context)
-        val coins = smartCashApplication.AppPreferences.coins
+        val coins = smartCashApplication.appPreferences.coins
 
         amountLabel.text = amountInCoinConcatenation(context, actualSelected.name!!)
 
@@ -516,7 +516,7 @@ object Util {
 
     fun sendEmail(to: String, subject: String, message: String, context: Context) {
 
-        val email: Intent = Intent(Intent.ACTION_SEND)
+        val email = Intent(Intent.ACTION_SEND)
         email.putExtra(Intent.EXTRA_EMAIL, arrayOf(to))
         email.putExtra(Intent.EXTRA_SUBJECT, subject)
         email.putExtra(Intent.EXTRA_TEXT, message)

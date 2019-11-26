@@ -152,10 +152,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun encryptAndSavePassword(newUser: UserRegisterRequest) {
         //ENCRYPT AND SAVE THE PASSWORD
         try {
-            val plainTextToEncrypt = newUser.password!!.toByteArray(StandardCharsets.UTF_8)
-            val pinByte = this.txtPin.text.toString().toByteArray(StandardCharsets.UTF_8)
-            val cipherTextToEncrypt = smartCashApplication!!.aead.encrypt(plainTextToEncrypt, pinByte)
-            smartCashApplication!!.saveByte(cipherTextToEncrypt, KEYS.KEY_PASSWORD)
+            smartCashApplication!!.saveByte(encrypt(newUser.password), KEYS.KEY_PASSWORD)
         } catch (ex: Exception) {
             Log.e(TAG, ex.message)
         }
@@ -165,9 +162,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun encryptAndSaveMSK(user: User, user1: User?) {
         //ENCRYPT AND SAVE THE MSK
         try {
-            val plainTextToEncrypt = user.recoveryKey!!.toByteArray(StandardCharsets.UTF_8)
-            val pinByte = this.txtPin.text.toString().toByteArray(StandardCharsets.UTF_8)
-            val cipherTextToEncrypt = smartCashApplication!!.aead.encrypt(plainTextToEncrypt, pinByte)
+            val cipherTextToEncrypt = encrypt(user.recoveryKey)
             user1!!.recoveryKey = Base64.encodeToString(cipherTextToEncrypt, Base64.DEFAULT)
             smartCashApplication!!.saveMSK(cipherTextToEncrypt)
         } catch (ex: Exception) {
@@ -176,12 +171,17 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
+    private fun encrypt(plainTextToEncrypt: String?): ByteArray {
+        val pinByte = this.txtPin.text.toString().toByteArray(StandardCharsets.UTF_8)
+        return smartCashApplication!!.aead.encrypt(plainTextToEncrypt!!.toByteArray(StandardCharsets.UTF_8), pinByte)
+    }
+
     private fun getCurrentPrices() {
         PriceTask(this.applicationContext, ::startLoadingProcess, ::afterPriceTaskWasExecuted).execute()
     }
 
     private fun afterPriceTaskWasExecuted(coins: ArrayList<Coin>?) {
-        if (this.smartCashApplication?.AppPreferences?.coins?.isNotEmpty()!!) {
+        if (this.smartCashApplication?.appPreferences?.coins?.isNotEmpty()!!) {
             endLoadingProcess()
         }
     }

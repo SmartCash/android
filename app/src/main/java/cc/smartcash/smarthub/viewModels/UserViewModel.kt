@@ -2,27 +2,14 @@ package cc.smartcash.smarthub.viewModels
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import cc.smartcash.smarthub.models.User
 import cc.smartcash.smarthub.models.UserRecoveryKey
 import cc.smartcash.smarthub.models.UserRegisterRequest
 import cc.smartcash.smarthub.utils.ApiUtil
 import cc.smartcash.smarthub.utils.NetworkUtil
-import org.json.JSONException
-import org.json.JSONObject
-import retrofit2.Response
-import java.io.IOException
 
 class UserViewModel : ViewModel() {
-
-    @Throws(JSONException::class, IOException::class)
-    private fun setResponseError(context: Context, response: Response<*>?, message: String) {
-        if (response?.errorBody() != null && response.errorBody()!!.toString().isNotEmpty() && !response.errorBody()!!.toString().toLowerCase().contains("okhttp3")) {
-            val jObjError = JSONObject(response.errorBody()!!.string())
-            Toast.makeText(context, jObjError.getString(message), Toast.LENGTH_LONG).show()
-        }
-    }
 
     companion object {
 

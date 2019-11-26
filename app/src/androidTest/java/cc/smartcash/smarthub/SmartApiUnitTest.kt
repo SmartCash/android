@@ -1,6 +1,6 @@
 package cc.smartcash.smarthub
 
-import cc.smartcash.smarthub.services.SmartAPIConfig
+import cc.smartcash.smarthub.utils.ApiUtil
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.IOException
@@ -8,7 +8,7 @@ import java.io.IOException
 class SmartApiUnitTest {
 
     @Test
-    fun GetDefaultPrices() {
+    fun getDefaultPrices() {
 
         val call = ApiUtil.smartApiService.getDefaultPrices()
 
@@ -30,7 +30,7 @@ class SmartApiUnitTest {
 
             assertNotNull(r.body()!!.items)
 
-            assertTrue(r.body()!!.items!!.size > 0)
+            assertTrue(r.body()!!.items!!.isNotEmpty())
 
             assertNotNull(r.body()!!.items!![0])
 

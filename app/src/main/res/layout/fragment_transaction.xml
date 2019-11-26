@@ -163,7 +163,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_received">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/transaction_recyclerview"
+                android:id="@+id/transaction_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"

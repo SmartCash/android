@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroud"
+    android:background="@color/colorBackground"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +41,6 @@
             app:layout_constraintTop_toBottomOf="@+id/pin_activity_img_logo">
 
             <ProgressBar
-                android:id="@+id/pin_activity_loader"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,7 +55,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/pin_activity_login_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -73,6 +71,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/pin_activity_confirm_pin_label"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:autofillHints=""
                     app:layout_constraintTop_toBottomOf="@+id/pin_activity_pin_label" />
 
                 <ImageView
@@ -99,6 +98,7 @@
                     android:maxLength="4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:autofillHints=""
                     app:layout_constraintTop_toBottomOf="@+id/pin_activity_confirm_pin_label" />
 
                 <TextView
@@ -160,7 +160,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_weight="3"
-                    android:background="@color/btnYellon"
+                    android:background="@color/btnYellow"
                     android:text="@string/register_save_button"
                     android:textAlignment="center"
                     android:textAllCaps="true"

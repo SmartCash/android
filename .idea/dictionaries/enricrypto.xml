@@ -1,7 +1,15 @@
 <component name="ProjectDictionaryState">
   <dictionary name="enricrypto">
     <words>
+      <w>apiorder</w>
+      <w>createorder</w>
+      <w>getcurrentpricewithcoin</w>
+      <w>newkey</w>
+      <w>paymentfee</w>
+      <w>sapi</w>
+      <w>sendpayment</w>
       <w>smartcash</w>
+      <w>smarthub</w>
     </words>
   </dictionary>
 </component>

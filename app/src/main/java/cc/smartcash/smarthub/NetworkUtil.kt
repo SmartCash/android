@@ -13,7 +13,7 @@ object NetworkUtil {
     var TYPE_MOBILE_TEXT = "Mobile data enabled"
     var TYPE_NOT_CONNECTED_TEXT = "Not connected to Internet"
 
-    fun getConnectivityStatus(context: Context): Int {
+    private fun getConnectivityStatus(context: Context): Int {
         val cm = context
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

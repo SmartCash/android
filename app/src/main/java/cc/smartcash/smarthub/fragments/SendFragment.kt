@@ -12,8 +12,8 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
-import cc.smartcash.smarthub.Adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.R
+import cc.smartcash.smarthub.adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.models.Wallet
 import cc.smartcash.smarthub.utils.SmartCashApplication
 import java.util.*

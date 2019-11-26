@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
     <Button
         android:id="@+id/wallet_dialog_item_btn_select"
         android:layout_width="wrap_content"

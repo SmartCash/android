@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroud"
+    android:background="@color/colorBackground"
     android:fillViewport="true">
 
 
@@ -23,15 +23,12 @@
         android:id="@+id/login_main_network_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-
         android:layout_marginBottom="20dp"
         android:enabled="false"
         android:text="@string/login_network_error_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <androidx.cardview.widget.CardView
         android:id="@+id/login_main_cardView"
@@ -48,9 +45,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_main_img_logo">
 
-
         <ProgressBar
-            android:id="@+id/login_main_loader"
+            android:id="@+id/transaction_login_main_loader"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,7 +59,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/login_main_login_content"
@@ -79,11 +74,10 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="3"
-                android:background="@color/btnYellon"
+                android:background="@color/btnYellow"
                 android:text="@string/login_register_button"
                 android:textAlignment="center"
                 android:textAllCaps="true"
-
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/login_main_btn_login"
@@ -97,7 +91,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
                 android:layout_weight="3"
-                android:background="@color/btnYellon"
+                android:background="@color/btnYellow"
                 android:text="@string/login_enter_button"
                 android:textAlignment="center"
                 android:textAllCaps="true"
@@ -109,18 +103,12 @@
             <Button
                 android:id="@+id/login_main_btn_forgot_password"
                 android:layout_width="0dp"
-
-
                 android:layout_height="wrap_content"
-
-
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
-
-
                 android:layout_marginBottom="32dp"
-                android:background="@color/btnYellon"
+                android:background="@color/btnYellow"
                 android:paddingStart="5dp"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
@@ -146,6 +134,8 @@
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:autofillHints=""
+                android:inputType=""
                 app:layout_constraintTop_toBottomOf="@+id/login_main_two_factor_auth_label" />
 
             <EditText
@@ -157,6 +147,8 @@
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:autofillHints=""
+                android:inputType=""
                 app:layout_constraintTop_toBottomOf="@+id/login_main_user_label" />
 
             <EditText
@@ -170,6 +162,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
+                android:autofillHints=""
                 app:layout_constraintTop_toBottomOf="@+id/login_main_confirm_pin_label" />
 
             <ImageView

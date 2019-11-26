@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import cc.smartcash.smarthub.Adapters.TransactionAdapter
-import cc.smartcash.smarthub.Adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.activities.MainActivity
+import cc.smartcash.smarthub.adapters.TransactionAdapter
+import cc.smartcash.smarthub.adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.models.Transaction
 import cc.smartcash.smarthub.models.User
 import cc.smartcash.smarthub.models.Wallet
@@ -127,7 +127,7 @@ class TransactionFragment : Fragment() {
     }
 
     private fun setupRecyclerViewTransactions() {
-        val recyclerViewTransactions = activity!!.findViewById<RecyclerView>(R.id.transaction_recyclerview)
+        val recyclerViewTransactions = activity!!.findViewById<RecyclerView>(R.id.transaction_recyclerView)
         val linearLayoutManagerTransactions = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         transactionAdapter = TransactionAdapter(context!!, ArrayList())
 
@@ -171,21 +171,21 @@ class TransactionFragment : Fragment() {
         //unlockSendButton()
     }
 
-    fun setTransactions(filtro: String?) {
-        if (filtro == null)
+    fun setTransactions(filter: String?) {
+        if (filter == null)
             transactionAdapter!!.setItems(transactions!!)
         else {
-            filteredTransactions = filterTransactions(filtro)
+            filteredTransactions = filterTransactions(filter)
             transactionAdapter!!.setItems(filteredTransactions)
         }
-        activeFilter = filtro
+        activeFilter = filter
     }
 
-    private fun filterTransactions(filtro: String): ArrayList<Transaction> {
+    private fun filterTransactions(filter: String): ArrayList<Transaction> {
         val filteredT = ArrayList<Transaction>()
 
         for (item in transactions!!) {
-            if (item.direction == filtro)
+            if (item.direction == filter)
                 filteredT.add(item)
         }
 

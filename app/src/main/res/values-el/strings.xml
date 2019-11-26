@@ -1,21 +1,17 @@
 <resources>
     <string name="app_name">SmartCash</string>
     <string name="smartCash">\u03A3</string>
-    <string name="app_version">v0.2.2-alpha</string>
 
     <!-- Preferences -->
     <string name="default_fiat">USD</string>
     <string name="default_crypto">SMART</string>
 
     <!-- dashboard xml -->
-    <string name="dashboard_title">Εδώ θα βρείτε τις %1$d SmartCash διευθύνσεις σας. Μπορείτε να τις χρησιμοποιήσετε για να λαμβάνετε και να στέλνετε SmartCash.</string>
 
     <!-- Enrique's strings -->
 
     <!-- main xml -->
-    <string name="main_toolbox_smartcash_logo">SmartCash Logo</string>
     <string name="main_backup_label">Δημιουργήστε αντίγραφο ασφαλείας του πορτοφολιού σας!</string>
-    <string name="main_network_status_offline_label">Είστε εκτός σύνδεσης.</string>
 
     <string name="main_dialog_forgot_pin_title">Ξεχάσατε το PIN σας?</string>
     <string name="main_dialog_forgot_pin_message">Είστε βέβαιοι ότι θέλετε να αλλάξετε το PIN σας?</string>
@@ -26,7 +22,7 @@
     <string name="main_dialog_logout_title">Αποσύνδεση?</string>
     <string name="main_dialog_logout_message">Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε?</string>
 
-    <string name="main_redirect_to_login_toast">Ανακατεύθυνση για είσοδο...</string>
+    <string name="main_redirect_to_login_toast">Ανακατεύθυνση για είσοδο…</string>
 
 
     <string name="main_dialog_master_security_code_title">Ο κωδικός σας είναι εντάξει!</string>
@@ -44,7 +40,6 @@
     <string name="main_toolbox_settings_pin_create_pin_label">Θέλω να δημιουργήσω PIN</string>
 
     <!-- pin xml -->
-    <string name="pin_pin_label">PIN</string>
     <string name="pin_forgot_pin_label">Ξέχασα το PIN μου</string>
     <string name="pin_continue_without_pin_label">Θέλω να συνεχίσω χωρίς PIN</string>
     <string name="pin_pin_error_message">Το PIN δεν μπορεί να είναι κενό.</string>
@@ -62,7 +57,7 @@
     <string name="pin_continue_without_pin_dialog_message">Είστε βέβαιοι ότι θέλετε να προχωρήσετε χωρίς PIN; Δεν θα μπορέσετε να χρησιμοποιήσετε το πορτοφόλι εκτός σύνδεσης.</string>
 
 
-    <string name="pin_continue_without_pin_dialog_redirect">Ανακατεύθυνση στην αρχική...</string>
+    <string name="pin_continue_without_pin_dialog_redirect">Ανακατεύθυνση στην αρχική…</string>
 
 
     <!-- send xml -->
@@ -74,7 +69,7 @@
     <string name="send_icon_wallet_select_content_description">Επιλέξτε τη διεύθυνση του πορτοφολιού σας</string>
     <string name="send_icon_qrcode_scan_content_description">Σαρώστε το QRCode σας</string>
     <string name="send_save_button_network_error_message">Πρέπει να είστε συνδεδεμένος στο διαδίκτυο για να στείλετε.</string>
-    <string name="send_save_button_loading_status">Φόρτωση...</string>
+    <string name="send_save_button_loading_status">Φόρτωση…</string>
     <string name="send_password_label">Κωδικός πρόσβασης:</string>
     <string name="send_qr_code_dialog_title">Σαρώστε το QRCode σας</string>
     <string name="send_camera_permission_label">Το Smart Hub χρειάζεται άδεια πρόσβασης στην κάμερά σας.</string>
@@ -94,11 +89,6 @@
     <string name="send_wallets_modal_title">Πορτοφόλια</string>
 
 
-    <string name="send_message_success_return">Επιτυχία</string>
-
-    <string name="send_message_error_return">Πρόβλημα στην εύρεση του χρήστη.</string>
-
-
     <!-- receive xml -->
     <string name="receive_amount_in_smartcash_label">Ποσό σε SMART</string>
     <string name="receive_amount_in_fiat_label">Ποσό σε FIAT</string>
@@ -110,14 +100,12 @@
     <string name="login_2fa_label">2FA Code:</string>
     <string name="login_username_error_message">Το όνομα χρήστη είναι υποχρεωτικό.</string>
     <string name="login_password_error_message">Ο κωδικός πρόσβασης είναι υποχρεωτικός.</string>
-    <string name="login_2fa_error_message">" 2FA πρόβλημα"</string>
     <string name="login_register_button">Εγγραφή</string>
     <string name="login_enter_button">Είσοδος</string>
     <string name="login_forgot_the_password_button">Ξέχασα τον κωδικό πρόσβασης</string>
-    <string name="login_enter_button_network_error_message">Πρέπει να είστε σε συνδεδεμένοι στο διαδίκτυο  για να συνδεθείτε.</string>
     <string name="login_network_error_message"> Πρέπει να είστε σε συνδεδεμένοι στο διαδίκτυο  για να συνδεθείτε.</string>
     <string name="login_network_status_change">Η κατάσταση του δικτύου έχει αλλάξει.</string>
-    <string name="login_enter_button_loading_status">Φόρτωση...</string>
+    <string name="login_enter_button_loading_status">Φόρτωση…</string>
 
     <!-- register xml -->
     <string name="register_username_label">E-mail:</string>
@@ -134,10 +122,7 @@
     <string name="register_pin_confirmation_error_message">Η επιβεβαίωση του PIN είναι υποχρεωτική.</string>
     <string name="register_pin_match_error_message">Ο κωδικός PIN δεν ταιριάζει.</string>
     <string name="register_save_button">Αποθήκευση</string>
-    <string name="register_save_button_network_error_message">Πρέπει να είστε συνδεδεμένοι στο διαδίκτυο για να εγγραφείτε.</string>
-    <string name="register_network_error_message">Πρέπει να είστε συνδεδεμένοι στο διαδίκτυο για να εγγραφείτε.</string>
-    <string name="register_network_status_change">Η κατάσταση του δικτύου έχει αλλάξει.</string>
-    <string name="register_save_button_loading_status">Φόρτωση...</string>
+    <string name="register_save_button_loading_status">Φόρτωση…</string>
 
     <string name="menu_dashboard">Αρχική</string>
     <string name="menu_send">Στείλτε</string>
@@ -152,8 +137,6 @@
 
     <!-- Transaction item -->
     <string name="label_received"> Παραλήφθηκαν </string>
-    <string name="label_awaiting"> Εν αναμονή</string>
-    <string name="label_sent">Στάλθηκε</string>
     <string name="transaction_id_title">Κωδικός συναλλαγής</string>
 
 
@@ -167,17 +150,9 @@
     <string name="transaction_label_included_in_block">Συμπεριλαμβάνεται στο μπλοκ</string>
     <string name="transaction_label_details">Λεπτομέρειες</string>
 
-    <string name="transaction_updated_message">Ενημερώθηκε!</string>
-
-    <string name="transaction_tab_received"> Παραλήφθηκαν </string>
-    <string name="transaction_tab_awaiting">Εν αναμονή</string>
-    <string name="transaction_tab_sent">Στάλθηκε</string>
-
     <string name="transaction_error_message">Σφάλμα κατά τη λήψη της συναλλαγής.</string>
     <string name="transaction_detail_error_message">Σφάλμα κατά τη λήψη των λεπτομερειών συναλλαγής.</string>
 
-    <string name="transaction_update_error_message">Σφάλμα κατά τη λήψη των ενημερωμένων στοιχείων των χρηστών.</string>
-    <string name="register_save_button_error_message">Δεν ήταν δυνατή η αποθήκευση αυτού του χρήστη. Υπάρχει ήδη.</string>
     <string name="register_username_not_available_error_message">Αυτό το όνομα χρήστη υπάρχει ήδη.Παρακαλώ, χρησιμοποιήστε ένα άλλο..</string>
     <string name="send_web_wallet_error_message">Κάτι πήγε στραβά. Παρακαλούμε ελέγξτε τη διεύθυνσή σας.</string>
     <string name="transaction_item_confirmation_label">Επιβεβαιώσεις:</string>

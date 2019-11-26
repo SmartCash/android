@@ -141,14 +141,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:text="3bbaeae4ff538ab34f2cebbbcb8291035ed82449a96eac1c96d4d97405359209"
+            android:text=""
             android:textColor="#2196f3"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/transaction_id_title"
             app:layout_constraintTop_toBottomOf="@+id/transaction_id_title"
             tools:visibility="visible" />
-
 
         <TextView
             android:id="@+id/transaction_item_confirmation_label"
@@ -163,7 +162,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_hash"
             tools:visibility="visible" />
-
 
         <TextView
             android:id="@+id/transaction_item_confirmation_text"

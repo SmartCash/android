@@ -37,11 +37,11 @@ class SmartCashApplication(context: Context) : Application() {
     var mPrefs: SharedPreferences? = null
     private var context: Context? = null
 
-    private val TAG = SmartCashApplication::class.java.toString()
-    private val PREF_FILE_NAME = "smartcash_wallet"
-    private val TINK_KEYSET_NAME = "smartcash_wallet_keyset"
-    private val MASTER_KEY_URI = "android-keystore://smartcash_wallet_master_key"
-    private val gson = Gson()
+    private val tag = SmartCashApplication::class.java.toString()
+    private val prefFileName = "smartcash_wallet"
+    private val tinkKeysetName = "smartcash_wallet_keyset"
+    private val masterKeyUri = "android-keystore://smartcash_wallet_master_key"
+    private val gSon = Gson()
 
     var aead: Aead
 
@@ -83,7 +83,7 @@ class SmartCashApplication(context: Context) : Application() {
             return if (string != null && string.isNotEmpty()) string.toByteArray(Charset.forName("ISO-8859-1")) else null
         }
 
-    val AppPreferences: App get() = App(this.context!!)
+    val appPreferences: App get() = App(this.context!!)
 
     init {
         try {
@@ -108,7 +108,7 @@ class SmartCashApplication(context: Context) : Application() {
         val json = this.mPrefs?.getString(KEYS.KEY_CURRENT_SELECTED_COIN, "")
 
         if (json != null) {
-            val coinAux = gson.fromJson(json, Coin::class.java)
+            val coinAux = gSon.fromJson(json, Coin::class.java)
             if (coinAux != null)
                 coin = coinAux
             else
@@ -128,10 +128,10 @@ class SmartCashApplication(context: Context) : Application() {
 
 
     fun getUser(): User? {
-        return gson.fromJson(this.mPrefs?.getString(KEYS.KEY_USER, ""), User::class.java)
+        return gSon.fromJson(this.mPrefs?.getString(KEYS.KEY_USER, ""), User::class.java)
     }
 
-    fun getWallet(): Wallet? = gson.fromJson(this.mPrefs?.getString(KEYS.KEY_WALLET, ""), Wallet::class.java) //SharedEditor<smarthub>().get(context, this.mPrefs!!, KEYS.KEY_WALLET)
+    fun getWallet(): Wallet? = gSon.fromJson(this.mPrefs?.getString(KEYS.KEY_WALLET, ""), Wallet::class.java) //SharedEditor<smarthub>().get(context, this.mPrefs!!, KEYS.KEY_WALLET)
 
     fun getBoolean(key: String): Boolean? = this.mPrefs?.getBoolean(key, false)
 
@@ -157,7 +157,7 @@ class SmartCashApplication(context: Context) : Application() {
 
             } catch (ex: Exception) {
                 decryptedText = ""
-                Log.e(TAG, ex.message)
+                Log.e(tag, ex.message)
             }
 
         }
@@ -180,9 +180,9 @@ class SmartCashApplication(context: Context) : Application() {
     @Throws(IOException::class, GeneralSecurityException::class)
     fun getOrGenerateNewKeysetHandle(context: Context?): KeysetHandle {
         return AndroidKeysetManager.Builder()
-                .withSharedPref(context!!, TINK_KEYSET_NAME, PREF_FILE_NAME)
+                .withSharedPref(context!!, tinkKeysetName, prefFileName)
                 .withKeyTemplate(AeadKeyTemplates.AES256_GCM)
-                .withMasterKeyUri(MASTER_KEY_URI)
+                .withMasterKeyUri(masterKeyUri)
                 .build()
                 .keysetHandle
     }
@@ -205,7 +205,7 @@ class SmartCashApplication(context: Context) : Application() {
 
             } catch (ex: Exception) {
                 decryptedText = ""
-                Log.e(TAG, ex.message)
+                Log.e(tag, ex.message)
             }
 
         }

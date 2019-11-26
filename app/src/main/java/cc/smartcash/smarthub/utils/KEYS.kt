@@ -32,11 +32,11 @@ object KEYS {
 
     const val CONFIG_TOKEN_SEND_BY_TEXT = "tokenSendByText"
 
-    const val KEY_SMARTTEXT_EMAIL = "EMAIL"
+    const val KEY_SMART_TEXT_EMAIL = "EMAIL"
 
-    const val KEY_SMARTTEXT_SMS = "SMS"
+    const val KEY_SMART_TEXT_SMS = "SMS"
 
-    const val KEY_SMARTTEXT_LINK = "LINK"
+    const val KEY_SMART_TEXT_LINK = "LINK"
 
     const val KEY_TRANSACTION_HASH = "TransactionHash"
 
