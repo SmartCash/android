@@ -102,7 +102,7 @@ class RegisterActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun hasErrorOnForm(username: String, password: String, confirm_password: String, pin: String, confirm_pin: String): Boolean {
+    private fun hasErrorOnForm(username: String, password: String, confirmPassword: String, pin: String, confirmPin: String): Boolean {
 
         var hasError = false
 
@@ -114,7 +114,7 @@ class RegisterActivity : AppCompatActivity() {
             txtPassword.error = getString(R.string.register_password_error_message)
             hasError = true
         }
-        if (confirm_password.isEmpty()) {
+        if (confirmPassword.isEmpty()) {
             txtConfirmPassword.error = getString(R.string.register_password_confirmation_error_message)
             hasError = true
         }
@@ -122,15 +122,15 @@ class RegisterActivity : AppCompatActivity() {
             txtPin.error = getString(R.string.register_pin_error_message)
             hasError = true
         }
-        if (confirm_pin.isEmpty()) {
+        if (confirmPin.isEmpty()) {
             txtConfirmPin.error = getString(R.string.register_pin_confirmation_error_message)
             hasError = true
         }
-        if (!pin.equals(confirm_pin, ignoreCase = true)) {
+        if (!pin.equals(confirmPin, ignoreCase = true)) {
             txtConfirmPin.error = getString(R.string.register_pin_match_error_message)
             hasError = true
         }
-        if (!password.equals(confirm_password, ignoreCase = true)) {
+        if (!password.equals(confirmPassword, ignoreCase = true)) {
             txtPassword.error = getString(R.string.register_password_match_error_message)
             hasError = true
         }

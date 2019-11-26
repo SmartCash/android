@@ -16,10 +16,6 @@ object URLS {
 
     const val URL_CURRENT_PRICE_API = "https://wallet.smartcash.cc/api/"
 
-    const val URL_QR_CODE_AMOUNT = "https://qr.smartcash.cc/?address=%s&amount=%f"
-
-    const val URL_QR_CODE = "https://qr.smartcash.cc/?address=%s"
-
     const val URL_CHANGE_PASSWORD = "https://wallet.smartcash.cc/change-password"
 
     const val URL_API_SMART_TEXT = "https://smartext.me/"

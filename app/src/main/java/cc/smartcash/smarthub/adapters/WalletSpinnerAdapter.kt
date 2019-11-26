@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import cc.smartcash.smarthub.R
@@ -18,8 +17,6 @@ import java.util.*
 class WalletSpinnerAdapter(context: Context, private val wallets: ArrayList<Wallet>) : ArrayAdapter<Wallet>(context, 0, wallets) {
 
     private var count2: Int = 0
-
-    private val check: Boolean? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         return initView(position, convertView, parent)
@@ -40,8 +37,6 @@ class WalletSpinnerAdapter(context: Context, private val wallets: ArrayList<Wall
         val textViewName = convertView!!.findViewById<TextView>(R.id.wallet_spinner_item_txt_name)
         val textViewBalance = convertView.findViewById<TextView>(R.id.wallet_spinner_item_txt_balance)
         val textViewAddress = convertView.findViewById<TextView>(R.id.txt_to_address)
-        val textViewHash = convertView.findViewById<TextView>(R.id.txt_hash)
-        val btnShowHash = convertView.findViewById<Button>(R.id.transaction_item_btn_open_details)
         val roundIcon = convertView.findViewById<CardView>(R.id.wallet_spinner_item_round_icon)
 
         when {

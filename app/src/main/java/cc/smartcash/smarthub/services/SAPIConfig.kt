@@ -2,7 +2,6 @@ package cc.smartcash.smarthub.services
 
 import cc.smartcash.smarthub.utils.URLS
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 class SAPIConfig {
@@ -15,17 +14,6 @@ class SAPIConfig {
     constructor() {
 
         this.retrofit = RetrofitConfig.getClient(URLS.URL_API_SAPI)
-    }
-
-    constructor(scalar: Boolean) {
-        if (scalar) {
-            this.retrofit = Retrofit.Builder()
-                    .baseUrl(URLS.URL_API_SAPI)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .build()
-        } else {
-            this.retrofit = RetrofitConfig.getClient(URLS.URL_API_SAPI)
-        }
     }
 
 }

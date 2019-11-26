@@ -88,7 +88,7 @@ class TransactionFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-
+//Nothing to do
             }
         }
 
@@ -168,7 +168,6 @@ class TransactionFragment : Fragment() {
             Log.d(TAG, result.data.toString())
         }
 
-        //unlockSendButton()
     }
 
     fun setTransactions(filter: String?) {

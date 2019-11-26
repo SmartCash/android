@@ -27,20 +27,6 @@ object NetworkUtil {
         return TYPE_NOT_CONNECTED
     }
 
-    fun getConnectivityStatusString(context: Context): String? {
-        val conn = getConnectivityStatus(context)
-        var status: String? = null
-
-        val internet = " | " + if (isInternetAvailable) "Internet enabled" else "Internet disabled"
-
-        when (conn) {
-            TYPE_WIFI -> status = "Wifi enabled | $internet"
-            TYPE_MOBILE -> status = "Mobile data enabled$internet"
-            TYPE_NOT_CONNECTED -> status = "Not connected to Internet$internet"
-        }
-        return status
-    }
-
     fun getInternetStatus(context: Context): Boolean {
         val conn = getConnectivityStatus(context)
         var status = false

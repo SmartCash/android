@@ -37,33 +37,20 @@ class TransactionAdapter(private val context: Context, private var transactions:
     }
 
     override fun onBindViewHolder(transactionViewHolder: TransactionViewHolder, i: Int) {
-
-        val app = SmartCashApplication(context)
-        val actualSelectedCoin = app.getActualSelectedCoin(context)
-
-        var fiatValue = ""
-
-        fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
-            val currentPrice = app.getCurrentPrice()
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, currentPrice!![0].value!!))
-        } else {
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, actualSelectedCoin.value!!))
-        }
-
+        val (app, fiatValue) = setFiatValue(i)
         transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(this.transactions!![i].amount!!)
         transactionViewHolder.direction.text = this.transactions!![i].direction
         transactionViewHolder.timestamp.text = this.transactions!![i].timestamp
         transactionViewHolder.hash.text = this.transactions!![i].hash
-        transactionViewHolder.price.text = " ($fiatValue)"
-        transactionViewHolder.hash.setOnClickListener { v ->
+        transactionViewHolder.price.text = String.format(" (%s)", fiatValue)
+        transactionViewHolder.hash.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.transactions!![i].hash!!))
             context.startActivity(browserIntent)
         }
-
         transactionViewHolder.btnDetails.setOnClickListener { v ->
             setVisibility(transactionViewHolder)
 
-            val transactionParameter = TransactionParameter(transactionViewHolder, transactions!![i].hash!!, i)
+            val transactionParameter = TransactionParameter(transactionViewHolder, transactions!![i].hash!!)
             TransactionTask().execute(transactionParameter)
 
         }
@@ -71,10 +58,23 @@ class TransactionAdapter(private val context: Context, private var transactions:
         setDirectionColors(transactionViewHolder, i)
     }
 
-    private inner class TransactionParameter(val transactionViewHolder: TransactionViewHolder, val hash: String, val position: Int) {
+    private fun setFiatValue(i: Int): Pair<SmartCashApplication, String> {
+        val app = SmartCashApplication(context)
+        val actualSelectedCoin = app.getActualSelectedCoin(context)
+        val fiatValue = if (actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
+            val currentPrice = app.getCurrentPrice()
+            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, currentPrice!![0].value!!))
+        } else {
+            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, actualSelectedCoin.value!!))
+        }
+        return Pair(app, fiatValue)
+    }
+
+    private inner class TransactionParameter(val transactionViewHolder: TransactionViewHolder, val hash: String) {
         var transaction: FullTransaction? = null
     }
 
+    //TODO: Move transaction task to outside
     private inner class TransactionTask : AsyncTask<TransactionParameter, Int, TransactionParameter>() {
 
         override fun doInBackground(vararg parameters: TransactionParameter): TransactionParameter? {
@@ -105,21 +105,32 @@ class TransactionAdapter(private val context: Context, private var transactions:
 
         when (transactions!![i].direction.toString()) {
             "Sent" -> {
-                transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_paid)
-                val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_up, R.color.paidColor)
-                transactionViewHolder.icon.background = wrappedDrawable
+                setBackgroundPaid(transactionViewHolder)
             }
             "Received" -> {
-                transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_receive)
-                val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.receiveColor)
-                transactionViewHolder.icon.background = wrappedDrawable
+                setBackgroundReceive(transactionViewHolder)
             }
             "Awaiting" -> {
-                val wrappedDrawable = changeIconColor(R.drawable.bg_awaiting, R.color.awaitingColor)
-                transactionViewHolder.direction.background = wrappedDrawable
-
+                setBackgroundAwaiting(transactionViewHolder)
             }
         }
+    }
+
+    private fun setBackgroundAwaiting(transactionViewHolder: TransactionViewHolder) {
+        val wrappedDrawable = changeIconColor(R.drawable.bg_awaiting, R.color.awaitingColor)
+        transactionViewHolder.direction.background = wrappedDrawable
+    }
+
+    private fun setBackgroundReceive(transactionViewHolder: TransactionViewHolder) {
+        transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_receive)
+        val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.receiveColor)
+        transactionViewHolder.icon.background = wrappedDrawable
+    }
+
+    private fun setBackgroundPaid(transactionViewHolder: TransactionViewHolder) {
+        transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_paid)
+        val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_up, R.color.paidColor)
+        transactionViewHolder.icon.background = wrappedDrawable
     }
 
     private fun setVisibility(transactionViewHolder: TransactionViewHolder) {
@@ -145,8 +156,6 @@ class TransactionAdapter(private val context: Context, private var transactions:
     }
 
     companion object {
-
-
         val TAG: String? = TransactionAdapter::class.java.simpleName
     }
 }

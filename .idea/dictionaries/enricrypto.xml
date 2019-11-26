@@ -1,15 +1,48 @@
 <component name="ProjectDictionaryState">
   <dictionary name="enricrypto">
     <words>
+      <w>aead</w>
+      <w>amout</w>
       <w>apiorder</w>
+      <w>bbaeae</w>
+      <w>blockhash</w>
+      <w>blockheight</w>
+      <w>blockindex</w>
+      <w>blocktime</w>
+      <w>buildship</w>
+      <w>buscar</w>
+      <w>cebbbcb</w>
+      <w>classpathentry</w>
       <w>createorder</w>
+      <w>detalhes</w>
+      <w>erro</w>
       <w>getcurrentpricewithcoin</w>
+      <w>gradleclasspathcontainer</w>
+      <w>gradleprojectbuilder</w>
+      <w>gradleprojectnature</w>
+      <w>gson</w>
+      <w>inet</w>
+      <w>javabuilder</w>
+      <w>javanature</w>
+      <w>keyset</w>
+      <w>locktime</w>
       <w>newkey</w>
       <w>paymentfee</w>
+      <w>paymet</w>
+      <w>perfil</w>
+      <w>posload</w>
+      <w>qrcode</w>
+      <w>recyclerview</w>
       <w>sapi</w>
       <w>sendpayment</w>
       <w>smartcash</w>
       <w>smarthub</w>
+      <w>testeandroidmobile</w>
+      <w>tink</w>
+      <w>txid</w>
+      <w>vout</w>
+      <w>webwallet</w>
+      <w>wordmark</w>
     </words>
   </dictionary>
 </component>

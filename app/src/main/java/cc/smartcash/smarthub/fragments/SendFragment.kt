@@ -66,7 +66,7 @@ class SendFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-
+//Nothing to do
             }
         }
 

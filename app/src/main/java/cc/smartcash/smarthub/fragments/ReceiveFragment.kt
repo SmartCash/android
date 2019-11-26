@@ -94,7 +94,7 @@ class ReceiveFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-
+//Nothing to do
             }
         }
 
@@ -148,7 +148,7 @@ class ReceiveFragment : Fragment() {
                 .bitmap()
     }
 
-    private fun createQRCode(qrCodeData: String, charset: String, hintMap: Map<*, *>, qrCodeHeight: Int, qrCodeWidth: Int) {
+    private fun createQRCode(qrCodeData: String, qrCodeHeight: Int, qrCodeWidth: Int) {
         try {
             //getting the logo
             val logo = BitmapFactory.decodeResource(resources, R.drawable.logo_qrcode)
@@ -190,7 +190,7 @@ class ReceiveFragment : Fragment() {
 
             hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.H
 
-            createQRCode(qrCodeText, Util.UTF_8, hintMap, smallestDimension, smallestDimension)
+            createQRCode(qrCodeText, smallestDimension, smallestDimension)
 
         } catch (ex: Exception) {
             Log.e(TAG, ex.message)

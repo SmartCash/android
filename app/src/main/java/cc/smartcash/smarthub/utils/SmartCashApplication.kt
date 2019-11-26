@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
-import androidx.core.os.ConfigurationCompat
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.models.App
 import cc.smartcash.smarthub.models.Coin
@@ -54,27 +53,6 @@ class SmartCashApplication(context: Context) : Application() {
                 }
             }
             return keys!!
-        }
-
-    val localesFromCurrentFiatSelection: Collection<Locale>
-        get() {
-
-            val currentLocale = ConfigurationCompat.getLocales(context!!.resources.configuration).get(0)
-            println("Current Locale => $currentLocale")
-
-            val currency: Currency? = if (getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
-                Currency.getInstance(context!!.getString(R.string.default_fiat))
-            } else {
-                Currency.getInstance(getActualSelectedCoin(context!!).name)
-            }
-            val returnValue = LinkedList<Locale>()
-            for (locale in NumberFormat.getAvailableLocales()) {
-                val code = NumberFormat.getCurrencyInstance(locale).currency.currencyCode
-                if (currency!!.currencyCode == code) {
-                    returnValue.add(locale)
-                }
-            }
-            return returnValue
         }
 
     val msk: ByteArray?
@@ -227,9 +205,6 @@ class SmartCashApplication(context: Context) : Application() {
     fun saveUser(user: User) =
             SharedEditor<User>().saveGson(this.mPrefs!!, user, KEYS.KEY_USER)
 
-    fun saveBoolean(bool: Boolean, key: String) =
-            SharedEditor<Boolean?>().saveBoolean(this.mPrefs!!, bool, key)
-
     fun saveWallet(wallet: Wallet) =
             SharedEditor<Wallet>().saveGson(this.mPrefs!!, wallet, KEYS.KEY_WALLET)
 
@@ -370,6 +345,7 @@ class SmartCashApplication(context: Context) : Application() {
                     }
                 }
             } catch (ignored: Exception) {
+                //Nothing to do
             }
             // for now eat exceptions
             return ""
@@ -399,34 +375,11 @@ class SmartCashApplication(context: Context) : Application() {
         }
 
 
-        // We use TreeMap so that the order of the data in the map sorted
-        // based on the country name.
-        // when the locale is not supported
-        val availableCurrencies: Map<String, String>
-            get() {
-                val locales = Locale.getAvailableLocales()
-                val currencies = TreeMap<String, String>()
-                for (locale in locales) {
-                    try {
-                        currencies[locale.displayCountry] = Currency.getInstance(locale).currencyCode
-                    } catch (e: Exception) {
-                    }
-
-                }
-                return currencies
-            }
     }
 
     //endregion
 
     class SharedEditor<T> {
-
-        fun save(sharedPreferences: SharedPreferences, obj: T, key: String) {
-            val prefsEditor = sharedPreferences.edit()
-            val json = Gson().toJson(obj)
-            prefsEditor?.putString(key, json)
-            prefsEditor?.apply()
-        }
 
         fun saveGson(sharedPreferences: SharedPreferences, obj: T, key: String) {
             val prefsEditor = sharedPreferences.edit()

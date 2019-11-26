@@ -1,5 +1,6 @@
 package cc.smartcash.smarthub.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -33,6 +34,7 @@ object Util {
     private const val ZERO = "0"
 
     val date: String
+        @SuppressLint("SimpleDateFormat")
         get() {
             val date = Date()
             val format = SimpleDateFormat(KEYS.KEY_DATE_FORMAT)
@@ -196,6 +198,7 @@ object Util {
         return null
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun getDateFromEpoch(epoch: Long): String {
         val date = Date(epoch * 1000L)
         val format = SimpleDateFormat(KEYS.KEY_DATE_FORMAT)
@@ -203,6 +206,7 @@ object Util {
         return format.format(date)
     }
 
+    @SuppressLint("SimpleDateFormat")
     fun getDate(date: String?): Date? {
 
         if (isNullOrEmpty(date)) return null
@@ -362,7 +366,7 @@ object Util {
 
         txtAmountCrypto.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
+//Nothing to do
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -381,7 +385,7 @@ object Util {
             }
 
             override fun afterTextChanged(s: Editable) {
-
+//Nothing to do
             }
         })
 
@@ -407,69 +411,7 @@ object Util {
                 responseWebWalletRootResponse.errorDescription = error
                 responseWebWalletRootResponse.error = message
 
-                Log.e(TAG, error)
-                Log.e(TAG, message)
-
-                //{"error":"","error_description":""}
-                if (error != null && error.contains("error", true) && error.contains("error_description", true)) {
-
-                    try {
-                        val parsedError = Gson().fromJson<WebWalletException>(error, WebWalletException::class.java)
-                        responseWebWalletRootResponse.errorDescription = parsedError.errorDescription
-                        responseWebWalletRootResponse.error = parsedError.error
-                    } catch (e: Exception) {
-                        responseWebWalletRootResponse.errorDescription = error
-                        responseWebWalletRootResponse.error = "Unexpected"
-                    }
-                }
-                //{"data":null,"error":{"message":"The amount exceeds your balance!"},"status":"BadRequest","isValid":false}
-                if (
-                        error != null
-                        && error.contains("data", true)
-                        && error.contains("error", true)
-                        && error.contains("message", true)
-                        && error.contains("status", true)
-                        && error.contains("isValid", true)
-                ) {
-                    try {
-                        val parsedError = JSONObject(error)
-                        responseWebWalletRootResponse.error = parsedError.getString("status")
-                        responseWebWalletRootResponse.errorDescription = parsedError.getJSONObject("error").getString("message")
-                    } catch (e: Exception) {
-                        responseWebWalletRootResponse.errorDescription = error
-                        responseWebWalletRootResponse.error = "Unexpected"
-                    }
-                }
-                //{"code":"Property_Required","message":",","details":["amount"]}
-                if (
-                        error != null
-                        && error.contains("code", true)
-                        && error.contains("message", true)
-                        && error.contains("details", true)
-                ) {
-                    try {
-                        val parsedError = JSONObject(error)
-                        responseWebWalletRootResponse.error = parsedError.getString("code")
-
-                        val details = StringBuilder()
-
-                        if (error.contains("message", true)) {
-                            details.append(parsedError.getString("message")).append(" ")
-                        }
-
-                        val detailsJson = parsedError.getJSONArray("details")
-                        if (detailsJson != null) {
-                            for (i in 0 until detailsJson.length()) {
-                                val item = detailsJson.getString(i)
-                                details.append(item).append(" ")
-                            }
-                        }
-                        responseWebWalletRootResponse.errorDescription = details.toString()
-                    } catch (e: Exception) {
-                        responseWebWalletRootResponse.errorDescription = error
-                        responseWebWalletRootResponse.error = "Unexpected"
-                    }
-                }
+                parseErrorMessage(error, responseWebWalletRootResponse)
             }
         } catch (e: IOException) {
             responseWebWalletRootResponse.errorDescription = e.message
@@ -477,6 +419,81 @@ object Util {
             Log.e(LoginViewModel.TAG, e.message)
         }
         return responseWebWalletRootResponse
+    }
+
+    private fun <T> parseErrorMessage(error: String?, responseWebWalletRootResponse: WebWalletRootResponse<T>) {
+        //{"error":"","error_description":""}
+        parseErrorMessageFormat1(error, responseWebWalletRootResponse)
+        //{"data":null,"error":{"message":"The amount exceeds your balance!"},"status":"BadRequest","isValid":false}
+        parseErrorMessageFormat2(error, responseWebWalletRootResponse)
+        //{"code":"Property_Required","message":",","details":["amount"]}
+        parseErrorMessageFormat3(error, responseWebWalletRootResponse)
+    }
+
+    private fun <T> parseErrorMessageFormat3(error: String?, responseWebWalletRootResponse: WebWalletRootResponse<T>) {
+        if (
+                error != null
+                && error.contains("code", true)
+                && error.contains("message", true)
+                && error.contains("details", true)
+        ) {
+            try {
+                val parsedError = JSONObject(error)
+                responseWebWalletRootResponse.error = parsedError.getString("code")
+
+                val details = StringBuilder()
+
+                if (error.contains("message", true)) {
+                    details.append(parsedError.getString("message")).append(" ")
+                }
+
+                val detailsJson = parsedError.getJSONArray("details")
+                if (detailsJson != null) {
+                    for (i in 0 until detailsJson.length()) {
+                        val item = detailsJson.getString(i)
+                        details.append(item).append(" ")
+                    }
+                }
+                responseWebWalletRootResponse.errorDescription = details.toString()
+            } catch (e: Exception) {
+                responseWebWalletRootResponse.errorDescription = error
+                responseWebWalletRootResponse.error = "Unexpected"
+            }
+        }
+    }
+
+    private fun <T> parseErrorMessageFormat2(error: String?, responseWebWalletRootResponse: WebWalletRootResponse<T>) {
+        if (
+                error != null
+                && error.contains("data", true)
+                && error.contains("error", true)
+                && error.contains("message", true)
+                && error.contains("status", true)
+                && error.contains("isValid", true)
+        ) {
+            try {
+                val parsedError = JSONObject(error)
+                responseWebWalletRootResponse.error = parsedError.getString("status")
+                responseWebWalletRootResponse.errorDescription = parsedError.getJSONObject("error").getString("message")
+            } catch (e: Exception) {
+                responseWebWalletRootResponse.errorDescription = error
+                responseWebWalletRootResponse.error = "Unexpected"
+            }
+        }
+    }
+
+    private fun <T> parseErrorMessageFormat1(error: String?, responseWebWalletRootResponse: WebWalletRootResponse<T>) {
+        if (error != null && error.contains("error", true) && error.contains("error_description", true)) {
+
+            try {
+                val parsedError = Gson().fromJson<WebWalletException>(error, WebWalletException::class.java)
+                responseWebWalletRootResponse.errorDescription = parsedError.errorDescription
+                responseWebWalletRootResponse.error = parsedError.error
+            } catch (e: Exception) {
+                responseWebWalletRootResponse.errorDescription = error
+                responseWebWalletRootResponse.error = "Unexpected"
+            }
+        }
     }
 
 
