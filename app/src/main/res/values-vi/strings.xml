@@ -91,6 +91,8 @@
     <string name="receive_amount_in_smartcash_label">Số tiền SMART</string>
     <string name="receive_amount_in_fiat_label">Số tiền FIAT</string>
     <string name="receive_fragment_title">Sử dụng địa chỉ dưới đây để nhận SMART</string>
+    <string name="receive_button_label">Nhận %f SMARTS</string>
+    <string name="receive_save_button_network_error_message">Bạn phải trực tuyến để nhận</string>
 
     <!-- login xml -->
     <string name="login_username_label">Tên người dùng hoặc email:</string>

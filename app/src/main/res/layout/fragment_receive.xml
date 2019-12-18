@@ -90,8 +90,10 @@
             android:background="#fff"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/first_card">
+            app:layout_constraintTop_toBottomOf="@+id/first_card"
+            app:layout_constraintVertical_bias="0.084">
 
             <TextView
                 android:id="@+id/fragment_receive_amount_label_fiat"
@@ -108,16 +110,16 @@
             <EditText
                 android:id="@+id/fragment_receive_txt_amount_fiat"
                 android:layout_width="0dp"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent=".4"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:autofillHints=""
                 android:inputType="numberDecimal"
                 android:text="0"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:autofillHints=""
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent=".4" />
 
             <TextView
                 android:id="@+id/fragment_receive_amount_crypto_label"
@@ -136,17 +138,49 @@
             <EditText
                 android:id="@+id/fragment_receive_txt_amount_converted"
                 android:layout_width="0dp"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent=".4"
-                android:inputType="numberDecimal"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:autofillHints=""
+                android:inputType="numberDecimal"
                 android:text="0"
                 app:layout_constraintStart_toStartOf="parent"
-                android:autofillHints=""
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent=".4" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/send_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="20dp"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/second_card">
+
+        <Button
+            android:id="@+id/receive_button_fragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/colorAccent"
+            android:text="@string/receive_button_label"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_send_address_relative_layout2"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
         <RelativeLayout
             android:id="@+id/relative_layout"

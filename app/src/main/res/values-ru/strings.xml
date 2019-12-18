@@ -92,6 +92,8 @@
     <string name="receive_amount_in_smartcash_label">Сумма в SMART</string>
     <string name="receive_amount_in_fiat_label">Сумма в FIAT</string>
     <string name="receive_fragment_title">Используйте адреса ниже для получения SMART</string>
+    <string name="receive_button_label">получить %f SMARTS</string>
+    <string name="receive_save_button_network_error_message">Вы должны быть онлайн, чтобы получить</string>
 
     <!-- login xml -->
     <string name="login_username_label">Username или email:</string>

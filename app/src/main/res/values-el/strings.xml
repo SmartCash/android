@@ -93,6 +93,8 @@
     <string name="receive_amount_in_smartcash_label">Ποσό σε SMART</string>
     <string name="receive_amount_in_fiat_label">Ποσό σε FIAT</string>
     <string name="receive_fragment_title">Χρησιμοποιήστε την παρακάτω διεύθυνση για να λάβετε SMART</string>
+    <string name="receive_button_label">Λάβετε %f SMART</string>
+    <string name="receive_save_button_network_error_message">Πρέπει να είστε συνδεδεμένοι στο διαδίκτυο για να λάβετε</string>
 
     <!-- login xml -->
     <string name="login_username_label">Όνομα χρήστη ή email:</string>

@@ -1,5 +1,6 @@
 package cc.smartcash.smarthub.fragments
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -9,10 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -20,6 +18,7 @@ import butterknife.OnClick
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.R.id.fragment_receive_qrcode_image
 import cc.smartcash.smarthub.adapters.WalletSpinnerAdapter
+import cc.smartcash.smarthub.utils.NetworkUtil
 import cc.smartcash.smarthub.utils.SmartCashApplication
 import cc.smartcash.smarthub.utils.Util
 import com.facebook.drawee.view.SimpleDraweeView
@@ -32,6 +31,8 @@ import java.util.*
 class ReceiveFragment : Fragment() {
 
     private var smartCashApplication: SmartCashApplication? = null
+    private var isOnline: Boolean = false
+    private var mainFee: BigDecimal? = null
 
     @BindView(fragment_receive_qrcode_image)
     internal lateinit var qrCodeImage: SimpleDraweeView
@@ -54,8 +55,18 @@ class ReceiveFragment : Fragment() {
     @BindView(R.id.fragment_receive_amount_crypto_label)
     lateinit var amountWithLabel: TextView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    @BindView(R.id.receive_button_fragment)
+    lateinit var receiveButton: Button
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        this.mainFee = BigDecimal.valueOf(0.0)
+
+        this.isOnline = NetworkUtil.getInternetStatus(getContext()!!)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
 
@@ -64,6 +75,11 @@ class ReceiveFragment : Fragment() {
         qrCodeImage = view.findViewById(fragment_receive_qrcode_image)
 
         ButterKnife.bind(this, view)
+
+        if (!isOnline) {
+            receiveButton.text = getString(R.string.send_save_button_network_error_message)
+            receiveButton.isActivated = false
+        }
 
         return view
     }
@@ -107,14 +123,17 @@ class ReceiveFragment : Fragment() {
                 }
             }
         }
+
+        setFeeOnButton()
+
         Util.setAmountListener(
                 context!!,
                 smartCashApplication!!,
                 amountLabel,
                 txtAmountFiat,
                 txtAmountCrypto,
-                BigDecimal(0.0),
-                null,
+                mainFee,
+                receiveButton,
                 ::setQRCodeByAmount
         )
     }
@@ -196,6 +215,11 @@ class ReceiveFragment : Fragment() {
             Log.e(TAG, ex.message)
         }
 
+    }
+
+
+    private fun setFeeOnButton(fee: String = mainFee!!.toString()) {
+        receiveButton.text = getString(R.string.receive_button_label).replace("%f", smartCashApplication!!.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(fee)))
     }
 
     companion object {

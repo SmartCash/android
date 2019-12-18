@@ -53,6 +53,8 @@
     <string name="pin_wrong_pin_dialog_title">Ops! PIN errado.</string>
     <string name="receive_amount_in_fiat_label">Valor em FIAT</string>
     <string name="receive_amount_in_smartcash_label">Valor em SMART</string>
+    <string name="receive_button_label">Receber %f SMARTS</string>
+    <string name="receive_save_button_network_error_message">Você deve estar on-line para receber.</string>
     <string name="transaction_summary_title">Sumário</string>
     <string name="transaction_label_size">Tamanho</string>
     <string name="transaction_label_received_time">Hora de recebimento</string>

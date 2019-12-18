@@ -91,6 +91,8 @@
     <string name="receive_amount_in_smartcash_label">Monto en SMART</string>
     <string name="receive_amount_in_fiat_label">Monto en FIAT</string>
     <string name="receive_fragment_title">Usa la direccion que se muestra debajo para poder recibir SMART</string>
+    <string name="receive_button_label">Recibir %f SMART</string>
+    <string name="receive_save_button_network_error_message">Debes estar en línea para recibir</string>
 
     <!-- login xml -->
     <string name="login_username_label">Nombre de Usuario o Correo Electronico:</string>
