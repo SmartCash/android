@@ -1,17 +1,19 @@
 package cc.smartcash.smarthub.fragments
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Matrix
+import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -21,18 +23,22 @@ import cc.smartcash.smarthub.adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.utils.NetworkUtil
 import cc.smartcash.smarthub.utils.SmartCashApplication
 import cc.smartcash.smarthub.utils.Util
+import com.dlazaro66.qrcodereaderview.QRCodeReaderView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import net.glxn.qrgen.android.QRCode
+import pub.devrel.easypermissions.EasyPermissions
 import java.math.BigDecimal
 import java.util.*
 
-class ReceiveFragment : Fragment() {
+class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
     private var smartCashApplication: SmartCashApplication? = null
     private var isOnline: Boolean = false
     private var mainFee: BigDecimal? = null
+    private var perms = arrayOf(Manifest.permission.CAMERA, Manifest.permission.CAMERA)
+    private var dialog: AlertDialog? = null
 
     @BindView(fragment_receive_qrcode_image)
     internal lateinit var qrCodeImage: SimpleDraweeView
@@ -86,6 +92,7 @@ class ReceiveFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), ReceiveFragment.RC_CAMERA_PERM, *perms)
 
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
@@ -222,13 +229,76 @@ class ReceiveFragment : Fragment() {
         receiveButton.text = getString(R.string.receive_button_label).replace("%f", smartCashApplication!!.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(fee)))
     }
 
+
+    @OnClick(R.id.receive_button_fragment)
+    fun onBtnQrCodeClicked() =
+        if (EasyPermissions.hasPermissions(Objects.requireNonNull<FragmentActivity>(activity), *perms)) {
+            val scanQrCodeDialog = AlertDialog.Builder(context)
+            val scanQrCodeView = LayoutInflater.from(context).inflate(R.layout.scan_qrcode_dialog, null)
+
+            val btnCancel = scanQrCodeView.findViewById<Button>(R.id.show_wallets_dialog_scan_qrcode_dialog_cancel_button)
+            btnCancel.setOnClickListener {
+                dialog!!.dismiss()
+                dialog!!.hide()
+            }
+
+            val qrCodeLayout = scanQrCodeView.findViewById<QRCodeReaderView>(R.id.scan_qrcode_dialog_qr_code_scan)
+            qrCodeLayout.setBackCamera()
+            qrCodeLayout.startCamera()
+            qrCodeLayout.setOnQRCodeReadListener(this)
+
+            scanQrCodeDialog.setView(scanQrCodeView)
+
+            dialog = scanQrCodeDialog.create()
+
+            Objects.requireNonNull<Window>(dialog!!.window).setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            dialog!!.show()
+
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), ReceiveFragment.RC_CAMERA_PERM, *perms)
+        }
+
+    override fun onQRCodeRead(text: String?, points: Array<out PointF>?) {
+        if (text == null || text.isEmpty()) return
+
+        val parsedQr = Util.parseQrCode(text)
+
+        if (parsedQr.isEmpty()) return
+
+        if (parsedQr.indexOf(ReceiveFragment.QR_SEPARATOR) == -1) {
+            //txtToAddress.setText(text)
+            txtAmountFiat.setText(SendAddressFragment.ZERO)
+            txtAmountCrypto.setText(SendAddressFragment.ZERO)
+        } else {
+            val parts = parsedQr.split(SendAddressFragment.QR_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            //txtToAddress.setText(parts[0])
+            txtAmountCrypto.setText(parts[1])
+        }
+
+        /*
+        Util.calculateFromSmartToFiat(
+                context!!,
+                smartCashApplication!!,
+                amountLabel,
+                txtAmountFiat,
+                txtAmountCrypto,
+                mainFee,
+                sendButton
+        )
+        */
+        dialog!!.hide()
+    }
+
+
     companion object {
 
         val TAG: String? = ReceiveFragment::class.java.simpleName
+        private const val RC_CAMERA_PERM = 123
+        const val QR_SEPARATOR = "-"
 
         fun newInstance(): ReceiveFragment {
             return ReceiveFragment()
         }
     }
-
 }
