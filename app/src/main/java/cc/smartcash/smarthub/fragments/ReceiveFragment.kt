@@ -39,6 +39,7 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     private var mainFee: BigDecimal? = null
     private var perms = arrayOf(Manifest.permission.CAMERA, Manifest.permission.CAMERA)
     private var dialog: AlertDialog? = null
+    private var parts: Array<String> = emptyArray()
 
     @BindView(fragment_receive_qrcode_image)
     internal lateinit var qrCodeImage: SimpleDraweeView
@@ -256,7 +257,7 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             dialog!!.show()
 
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), ReceiveFragment.RC_CAMERA_PERM, *perms)
+            EasyPermissions.requestPermissions(this, getString(R.string.send_camera_permission_label), RC_CAMERA_PERM, *perms)
         }
 
     override fun onQRCodeRead(text: String?, points: Array<out PointF>?) {
@@ -266,14 +267,12 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
         if (parsedQr.isEmpty()) return
 
-        if (parsedQr.indexOf(ReceiveFragment.QR_SEPARATOR) == -1) {
-            //txtToAddress.setText(text)
-            txtAmountFiat.setText(SendAddressFragment.ZERO)
-            txtAmountCrypto.setText(SendAddressFragment.ZERO)
+        if (parsedQr.indexOf(QR_SEPARATOR) == -1) {
+            Toast.makeText(activity, "Erro on read card...", Toast.LENGTH_SHORT).show()
         } else {
-            val parts = parsedQr.split(SendAddressFragment.QR_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            parts = parsedQr.split(QR_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             //txtToAddress.setText(parts[0])
-            txtAmountCrypto.setText(parts[1])
+            //txtAmountCrypto.setText(parts[1])
         }
 
         /*
@@ -296,6 +295,7 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         val TAG: String? = ReceiveFragment::class.java.simpleName
         private const val RC_CAMERA_PERM = 123
         const val QR_SEPARATOR = "-"
+        const val ZERO = "0"
 
         fun newInstance(): ReceiveFragment {
             return ReceiveFragment()
