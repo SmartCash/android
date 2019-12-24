@@ -4,37 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/btnCheckPIN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/colorAccent"
-        android:text="Check"
-        android:textColor="@color/colorPrimary"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPIN" />
-
-    <Button
-        android:id="@+id/wallet_dialog_bkp_btnGoToCheckPIN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/colorAccent"
-        android:text="OK"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wallet_dialog_bkp_labelPIN" />
-
     <EditText
         android:id="@+id/txtPIN"
         android:layout_width="0dp"
@@ -44,25 +13,26 @@
         android:layout_marginEnd="20dp"
         android:hint="PIN Code"
         android:textSize="18sp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:autofillHints=""
-        android:inputType=""
+        android:inputType="number"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/wallet_dialog_bkp_labelPIN"
-        android:layout_width="0dp"
+
+    <Button
+        android:id="@+id/wallet_dialog_bkp_btnGoToCheckPIN"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="20dp"
-        android:hint="PIN CODE"
-        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorAccent"
+        android:text="OK"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/txtPIN" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

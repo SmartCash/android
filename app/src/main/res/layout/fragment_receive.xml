@@ -170,7 +170,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="40dp"
             android:background="@color/colorAccent"
             android:text="@string/receive_button_label"
             android:textColor="@color/colorPrimary"

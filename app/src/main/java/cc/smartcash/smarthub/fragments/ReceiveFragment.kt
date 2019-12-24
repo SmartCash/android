@@ -271,8 +271,11 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             Toast.makeText(activity, "Erro on read card...", Toast.LENGTH_SHORT).show()
         } else {
             parts = parsedQr.split(QR_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            Toast.makeText(activity, parts[1], Toast.LENGTH_SHORT).show()
             //txtToAddress.setText(parts[0])
             //txtAmountCrypto.setText(parts[1])
+            var dialogPin = PinDialogFragment()
+            dialogPin.show(childFragmentManager, "PinDialogFragment")
         }
 
         /*
