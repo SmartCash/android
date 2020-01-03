@@ -32,7 +32,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.math.BigDecimal
 import java.util.*
 
-class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
+class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener, PinDialogFragment.OnAddPinListener {
 
     private var smartCashApplication: SmartCashApplication? = null
     private var isOnline: Boolean = false
@@ -274,8 +274,9 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             Toast.makeText(activity, parts[1], Toast.LENGTH_SHORT).show()
             //txtToAddress.setText(parts[0])
             //txtAmountCrypto.setText(parts[1])
-            var dialogPin = PinDialogFragment()
-            dialogPin.show(childFragmentManager, "PinDialogFragment")
+
+            var dialogPin : PinDialogFragment = PinDialogFragment()
+            dialogPin.show(childFragmentManager,"PinDialogFragment")
         }
 
         /*
@@ -292,6 +293,9 @@ class ReceiveFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         dialog!!.hide()
     }
 
+    override fun onResultPin(pin: String) {
+        Toast.makeText(activity, pin, Toast.LENGTH_LONG).show()
+    }
 
     companion object {
 
