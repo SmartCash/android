@@ -3,7 +3,6 @@ package cc.smartcash.smarthub.Utils
 import cc.smartcash.smarthub.Services.*
 
 object ApiUtil {
-
     val userService: UserService
         get() = RetrofitConfig.getClient(URLS.URL_API_WEBWALLET).create(UserService::class.java)
 

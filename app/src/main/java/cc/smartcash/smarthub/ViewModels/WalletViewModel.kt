@@ -6,10 +6,12 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+import cc.smartcash.smarthub.Activities.TransactionActivity
 import cc.smartcash.smarthub.Models.*
-import cc.smartcash.smarthub.Utils.ApiUtil
-import cc.smartcash.smarthub.Utils.KEYS
-import cc.smartcash.smarthub.Utils.Util
+import cc.smartcash.smarthub.R
+import cc.smartcash.smarthub.Services.SAPIConfig
+import cc.smartcash.smarthub.Utils.*
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,13 +19,17 @@ import retrofit2.Response
 import java.io.IOException
 
 class WalletViewModel : ViewModel() {
-
     private var returnResponse: MutableLiveData<WebWalletRootResponse<String>>? = null
+    private var transaction: SapiAddressBalance = SapiAddressBalance()
 
     fun sendPayment(context: Context, token: String, sendPayment: SendPayment): LiveData<WebWalletRootResponse<String>> {
         returnResponse = MutableLiveData()
         loadSendPayment(context, token, sendPayment)
         return returnResponse as MutableLiveData<WebWalletRootResponse<String>>
+    }
+
+    fun getBalance(address: String): SapiAddressBalance? {
+        return SAPIConfig().sapiService.getAddressBalance(address).execute().body()
     }
 
 
@@ -95,8 +101,8 @@ class WalletViewModel : ViewModel() {
 
     }
 
-    companion object {
 
+    companion object {
         val TAG: String? = WalletViewModel::class.java.simpleName
 
         fun getSyncFee(context: Context, token: String, sendPayment: SendPayment): WebWalletRootResponse<Double>? {

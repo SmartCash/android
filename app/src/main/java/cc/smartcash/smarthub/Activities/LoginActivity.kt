@@ -23,6 +23,7 @@ import cc.smartcash.smarthub.Utils.URLS
 import cc.smartcash.smarthub.Utils.Util
 import cc.smartcash.smarthub.tasks.LoginTask
 import cc.smartcash.smarthub.tasks.PriceTask
+import com.QRCodeReaderView.BuildConfig
 import java.util.*
 
 class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {

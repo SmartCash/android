@@ -31,4 +31,6 @@ interface WebWalletAPIService {
 
     @POST("user/available")
     fun isUserAvailable(@Body request: WebWalletUserAvailableRequest): Call<WebWalletRootResponse<Boolean>>
+
+
 }

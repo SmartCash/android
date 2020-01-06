@@ -2,14 +2,18 @@ package cc.smartcash.smarthub.tasks
 
 import android.content.Context
 import android.os.AsyncTask
-import cc.smartcash.smarthub.Models.Coin
-import cc.smartcash.smarthub.Models.User
-import cc.smartcash.smarthub.Models.UserLogin
-import cc.smartcash.smarthub.Models.WebWalletRootResponse
+import android.util.Log
+import androidx.lifecycle.ViewModelProvider
+import cc.smartcash.smarthub.Activities.TransactionActivity
+import cc.smartcash.smarthub.Models.*
 import cc.smartcash.smarthub.R
+import cc.smartcash.smarthub.Services.SAPIConfig
+import cc.smartcash.smarthub.Services.SAPIService
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.Util
 import cc.smartcash.smarthub.ViewModels.LoginViewModel
+import cc.smartcash.smarthub.ViewModels.WalletViewModel
+import kotlin.math.log
 
 class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResponse<User?>) -> Unit) : AsyncTask<UserLogin, Int, WebWalletRootResponse<User?>>() {
 
@@ -74,7 +78,14 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
 
     companion object {
         fun saveUser(token: String, user: User?, appContext: Context, smartCashApplication: SmartCashApplication) {
+
             if (user != null) {
+                //Get Balance from a new api
+                user.wallet!!.forEach {
+                   var call = WalletViewModel().getBalance(it.address!!)
+                    Log.e("LOG", call!!.balance.toString())
+                }
+
                 smartCashApplication.saveToken(appContext, token)
                 smartCashApplication.saveUser(appContext, user)
                 smartCashApplication.saveWallet(appContext, user.wallet!![0])
