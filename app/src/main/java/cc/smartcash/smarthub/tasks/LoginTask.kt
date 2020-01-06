@@ -83,7 +83,9 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
                 //Get Balance from a new api
                 user.wallet!!.forEach {
                    var call = WalletViewModel().getBalance(it.address!!)
-                    Log.e("LOG", call!!.balance.toString())
+                    it.balance = call!!.balance
+                    it.totalReceived = call!!.received
+                    it.totalSent = call!!.sent.toDouble()
                 }
 
                 smartCashApplication.saveToken(appContext, token)
