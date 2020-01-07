@@ -19,6 +19,8 @@ object URLS {
 
     const val URL_INSIGHT_EXPLORER_API = "https://insight.smartcash.cc/api/tx/"
 
+    const val URL_INSIGHT_EXPLORER_API_TRANSACTIONS = "https://insight.smartcash.cc/api/txs/?address="
+
     const val URL_INSIGHT_EXPLORER = "https://insight.smartcash.cc/tx/"
 
     const val URL_CURRENT_PRICE_API = "https://wallet.smartcash.cc/api/"

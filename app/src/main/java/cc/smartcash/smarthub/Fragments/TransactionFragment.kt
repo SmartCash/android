@@ -18,6 +18,7 @@ import butterknife.OnClick
 import cc.smartcash.smarthub.Activities.MainActivity
 import cc.smartcash.smarthub.Adapters.TransactionAdapter
 import cc.smartcash.smarthub.Adapters.WalletSpinnerAdapter
+import cc.smartcash.smarthub.Models.FullTransaction
 import cc.smartcash.smarthub.Models.Transaction
 import cc.smartcash.smarthub.Models.Wallet
 import cc.smartcash.smarthub.R

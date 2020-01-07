@@ -9,9 +9,11 @@ import cc.smartcash.smarthub.Models.*
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Services.SAPIConfig
 import cc.smartcash.smarthub.Services.SAPIService
+import cc.smartcash.smarthub.Services.TransactionService
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.Util
 import cc.smartcash.smarthub.ViewModels.LoginViewModel
+import cc.smartcash.smarthub.ViewModels.TransactionViewModel
 import cc.smartcash.smarthub.ViewModels.WalletViewModel
 import kotlin.math.log
 
@@ -77,15 +79,20 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
     }
 
     companion object {
-        fun saveUser(token: String, user: User?, appContext: Context, smartCashApplication: SmartCashApplication) {
+        private var transactionsAddres: FullTransactionList? = FullTransactionList()
 
+        fun saveUser(token: String, user: User?, appContext: Context, smartCashApplication: SmartCashApplication) {
             if (user != null) {
-                //Get Balance from a new api
+                //Get Balance from a new API
                 user.wallet!!.forEach {
                    var call = WalletViewModel().getBalance(it.address!!)
-                    it.balance = call!!.balance
-                    it.totalReceived = call!!.received
-                    it.totalSent = call!!.sent.toDouble()
+                    it.balance = call?.balance
+                    it.totalReceived = call?.received
+                    it.totalSent = call?.sent!!.toDouble()
+
+                    //Get Transactions from a new API
+                    transactionsAddres = TransactionViewModel().getTransactions(it.address!!, appContext)
+                    it.transactions = transactionsAddres!!.txs
                 }
 
                 smartCashApplication.saveToken(appContext, token)

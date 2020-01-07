@@ -7,8 +7,8 @@ import java.util.*
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class FullTransaction(
 
-        var vin: ArrayList<Any> = ArrayList(),
-        var vout: ArrayList<Any> = ArrayList(),
+        var vin: ArrayList<Vin> = ArrayList(),
+        var vout: ArrayList<Vout> = ArrayList(),
         // Getter Methods
 
         var txid: String? = null,
@@ -27,3 +27,34 @@ data class FullTransaction(
         var fees: Float = 0.toFloat()
 
 ) : Serializable
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class FullTransactionList(
+        var pagesTotal: Long = 0,
+        var txs: ArrayList<FullTransaction> = ArrayList()
+
+) : Serializable
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Vin (
+
+        val txid : String,
+        val vout : Int,
+        val sequence : Int,
+        val n : Int,
+        //val scriptSig : ScriptSig,
+        val addr : String,
+        val valueSat : Int,
+        val value : Double,
+        val doubleSpentTxID : String
+)  : Serializable
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Vout(
+    val value : Double,
+    val n : Int,
+    //val scriptPubKey : ScriptPubKey,
+    val spentTxId : String,
+    val spentIndex : String,
+    val spentHeight : String
+)  : Serializable

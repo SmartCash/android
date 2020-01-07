@@ -15,6 +15,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import cc.smartcash.smarthub.Models.FullTransaction
 import cc.smartcash.smarthub.Models.Transaction
+import cc.smartcash.smarthub.Models.Vin
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.URLS
@@ -142,6 +143,21 @@ class TransactionAdapter(private val context: Context, private var transactions:
 
     override fun getItemCount(): Int {
         return transactions!!.size
+    }
+
+
+    private fun direction(transaction: FullTransaction, address: String) {
+        //return transaction.vin.find((vin: any) => vin.addr === this.currentWallet.address) ? 'Sent' : 'Received';
+    }
+
+    private fun getAmount(transaction: FullTransaction, address: String) : Double {
+        var vin: Vin? = transaction.vin.find { it.addr == address }
+
+        if (vin != null) {
+            return vin.value
+        }
+
+        return transaction.vout[0].value
     }
 
     companion object {
