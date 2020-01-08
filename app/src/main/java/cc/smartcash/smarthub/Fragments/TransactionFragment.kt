@@ -128,7 +128,7 @@ class TransactionFragment : Fragment() {
     private fun setupRecyclerViewTransactions() {
         val recyclerViewTransactions = activity!!.findViewById<RecyclerView>(R.id.transaction_recyclerview)
         val linearLayoutManagerTransactions = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        transactionAdapter = TransactionAdapter(context!!, ArrayList())
+        transactionAdapter = TransactionAdapter(context!!, ArrayList(), smartCashApplication!!.getWallet()!!.address!!)
 
         recyclerViewTransactions.layoutManager = linearLayoutManagerTransactions
         recyclerViewTransactions.adapter = transactionAdapter
@@ -164,8 +164,9 @@ class TransactionFragment : Fragment() {
     private fun filterTransactions(filtro: String): ArrayList<FullTransaction> {
         val filteredT = ArrayList<FullTransaction>()
 
+
         for (item in transactions!!) {
-            if (item.direction == filtro)
+            if (FullTransaction.getDirection(item, smartCashApplication!!.getWallet()!!.address!!) == filtro)
                 filteredT.add(item)
         }
 

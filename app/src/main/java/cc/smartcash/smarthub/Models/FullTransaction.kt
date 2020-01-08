@@ -1,32 +1,77 @@
 package cc.smartcash.smarthub.Models
 
+import android.util.Log
+import cc.smartcash.smarthub.Utils.KEYS
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.Serializable
 import java.util.*
+import com.google.gson.internal.LinkedTreeMap
+import com.google.gson.Gson
+import org.json.JSONArray
+import org.json.JSONObject
+import kotlin.math.log
+import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
+import java.text.SimpleDateFormat
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class FullTransaction(
 
-        var vin: ArrayList<Vin> = ArrayList(),
-        var vout: ArrayList<Vout> = ArrayList(),
-        // Getter Methods
+class FullTransaction constructor() {
 
-        var txid: String? = null,
-        var version: Float = 0.toFloat(),
-        var locktime: Float = 0.toFloat(),
-        var blockhash: String? = null,
-        var blockheight: Float = 0.toFloat(),
-        var confirmations: Float = 0.toFloat(),
-        // Setter Methods
+    var vin: ArrayList<Any> = ArrayList()
+    var vout: ArrayList<Any> = ArrayList()
 
-        var time: Long = 0,
-        var blocktime: Long = 0,
-        var valueOut: Float = 0.toFloat(),
-        var size: Float = 0.toFloat(),
-        var valueIn: Float = 0.toFloat(),
-        var fees: Float = 0.toFloat()
+    var txid: String? = null
+    var version: Float = 0.toFloat()
+    var locktime: Float = 0.toFloat()
+    var blockhash: String? = null
+    var blockheight: Float = 0.toFloat()
+    var confirmations: Float = 0.toFloat()
 
-) : Serializable
+    var time: Long = 0
+    var blocktime: Long = 0
+    var valueOut: Float = 0.toFloat()
+    var size: Float = 0.toFloat()
+    var valueIn: Float = 0.toFloat()
+    var fees: Float = 0.toFloat()
+
+    companion object {
+        val gson = Gson()
+
+        fun getDirection(transaction: FullTransaction, address: String) : String {
+            transaction.vin.forEach {
+                val jsonString = gson.toJson(it)
+                val jObjResponse = JSONObject(jsonString.toString())
+
+                if(jObjResponse.get("addr").toString() == address)
+                    return "Sent"
+            }
+
+            return "Received"
+        }
+
+        fun getAmount(transaction: FullTransaction, address: String) : Double {
+            transaction.vin.forEach {
+                val jsonString = gson.toJson(it)
+                val jObjResponse = JSONObject(jsonString.toString())
+
+                if(jObjResponse.get("addr").toString() == address)
+                    return jObjResponse.get("value").toString().toDouble()
+            }
+
+            var vout = transaction.vout.first()
+            val jsonString = gson.toJson(vout)
+            val jObjResponse = JSONObject(jsonString.toString())
+            return jObjResponse.get("value").toString().toDouble()
+        }
+
+        fun getDate(epoch: Long): String {
+            val date = Date(epoch * 1000L)
+            val format = SimpleDateFormat(KEYS.KEY_DATE_FORMAT)
+            format.timeZone = TimeZone.getTimeZone(KEYS.KEY_DATE_TIMEZONE)
+            return format.format(date)
+        }
+    }
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class FullTransactionList(
@@ -42,7 +87,7 @@ data class Vin (
         val vout : Int,
         val sequence : Int,
         val n : Int,
-        //val scriptSig : ScriptSig,
+        val scriptSig : scriptSig,
         val addr : String,
         val valueSat : Int,
         val value : Double,
@@ -58,3 +103,10 @@ data class Vout(
     val spentIndex : String,
     val spentHeight : String
 )  : Serializable
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class scriptSig(
+        val hex : String,
+        val asm : String
+)  : Serializable
+

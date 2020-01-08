@@ -25,12 +25,6 @@ class TransactionViewModel : ViewModel() {
     private var transactionDetails: MutableLiveData<TransactionResponse>? = null
 
     fun getTransactions(address: String, context: Context): FullTransactionList? {
-        /*
-          transactions = MutableLiveData()
-        loadTransactions(address, context)
-        return transactions as MutableLiveData<FullTransactionList>
-         */
-
         return ApiUtil.transactionService.getTransactions(URLS.URL_INSIGHT_EXPLORER_API_TRANSACTIONS + address).execute().body()
     }
 
@@ -98,32 +92,6 @@ class TransactionViewModel : ViewModel() {
             override fun onFailure(call: Call<FullTransaction>, t: Throwable) {
                 Log.e(TAG, "Erro ao buscar a transaction:" + t.message)
                 transaction!!.value = null
-            }
-        })
-    }
-
-    private fun loadTransactions(address: String, context: Context) {
-        val call = ApiUtil.transactionService.getTransactions(URLS.URL_INSIGHT_EXPLORER_API_TRANSACTIONS + address)
-
-        call.enqueue(object : Callback<FullTransactionList> {
-            override fun onResponse(call: Call<FullTransactionList>, response: Response<FullTransactionList>) {
-                if (response.isSuccessful) {
-                    val apiResponse = response.body()
-                    transactions!!.setValue(apiResponse)
-                } else {
-                    try {
-                        transactions!!.value = null
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        Toast.makeText(context, jObjError.getString("message"), Toast.LENGTH_LONG).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<FullTransactionList>, t: Throwable) {
-                Log.e(TAG, "Erro ao buscar a transaction:" + t.message)
-                transactions!!.value = null
             }
         })
     }

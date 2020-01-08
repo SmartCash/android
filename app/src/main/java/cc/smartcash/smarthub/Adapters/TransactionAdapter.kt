@@ -19,11 +19,12 @@ import cc.smartcash.smarthub.Models.Vin
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.URLS
+import cc.smartcash.smarthub.Utils.Util
 import cc.smartcash.smarthub.ViewHolders.TransactionViewHolder
 import cc.smartcash.smarthub.ViewModels.TransactionViewModel
 import java.util.*
 
-class TransactionAdapter(private val context: Context, private var transactions: ArrayList<FullTransaction>?) : RecyclerView.Adapter<TransactionViewHolder>() {
+class TransactionAdapter(private val context: Context, private var transactions: ArrayList<FullTransaction>?, private var address: String) : RecyclerView.Adapter<TransactionViewHolder>() {
     private var transactionViewHolder: TransactionViewHolder? = null
 
     fun setItems(transactions: ArrayList<FullTransaction>) {
@@ -46,14 +47,16 @@ class TransactionAdapter(private val context: Context, private var transactions:
 
         fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
             val currentPrice = app.getCurrentPrice()
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, currentPrice!![0].value!!))
+            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), currentPrice!![0].value!!))
         } else {
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.transactions!![i].amount!!, actualSelectedCoin.value!!))
+            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), actualSelectedCoin.value!!))
         }
 
-        transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(this.transactions!![i].amount!!)
-        transactionViewHolder.direction.text = this.transactions!![i].direction
-        transactionViewHolder.timestamp.text = this.transactions!![i].timestamp
+        transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(FullTransaction.getAmount(this.transactions!![i], address))
+        transactionViewHolder.direction.text = FullTransaction.getDirection(this.transactions!![i], address)
+
+
+        transactionViewHolder.timestamp.text = FullTransaction.getDate(this.transactions!![i].time)
         transactionViewHolder.hash.text = this.transactions!![i].blockhash
         transactionViewHolder.price.text = " ($fiatValue)"
         transactionViewHolder.hash.setOnClickListener { v ->
@@ -104,7 +107,7 @@ class TransactionAdapter(private val context: Context, private var transactions:
 
     private fun setDirectionColors(transactionViewHolder: TransactionViewHolder, i: Int) {
 
-        when (transactions!![i].direction.toString()) {
+        when (FullTransaction.getDirection(transactions!![i], address)) {
             "Sent" -> {
                 transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_paid)
                 val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_up, R.color.paidColor)
@@ -143,21 +146,6 @@ class TransactionAdapter(private val context: Context, private var transactions:
 
     override fun getItemCount(): Int {
         return transactions!!.size
-    }
-
-
-    private fun direction(transaction: FullTransaction, address: String) {
-        //return transaction.vin.find((vin: any) => vin.addr === this.currentWallet.address) ? 'Sent' : 'Received';
-    }
-
-    private fun getAmount(transaction: FullTransaction, address: String) : Double {
-        var vin: Vin? = transaction.vin.find { it.addr == address }
-
-        if (vin != null) {
-            return vin.value
-        }
-
-        return transaction.vout[0].value
     }
 
     companion object {
