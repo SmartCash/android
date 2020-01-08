@@ -23,10 +23,10 @@ import cc.smartcash.smarthub.ViewHolders.TransactionViewHolder
 import cc.smartcash.smarthub.ViewModels.TransactionViewModel
 import java.util.*
 
-class TransactionAdapter(private val context: Context, private var transactions: ArrayList<Transaction>?) : RecyclerView.Adapter<TransactionViewHolder>() {
+class TransactionAdapter(private val context: Context, private var transactions: ArrayList<FullTransaction>?) : RecyclerView.Adapter<TransactionViewHolder>() {
     private var transactionViewHolder: TransactionViewHolder? = null
 
-    fun setItems(transactions: ArrayList<Transaction>) {
+    fun setItems(transactions: ArrayList<FullTransaction>) {
         this.transactions = transactions
         notifyDataSetChanged()
     }
@@ -54,17 +54,17 @@ class TransactionAdapter(private val context: Context, private var transactions:
         transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(this.transactions!![i].amount!!)
         transactionViewHolder.direction.text = this.transactions!![i].direction
         transactionViewHolder.timestamp.text = this.transactions!![i].timestamp
-        transactionViewHolder.hash.text = this.transactions!![i].hash
+        transactionViewHolder.hash.text = this.transactions!![i].blockhash
         transactionViewHolder.price.text = " ($fiatValue)"
         transactionViewHolder.hash.setOnClickListener { v ->
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.transactions!![i].hash!!))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.transactions!![i].blockhash!!))
             context.startActivity(browserIntent)
         }
 
         transactionViewHolder.btnDetails.setOnClickListener { v ->
             setVisibility(transactionViewHolder)
 
-            val transactionParameter = TransactionParameter(transactionViewHolder, transactions!![i].hash!!, i)
+            val transactionParameter = TransactionParameter(transactionViewHolder, transactions!![i].blockhash!!, i)
             TransactionTask().execute(transactionParameter)
 
         }

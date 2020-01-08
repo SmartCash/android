@@ -32,8 +32,8 @@ class TransactionFragment : Fragment() {
     private var activeFilter: String? = null
     private var walletList: ArrayList<Wallet>? = null
     private var walletAdapter: WalletSpinnerAdapter? = null
-    private var filteredTransactions = ArrayList<Transaction>()
-    private var transactions: ArrayList<Transaction>? = null
+    private var filteredTransactions = ArrayList<FullTransaction>()
+    private var transactions: ArrayList<FullTransaction>? = null
     private var transactionAdapter: TransactionAdapter? = null
 
     @BindView(R.id.all_transactions_underline)
@@ -161,8 +161,8 @@ class TransactionFragment : Fragment() {
         activeFilter = filtro
     }
 
-    private fun filterTransactions(filtro: String): ArrayList<Transaction> {
-        val filteredT = ArrayList<Transaction>()
+    private fun filterTransactions(filtro: String): ArrayList<FullTransaction> {
+        val filteredT = ArrayList<FullTransaction>()
 
         for (item in transactions!!) {
             if (item.direction == filtro)
