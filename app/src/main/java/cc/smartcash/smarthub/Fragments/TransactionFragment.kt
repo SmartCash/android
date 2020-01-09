@@ -24,6 +24,7 @@ import cc.smartcash.smarthub.Models.Wallet
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.ViewModels.UserViewModel
+import cc.smartcash.smarthub.ViewModels.WalletViewModel
 import java.util.*
 
 class TransactionFragment : Fragment() {
@@ -84,6 +85,7 @@ class TransactionFragment : Fragment() {
                 transactions = clickedItem.transactions
                 smartCashApplication!!.saveWallet(context!!, walletList!![position])
                 setTransactions(activeFilter)
+                setupRecyclerViewTransactions()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -142,6 +144,7 @@ class TransactionFragment : Fragment() {
             it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
                 if (response != null) {
                     Toast.makeText(activity, getString(R.string.transaction_updated_message), Toast.LENGTH_LONG).show()
+
                     smartCashApplication!!.saveUser(activity!!, response)
                     (activity as MainActivity).setWalletValue()
                 } else {

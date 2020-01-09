@@ -57,17 +57,17 @@ class TransactionAdapter(private val context: Context, private var transactions:
 
 
         transactionViewHolder.timestamp.text = FullTransaction.getDate(this.transactions!![i].time)
-        transactionViewHolder.hash.text = this.transactions!![i].blockhash
+        transactionViewHolder.hash.text = this.transactions!![i].txid
         transactionViewHolder.price.text = " ($fiatValue)"
         transactionViewHolder.hash.setOnClickListener { v ->
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.transactions!![i].blockhash!!))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(URLS.URL_INSIGHT_EXPLORER + this.transactions!![i].txid!!))
             context.startActivity(browserIntent)
         }
 
         transactionViewHolder.btnDetails.setOnClickListener { v ->
             setVisibility(transactionViewHolder)
 
-            val transactionParameter = TransactionParameter(transactionViewHolder, transactions!![i].blockhash!!, i)
+            val transactionParameter = TransactionParameter(transactionViewHolder, transactions!![i].txid!!, i)
             TransactionTask().execute(transactionParameter)
 
         }

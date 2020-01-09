@@ -12,7 +12,7 @@ data class SapiAddressBalance(
 
         var sent: Int = 0,
 
-        var balance: Double = 0.toDouble(),
+        var balance: Double = 0.toDouble()
 
-        var unconfirmed: SapiUnconfirmed? = null
+        //var unconfirmed: SapiUnconfirmed? = null
 ) : Serializable

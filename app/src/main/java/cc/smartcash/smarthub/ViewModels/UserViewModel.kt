@@ -1,17 +1,20 @@
 package cc.smartcash.smarthub.ViewModels
 
 import android.content.Context
+import android.os.StrictMode
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cc.smartcash.smarthub.Models.*
+import cc.smartcash.smarthub.Services.SAPIConfig
 import cc.smartcash.smarthub.Services.WebWalletAPIConfig
 import cc.smartcash.smarthub.Utils.KEYS
 import cc.smartcash.smarthub.Utils.NetworkUtil
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.Util
+import cc.smartcash.smarthub.tasks.LoginTask
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -43,7 +46,6 @@ class UserViewModel : ViewModel() {
     fun getUser(token: String, context: Context): LiveData<User> {
         user = MutableLiveData()
         loadUser(token, context)
-
         return user as MutableLiveData<User>
     }
 
@@ -57,11 +59,11 @@ class UserViewModel : ViewModel() {
     }
 
     private fun loadUser(token: String, context: Context) {
+        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build())
 
         val isInternetOn = NetworkUtil.getInternetStatus(context)
 
         if (isInternetOn) {
-
             val call = WebWalletAPIConfig().webWalletAPIService.getUser("Bearer $token")
 
             call.enqueue(object : Callback<WebWalletRootResponse<User>> {
@@ -69,7 +71,22 @@ class UserViewModel : ViewModel() {
                     if (response != null) {
                         if (response.isSuccessful) {
                             val apiResponse = response.body()
-                            user!!.setValue(apiResponse!!.data)
+                            var _user = apiResponse!!.data as User
+
+                            _user.wallet!!.forEach {
+                                var call = SAPIConfig().sapiService.getAddressBalance(it.address!!)
+                                var addressResponse = call.execute().body()
+
+                                it.balance = addressResponse?.balance
+                                it.totalReceived = addressResponse?.received
+                                it.totalSent = addressResponse?.sent!!.toDouble()
+
+                                //Get Transactions from a new API
+                                var transactionsAddres = TransactionViewModel().getTransactions(it.address!!, context)
+                                it.transactions = transactionsAddres!!.txs
+                            }
+
+                            user!!.setValue(_user)
                         } else {
                             try {
                                 user!!.value = null
@@ -88,12 +105,40 @@ class UserViewModel : ViewModel() {
                     Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.message)
                     user!!.value = null
                 }
-
-
             })
         }
-
     }
+
+    private fun loadBalance(user: User, context: Context){
+        user.wallet!!.forEach {
+            val call = SAPIConfig().sapiService.getAddressBalance(it.address!!)
+
+            call.enqueue(object : Callback<SapiAddressBalance> {
+                override fun onResponse(call: Call<SapiAddressBalance>, response: Response<SapiAddressBalance>) {
+                    if (response != null) {
+                        if (response.isSuccessful) {
+                            val apiResponse = response.body()
+
+                            it.balance = apiResponse!!.balance
+                            it.totalReceived = apiResponse!!.received
+                            it.totalSent = apiResponse!!.sent.toDouble()
+                        } else {
+                            try {
+                                setResponseError(context, response, "message")
+                            } catch (e: Exception) {
+                                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<SapiAddressBalance>, t: Throwable) {
+                    Log.e("WebWalletAPIService", "Erro ao buscar o usuário:" + t.message)
+                }
+            })
+        }
+    }
+
 
     fun saveUser(newUser: UserRegisterRequest, userRecoveryKey: UserRecoveryKey?, context: Context) {
 

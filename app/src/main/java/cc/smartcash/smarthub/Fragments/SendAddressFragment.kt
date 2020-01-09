@@ -35,11 +35,10 @@ import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.NetworkUtil
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.Util
+import cc.smartcash.smarthub.ViewModels.TransactionViewModel
 import cc.smartcash.smarthub.ViewModels.UserViewModel
-import cc.smartcash.smarthub.tasks.CalculateFeeTask
-import cc.smartcash.smarthub.tasks.CheckIfUserExistsOnWebWalletTask
-import cc.smartcash.smarthub.tasks.SendSmartByTextTask
-import cc.smartcash.smarthub.tasks.SendSmartByWebWalletTask
+import cc.smartcash.smarthub.ViewModels.WalletViewModel
+import cc.smartcash.smarthub.tasks.*
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import pub.devrel.easypermissions.EasyPermissions
@@ -418,6 +417,7 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
             it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
                 if (response != null) {
                     Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
+
                     smartCashApplication!!.saveUser(activity!!, response)
                     (Objects.requireNonNull<FragmentActivity>(activity) as MainActivity).setWalletValue()
                     navigateToTransaction()
