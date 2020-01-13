@@ -13,7 +13,7 @@
     <string name="label_sent">Enviado</string>
     <string name="login_2fa_label">Código 2FA:</string>
     <string name="login_enter_button">Entrar</string>
-    <string name="login_enter_button_loading_status">carregando...</string>
+    <string name="login_enter_button_loading_status">Carregando...</string>
     <string name="login_enter_button_network_error_message">Você deve estar on-line para entrar.</string>
     <string name="login_forgot_the_password_button">Esqueci a senha</string>
     <string name="login_network_error_message">Você deve estar on-line para entrar.</string>
@@ -60,7 +60,7 @@
     <string name="pin_wrong_pin_dialog_title">Ops! PIN errado.</string>
     <string name="receive_amount_in_fiat_label">Valor em FIAT</string>
     <string name="receive_amount_in_smartcash_label">Valor em SMART</string>
-    <string name="dashboard_title">Here are your %1$d SmartCash addresses. You can use them to receive and send SmartCash.</string>
+    <string name="dashboard_title">Aqui estão seus %1$d endereço SmartCash. Você pode usá-los para receber e enviar o SmartCash.</string>
     <string name="login_2fa_error_message">" 2FA error"</string>
     <string name="transaction_tab_sent">Enviado</string>
     <string name="transaction_tab_received">Recebido</string>
@@ -122,14 +122,14 @@
     <string name="send_password_label">Senha:</string>
     <string name="send_pin_error_message">O PIN é obrigatório.</string>
     <string name="send_pin_label">PIN:</string>
-    <string name="send_pin_verification_dialog_message_error_message">O PIN/PASSWORD não batem.</string>
+    <string name="send_pin_verification_dialog_message_error_message">O PIN/Senha não batem.</string>
     <string name="send_pin_verification_dialog_ok_button">Fechar</string>
-    <string name="send_pin_verification_dialog_title_error_message">PIN/Password errados</string>
+    <string name="send_pin_verification_dialog_title_error_message">PIN/Senha errados</string>
     <string name="send_qr_code_dialog_title">Escaneie o QRCode</string>
     <string name="register_save_button_error_message">Infelizmente não foi possível salvar o usuário.</string>
     <string name="register_username_not_available_error_message">Esse usuário não está disponível. Por favor, escolha um outro.</string>
     <string name="send_web_wallet_error_message">Algo deu errado. Por favor, confira se o endereço está correto.</string>
-    <string name="transaction_item_confirmation_label">Confirmations:</string>
-    <string name="main_dialog_create_new_ping_title">Create a PIN</string>
-    <string name="main_dialog_create_new_ping_message">In order to create a new PIN, we will need to log you out, OK?</string>
+    <string name="transaction_item_confirmation_label">Confirmações:</string>
+    <string name="main_dialog_create_new_ping_title">Criar um PIN</string>
+    <string name="main_dialog_create_new_ping_message">Para criar um novo PIN, precisaremos desconectá-lo, OK?</string>
 </resources>
