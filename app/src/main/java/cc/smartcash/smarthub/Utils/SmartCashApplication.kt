@@ -284,10 +284,15 @@ class SmartCashApplication(context: Context) : Application() {
     fun formatNumberBySelectedCurrencyCode(numberToFormat: Double): String {
         val currency = if (getActualSelectedCoin(context!!).name!!.equals(context!!.getString(R.string.default_crypto), ignoreCase = true)) {
             Currency.getInstance(context!!.getString(R.string.default_fiat))
-
         } else {
-            Currency.getInstance(getActualSelectedCoin(context!!).name)
+            //Crash because Gecko return crypto currency
+            try{
+                Currency.getInstance(getActualSelectedCoin(context!!).name)
+            } catch(e: Exception){
+                Currency.getInstance(context!!.getString(R.string.default_fiat))
+            }
         }
+
         val format = NumberFormat.getInstance()
         format.maximumFractionDigits = 8
 

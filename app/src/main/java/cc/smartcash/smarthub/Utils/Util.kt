@@ -113,6 +113,10 @@ object Util {
         return getString(textView).equals(getString(textView2), ignoreCase = true)
     }
 
+    fun removeLastChar(str: String): String {
+        return str.substring(0, str.length - 1)
+    }
+
     @JvmStatic
     fun isNullOrEmpty(view: TextView): Boolean {
         return view.text == null || view.text.toString().isEmpty()

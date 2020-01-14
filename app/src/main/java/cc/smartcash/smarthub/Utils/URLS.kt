@@ -13,7 +13,10 @@ object URLS {
 
     const val URL_API_PRICE_HITBTC = "https://api.smartcash.cc/v1/exchange/currencies?exchange=hitbtc"
 
-    const val URL_API_PRICE_COINGECKO = "https://api.smartcash.cc/v1/exchange/currencies?exchange=coingecko"
+    //const val URL_API_PRICE_COINGECKO = "https://api.smartcash.cc/v1/exchange/currencies?exchange=coingecko"
+
+    const val URL_API_PRICE_COINGECKO = "https://api.coingecko.com/api/v3/"
+
 
     const val URL_API_ = ""
 
