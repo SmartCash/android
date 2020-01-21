@@ -48,6 +48,8 @@ class CurrentPriceViewModel : ViewModel() {
                             listCoins!!.add(coin)
                         }
 
+                        listCoins!!.sortBy { it.name }
+
                         return ArrayList(listCoins)
                     }
                 } catch (e: IOException) {
