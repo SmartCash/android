@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "0.3.0-alpha"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -30,6 +31,7 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.facebook.fresco:fresco:1.13.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -37,7 +39,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-beta01'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-
+    implementation files('libs/SmartCashj.jar')
     testImplementation 'junit:junit:4.13-beta-3'
 
 
@@ -80,4 +82,10 @@ dependencies {
 }
 repositories {
     mavenCentral()
+}
+configurations{
+    all*.exclude module: 'okhttp'
+    all*.exclude module: 'okio'
+    implementation.exclude module:'protolite-well-known-types'
+    implementation.exclude module:'protobuf-lite'
 }
