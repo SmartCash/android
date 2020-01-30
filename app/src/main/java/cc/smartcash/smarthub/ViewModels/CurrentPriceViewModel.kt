@@ -32,7 +32,7 @@ class CurrentPriceViewModel : ViewModel() {
                     currencies = it + "," + currencies
                 }
 
-                val call = ApiUtil.currentPricesService.currentPrices("smartcash", Util.removeLastChar(currencies))
+                val call = ApiUtil.currentPricesService.currentPrices("SMARTCASH", Util.removeLastChar(currencies))
                 var response: Response<Map<String, Map<String, Double>>>? = null
                 try {
 

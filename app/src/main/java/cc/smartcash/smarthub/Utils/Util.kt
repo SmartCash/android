@@ -369,8 +369,7 @@ object Util {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (txtAmountCrypto.isFocused) {
-                    calculateFromSmartToFiat(
+                if (txtAmountCrypto.isFocused) {calculateFromSmartToFiat(
                             context,
                             smartCashApplication,
                             amountLabel,
