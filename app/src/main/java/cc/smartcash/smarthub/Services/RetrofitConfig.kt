@@ -14,9 +14,9 @@ object RetrofitConfig {
         val tlsSpecs: List<*> = listOf(ConnectionSpec.MODERN_TLS)
 
         val okHttpClient = OkHttpClient.Builder()
-                .connectTimeout(3, TimeUnit.SECONDS)
-                .writeTimeout(3, TimeUnit.SECONDS)
-                .readTimeout(3, TimeUnit.SECONDS)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
                 .connectionSpecs(tlsSpecs as MutableList<ConnectionSpec>)
                 .build()
 

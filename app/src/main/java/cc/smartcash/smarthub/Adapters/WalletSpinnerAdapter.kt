@@ -69,10 +69,10 @@ class WalletSpinnerAdapter(context: Context, private val wallets: ArrayList<Wall
             var fiatValue = ""
 
             fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
+                app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.balance!!, actualSelectedCoin.value!!))
+            } else {
                 val currentPrice = app.getCurrentPrice()
                 app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.balance!!, currentPrice!![0].value!!))
-            } else {
-                app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(currentItem.balance!!, actualSelectedCoin.value!!))
             }
 
 

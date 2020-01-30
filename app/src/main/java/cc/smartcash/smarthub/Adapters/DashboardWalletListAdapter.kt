@@ -35,10 +35,10 @@ class DashboardWalletListAdapter(private val context: Context, private var walle
         var fiatValue = ""
 
         fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
+            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, actualSelectedCoin.value!!))
+        } else {
             val currentPrice = app.getCurrentPrice()
             app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, currentPrice!![0].value!!))
-        } else {
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, actualSelectedCoin.value!!))
         }
 
         walletViewHolder.name.text = this.wallets!![i].displayName

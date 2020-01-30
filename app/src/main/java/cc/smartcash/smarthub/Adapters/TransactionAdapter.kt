@@ -46,10 +46,10 @@ class TransactionAdapter(private val context: Context, private var transactions:
         var fiatValue = ""
 
         fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
+            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), actualSelectedCoin.value!!))
+        } else {
             val currentPrice = app.getCurrentPrice()
             app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), currentPrice!![0].value!!))
-        } else {
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), actualSelectedCoin.value!!))
         }
 
         transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(FullTransaction.getAmount(this.transactions!![i], address))

@@ -50,30 +50,15 @@ class FullTransaction constructor() {
         }
 
         fun getAmount(transaction: FullTransaction, address: String) : Double {
-            var isIn = false
-            var totalIn: Double = 0.toDouble()
-            var totalOut: Double = 0.toDouble()
-
-            transaction.vin.forEach {
-                val jsonString = gson.toJson(it)
-                val jObjResponse = JSONObject(jsonString.toString())
-
-                if(jObjResponse.get("addr").toString() == address){
-                    totalIn = jObjResponse.get("value").toString().toDouble()
-                    isIn = true
-                }
-            }
+            var total: Double = 0.toDouble()
 
             var vout = transaction.vout.first()
             val jsonString = gson.toJson(vout)
             val jObjResponse = JSONObject(jsonString.toString())
 
-            totalOut = jObjResponse.get("value").toString().toDouble()
+            total = jObjResponse.get("value").toString().toDouble()
 
-            if(isIn)
-                return totalIn
-            else
-                return totalOut
+            return total
         }
 
         fun getDate(epoch: Long): String {
