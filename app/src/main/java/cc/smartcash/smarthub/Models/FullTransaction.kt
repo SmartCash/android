@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat
 
 
 class FullTransaction constructor() {
-
     var vin: ArrayList<Any> = ArrayList()
     var vout: ArrayList<Any> = ArrayList()
 
@@ -49,32 +48,63 @@ class FullTransaction constructor() {
             return "Received"
         }
 
-        fun getAmount(transaction: FullTransaction, address: String) : Double {
-            var isIn = false
-            var totalIn: Double = 0.toDouble()
-            var totalOut: Double = 0.toDouble()
+        fun getSentAmount(transaction: FullTransaction, address: String): Double{
+            var sent = 0.0
 
-            transaction.vin.forEach {
+            transaction.vout.forEach {
                 val jsonString = gson.toJson(it)
-                val jObjResponse = JSONObject(jsonString.toString())
+                val output = Gson().fromJson(jsonString, Vout::class.java)
+                val valueout = output.value
 
-                if(jObjResponse.get("addr").toString() == address){
-                    totalIn = jObjResponse.get("value").toString().toDouble()
-                    isIn = true
+                output.scriptPubKey.addresses.forEach{
+                    if(it != address){
+                        sent += valueout
+                    }
                 }
             }
+
+            return sent
+        }
+
+        fun getReceivedAmount(transaction: FullTransaction, address: String): Double {
+            var received = 0.0
+
+            transaction.vout.forEach{
+                val jsonString = gson.toJson(it)
+                val output = Gson().fromJson(jsonString, Vout::class.java)
+                val valueout = output.value
+
+                output.scriptPubKey.addresses.forEach{
+                    if(it == address){
+                        received += valueout
+                    }
+                }
+            }
+
+            return received
+        }
+
+        fun getAmount(transaction: FullTransaction, address: String): Double {
+            var direction = getDirection(transaction, address)
+
+            if (direction == "Received") {
+                return getReceivedAmount(transaction, address)
+            }
+            return getSentAmount(transaction, address)
+        }
+
+        /*
+        fun getAmount(transaction: FullTransaction, address: String) : Double {
+            var total: Double = 0.toDouble()
 
             var vout = transaction.vout.first()
             val jsonString = gson.toJson(vout)
             val jObjResponse = JSONObject(jsonString.toString())
 
-            totalOut = jObjResponse.get("value").toString().toDouble()
+            total = jObjResponse.get("value").toString().toDouble()
 
-            if(isIn)
-                return totalIn
-            else
-                return totalOut
-        }
+            return total
+        }*/
 
         fun getDate(epoch: Long): String {
             val date = Date(epoch * 1000L)
@@ -110,7 +140,7 @@ data class Vin (
 data class Vout(
     val value : Double,
     val n : Int,
-    //val scriptPubKey : ScriptPubKey,
+    val scriptPubKey : ScriptPubKey,
     val spentTxId : String,
     val spentIndex : String,
     val spentHeight : String
@@ -121,4 +151,12 @@ data class scriptSig(
         val hex : String,
         val asm : String
 )  : Serializable
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ScriptPubKey (
+    val hex : String,
+    val asm : String,
+    val addresses : List<String>,
+    val type : String
+) : Serializable
 

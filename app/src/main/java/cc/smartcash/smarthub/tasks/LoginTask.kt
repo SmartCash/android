@@ -99,11 +99,7 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
                 smartCashApplication.saveToken(appContext, token)
                 smartCashApplication.saveUser(appContext, user)
                 smartCashApplication.saveWallet(appContext, user.wallet!![0])
-
-                //Get Value of Smart on Coin Gecko
-                //ApiUtil.currentPricesService.currentPrices("SMART")
-
-                smartCashApplication.saveActualSelectedCoin(appContext, Coin(appContext.getString(R.string.default_crypto), 0.0))
+                smartCashApplication.saveActualSelectedCoin(appContext, Coin(appContext.getString(R.string.default_crypto), 1.0))
                 smartCashApplication.saveWithoutPIN(appContext, false)
             } else {
                 smartCashApplication.deleteSharedPreferences()
