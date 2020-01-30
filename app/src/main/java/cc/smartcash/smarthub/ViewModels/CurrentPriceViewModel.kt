@@ -44,10 +44,12 @@ class CurrentPriceViewModel : ViewModel() {
                         val smartMap = returnMap["smartcash"]
 
                         smartMap!!.forEach{
-                            val coin = Coin(it.key, it.value)
+                            val coin = Coin(it.key.toUpperCase(), it.value)
                             listCoins!!.add(coin)
                         }
 
+                        var smartCoin = Coin("SMART", 1.0)
+                        listCoins!!.add(smartCoin)
                         listCoins!!.sortBy { it.name }
 
                         return ArrayList(listCoins)
