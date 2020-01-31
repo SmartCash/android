@@ -9,11 +9,6 @@ import retrofit2.http.Query
 
 interface CurrentPricesService {
 
-    /*
-    @get:GET("wallet/getcurrentpricewithcoin")
-    val currentPrices: Call<JsonNode>
-    */
-
     @GET("simple/price")
     fun currentPrices(@Query("ids") ids: String,
                  @Query("vs_currencies") vsCurrencies: String) : Call<Map<String, Map<String, Double>>>

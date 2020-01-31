@@ -25,17 +25,20 @@ class CoinSpinnerAdapter(context: Context, position: Int, private val coins: Arr
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getView(position, convertView, parent) as TextView
-        label.setTextColor(Color.BLACK)
-        label.text = coins[position].name
+        setCoinName(label, position)
 
         return label
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val label = super.getDropDownView(position, convertView, parent) as TextView
-        label.setTextColor(Color.BLACK)
-        label.text = coins[position].name
+        setCoinName(label, position)
 
         return label
+    }
+
+    private fun setCoinName(label: TextView, position: Int) {
+        label.setTextColor(Color.BLACK)
+        label.text = (this.coins[position].name?.toUpperCase()) ?: this.coins[position].name
     }
 }

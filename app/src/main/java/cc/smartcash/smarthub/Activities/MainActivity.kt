@@ -342,13 +342,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
 
         walletTxt!!.text = smartCashApplication!!.formatNumberByDefaultCrypto(amount!!)
-
-        if (selectedCoin.name == getString(R.string.default_crypto)) {
-            walletConverted!!.text = smartCashApplication!!.formatNumberBySelectedCurrencyCode(smartCashApplication!!.getCurrentValueByRate(amount, selectedCoin.value!!))
-        } else {
-            val currentPrice = smartCashApplication!!.getCurrentPrice()
-            walletConverted!!.text = smartCashApplication!!.formatNumberBySelectedCurrencyCode(smartCashApplication!!.getCurrentValueByRate(amount, currentPrice!![0].value!!))
-        }
+        walletConverted!!.text = smartCashApplication!!.formatNumberBySelectedCurrencyCode(smartCashApplication!!.getCurrentValueByRate(amount, selectedCoin.value!!))
 
     }
 

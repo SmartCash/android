@@ -1,17 +1,11 @@
 package cc.smartcash.smarthub.Models
 
-import android.util.Log
 import cc.smartcash.smarthub.Utils.KEYS
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.Serializable
 import java.util.*
-import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.Gson
-import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.math.log
-import com.google.gson.JsonObject
-import com.google.gson.JsonParseException
 import java.text.SimpleDateFormat
 
 
@@ -48,17 +42,17 @@ class FullTransaction constructor() {
             return "Received"
         }
 
-        fun getSentAmount(transaction: FullTransaction, address: String): Double{
+        private fun getSentAmount(transaction: FullTransaction, address: String): Double{
             var sent = 0.0
 
             transaction.vout.forEach {
                 val jsonString = gson.toJson(it)
                 val output = Gson().fromJson(jsonString, Vout::class.java)
-                val valueout = output.value
+                val valueOut = output.value
 
                 output.scriptPubKey.addresses.forEach{
                     if(it != address){
-                        sent += valueout
+                        sent += valueOut
                     }
                 }
             }
@@ -66,17 +60,17 @@ class FullTransaction constructor() {
             return sent
         }
 
-        fun getReceivedAmount(transaction: FullTransaction, address: String): Double {
+        private fun getReceivedAmount(transaction: FullTransaction, address: String): Double {
             var received = 0.0
 
             transaction.vout.forEach{
                 val jsonString = gson.toJson(it)
                 val output = Gson().fromJson(jsonString, Vout::class.java)
-                val valueout = output.value
+                val valueOut = output.value
 
                 output.scriptPubKey.addresses.forEach{
                     if(it == address){
-                        received += valueout
+                        received += valueOut
                     }
                 }
             }
@@ -85,7 +79,7 @@ class FullTransaction constructor() {
         }
 
         fun getAmount(transaction: FullTransaction, address: String): Double {
-            var direction = getDirection(transaction, address)
+            val direction = getDirection(transaction, address)
 
             if (direction == "Received") {
                 return getReceivedAmount(transaction, address)
@@ -93,18 +87,6 @@ class FullTransaction constructor() {
             return getSentAmount(transaction, address)
         }
 
-        /*
-        fun getAmount(transaction: FullTransaction, address: String) : Double {
-            var total: Double = 0.toDouble()
-
-            var vout = transaction.vout.first()
-            val jsonString = gson.toJson(vout)
-            val jObjResponse = JSONObject(jsonString.toString())
-
-            total = jObjResponse.get("value").toString().toDouble()
-
-            return total
-        }*/
 
         fun getDate(epoch: Long): String {
             val date = Date(epoch * 1000L)
