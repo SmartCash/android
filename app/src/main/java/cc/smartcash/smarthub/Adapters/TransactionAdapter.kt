@@ -14,12 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import cc.smartcash.smarthub.Models.FullTransaction
-import cc.smartcash.smarthub.Models.Transaction
-import cc.smartcash.smarthub.Models.Vin
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.URLS
-import cc.smartcash.smarthub.Utils.Util
 import cc.smartcash.smarthub.ViewHolders.TransactionViewHolder
 import cc.smartcash.smarthub.ViewModels.TransactionViewModel
 import java.util.*
@@ -41,16 +38,16 @@ class TransactionAdapter(private val context: Context, private var transactions:
     override fun onBindViewHolder(transactionViewHolder: TransactionViewHolder, i: Int) {
 
         val app = SmartCashApplication(context)
-        val actualSelectedCoin = app.getActualSelectedCoin(context)
+        var actualSelectedCoin = app.getActualSelectedCoin(context)
 
-        var fiatValue = ""
 
-        fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), actualSelectedCoin.value!!))
-        } else {
-            val currentPrice = app.getCurrentPrice()
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), currentPrice!![0].value!!))
-        }
+        if (actualSelectedCoin == null)
+            actualSelectedCoin = app.getCurrentPrice(context.getString(R.string.default_crypto))!!
+
+        val fiatValue = app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), actualSelectedCoin.value!!))
+
+
+
 
         transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(FullTransaction.getAmount(this.transactions!![i], address))
         transactionViewHolder.direction.text = FullTransaction.getDirection(this.transactions!![i], address)

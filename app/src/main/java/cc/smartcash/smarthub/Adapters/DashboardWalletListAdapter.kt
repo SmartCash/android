@@ -30,16 +30,13 @@ class DashboardWalletListAdapter(private val context: Context, private var walle
     override fun onBindViewHolder(walletViewHolder: DashboardWalletListViewHolder, i: Int) {
 
         val app = SmartCashApplication(context)
-        val actualSelectedCoin = app.getActualSelectedCoin(context)
+        var actualSelectedCoin = app.getActualSelectedCoin(context)
 
-        var fiatValue = ""
+        if (actualSelectedCoin == null)
+            actualSelectedCoin = app.getCurrentPrice(context.getString(R.string.default_crypto))!!
 
-        fiatValue = if (actualSelectedCoin == null || actualSelectedCoin.name == context.getString(R.string.default_crypto)) {
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, actualSelectedCoin.value!!))
-        } else {
-            val currentPrice = app.getCurrentPrice()
-            app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, currentPrice!![0].value!!))
-        }
+        val fiatValue = app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(this.wallets!![i].balance!!, actualSelectedCoin.value!!))
+
 
         walletViewHolder.name.text = this.wallets!![i].displayName
         walletViewHolder.value.text = app.formatNumberByDefaultCrypto(this.wallets!![i].balance!!) + " (" + fiatValue + ")"

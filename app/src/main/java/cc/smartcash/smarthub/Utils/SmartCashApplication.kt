@@ -126,6 +126,17 @@ class SmartCashApplication(context: Context) : Application() {
         return ArrayList(GsonBuilder().create().fromJson(fromPref, Array<Coin>::class.java).toList())
     }
 
+    fun getCurrentPrice(coinName: String): Coin? {
+
+        val prices = this.getCurrentPrice()
+
+        prices?.forEach {
+            if (coinName.equals(it.name, true))
+                return it
+        }
+        return null
+    }
+
 
     fun getUser(): User? {
         return gson.fromJson(this.mPrefs?.getString(KEYS.KEY_USER, ""), User::class.java)
