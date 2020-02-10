@@ -1,11 +1,13 @@
 package cc.smartcash.smarthub.Fragments
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -25,6 +27,7 @@ import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.ViewModels.UserViewModel
 import cc.smartcash.smarthub.ViewModels.WalletViewModel
+import cc.smartcash.smarthub.tasks.TransactionTask
 import java.util.*
 
 class TransactionFragment : Fragment() {
@@ -52,23 +55,40 @@ class TransactionFragment : Fragment() {
     @BindView(R.id.fragment_receive_wallet_spinner)
     lateinit var walletSpinner: Spinner
 
+    @BindView(R.id.login_main_loader)
+    lateinit var loader: ProgressBar
+
     private var activeUnderline: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
         walletList = smartCashApplication!!.getUser()!!.wallet
-        transactions = walletList!![0].transactions
+
         val view = inflater.inflate(R.layout.fragment_transaction, container, false)
         ButterKnife.bind(this, view)
+
         return view
+    }
+
+    private fun afterLoadTransactionsTask(transactionsResponse: ArrayList<FullTransaction>?) {
+        transactions = transactionsResponse
+        hiddenLoader()
+        setupRecyclerViewTransactions()
+    }
+
+    private fun showLoader() {
+        loader.visibility = View.VISIBLE
+    }
+
+    private fun hiddenLoader() {
+        loader.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
-        setupRecyclerViewTransactions()
 
         val displayMetrics = this.resources.displayMetrics
         walletSpinner.dropDownWidth = displayMetrics.widthPixels
@@ -102,6 +122,10 @@ class TransactionFragment : Fragment() {
                 }
             }
         }
+
+        //ToDo: Transform to Async
+        //transactions = walletList!![0].transactions
+        TransactionTask(context!!, ::showLoader, ::afterLoadTransactionsTask).execute()
     }
 
     @OnClick(R.id.btn_all_transactions, R.id.btn_received, R.id.btn_awaiting, R.id.btn_paid, R.id.btn_att)
@@ -166,7 +190,6 @@ class TransactionFragment : Fragment() {
 
     private fun filterTransactions(filtro: String): ArrayList<FullTransaction> {
         val filteredT = ArrayList<FullTransaction>()
-
 
         for (item in transactions!!) {
             if (FullTransaction.getDirection(item, smartCashApplication!!.getWallet()!!.address!!) == filtro)
