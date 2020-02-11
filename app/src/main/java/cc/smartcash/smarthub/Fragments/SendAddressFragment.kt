@@ -416,11 +416,13 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
             it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
                 if (response != null) {
-                    Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
 
                     smartCashApplication!!.saveUser(activity!!, response)
                     (Objects.requireNonNull<FragmentActivity>(activity) as MainActivity).setWalletValue()
+
+                    Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
                     navigateToTransaction()
+                    clearInputs()
                 } else {
                     Log.e(TAG, getString(R.string.send_message_error_return))
                 }
@@ -464,7 +466,6 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
         if (hasError.not()) {
             updateData()
-            clearInputs()
             Log.d(TAG, result?.data)
         }
 

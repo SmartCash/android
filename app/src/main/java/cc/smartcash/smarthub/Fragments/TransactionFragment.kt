@@ -74,6 +74,23 @@ class TransactionFragment : Fragment() {
     private fun afterLoadTransactionsTask(transactionsResponse: ArrayList<FullTransaction>?) {
         transactions = transactionsResponse
         hiddenLoader()
+
+
+        walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val clickedItem = parent.getItemAtPosition(position) as Wallet
+                transactions = clickedItem.transactions
+                smartCashApplication!!.saveWallet(context!!, walletList!![position])
+                setTransactions(activeFilter)
+                setupRecyclerViewTransactions()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }
+
+
         setupRecyclerViewTransactions()
     }
 
@@ -98,20 +115,6 @@ class TransactionFragment : Fragment() {
         val walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
         walletAdapter = WalletSpinnerAdapter(context!!, walletList!!)
         walletSpinner.adapter = walletAdapter
-
-        walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val clickedItem = parent.getItemAtPosition(position) as Wallet
-                transactions = clickedItem.transactions
-                smartCashApplication!!.saveWallet(context!!, walletList!![position])
-                setTransactions(activeFilter)
-                setupRecyclerViewTransactions()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
 
         val savedWallet = smartCashApplication!!.getWallet()
 
