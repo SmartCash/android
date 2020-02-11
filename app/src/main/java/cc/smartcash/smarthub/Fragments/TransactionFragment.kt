@@ -71,21 +71,7 @@ class TransactionFragment : Fragment() {
         return view
     }
 
-    private fun afterLoadTransactionsTask(transactionsResponse: ArrayList<FullTransaction>?) {
-        transactions = transactionsResponse
-        hiddenLoader()
-        setupRecyclerViewTransactions()
-    }
-
-    private fun showLoader() {
-        loader.visibility = View.VISIBLE
-    }
-
-    private fun hiddenLoader() {
-        loader.visibility = View.GONE
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(context!!)
@@ -94,9 +80,9 @@ class TransactionFragment : Fragment() {
         walletSpinner.dropDownWidth = displayMetrics.widthPixels
 
         activeUnderline = getView()!!.findViewById(R.id.all_transactions_underline)
+        walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
 
-        val walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
-        walletAdapter = WalletSpinnerAdapter(context!!, walletList!!)
+         walletAdapter = WalletSpinnerAdapter(context!!, walletList!!)
         walletSpinner.adapter = walletAdapter
 
         walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -123,10 +109,24 @@ class TransactionFragment : Fragment() {
             }
         }
 
-        //ToDo: Transform to Async
-        //transactions = walletList!![0].transactions
         TransactionTask(context!!, ::showLoader, ::afterLoadTransactionsTask).execute()
     }
+
+    private fun afterLoadTransactionsTask(transactionsResponse: ArrayList<FullTransaction>?) {
+        transactions = transactionsResponse
+        hiddenLoader()
+        setupRecyclerViewTransactions()
+    }
+
+    private fun showLoader() {
+        loader.visibility = View.VISIBLE
+    }
+
+    private fun hiddenLoader() {
+        loader.visibility = View.GONE
+    }
+
+
 
     @OnClick(R.id.btn_all_transactions, R.id.btn_received, R.id.btn_awaiting, R.id.btn_paid, R.id.btn_att)
     fun onViewClicked(view: View) {
@@ -159,7 +159,8 @@ class TransactionFragment : Fragment() {
         recyclerViewTransactions.layoutManager = linearLayoutManagerTransactions
         recyclerViewTransactions.adapter = transactionAdapter
 
-        transactionAdapter!!.setItems(transactions!!)
+        if(transactions!! != null)
+            transactionAdapter!!.setItems(transactions!!)
     }
 
     private fun updateData() {
