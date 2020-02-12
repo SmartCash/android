@@ -1,6 +1,5 @@
 package cc.smartcash.smarthub.Fragments
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,12 +20,10 @@ import cc.smartcash.smarthub.Activities.MainActivity
 import cc.smartcash.smarthub.Adapters.TransactionAdapter
 import cc.smartcash.smarthub.Adapters.WalletSpinnerAdapter
 import cc.smartcash.smarthub.Models.FullTransaction
-import cc.smartcash.smarthub.Models.Transaction
 import cc.smartcash.smarthub.Models.Wallet
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.ViewModels.UserViewModel
-import cc.smartcash.smarthub.ViewModels.WalletViewModel
 import cc.smartcash.smarthub.tasks.TransactionTask
 import java.util.*
 
@@ -71,6 +68,34 @@ class TransactionFragment : Fragment() {
         return view
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (smartCashApplication == null)
+            smartCashApplication = SmartCashApplication(context!!)
+
+        val displayMetrics = this.resources.displayMetrics
+        walletSpinner.dropDownWidth = displayMetrics.widthPixels
+
+        activeUnderline = getView()!!.findViewById(R.id.all_transactions_underline)
+        walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
+
+         walletAdapter = WalletSpinnerAdapter(context!!, walletList!!)
+        walletSpinner.adapter = walletAdapter
+
+        val savedWallet = smartCashApplication!!.getWallet()
+
+        if (savedWallet != null) {
+            for (i in walletList!!.indices) {
+                if (savedWallet.walletId == walletList!![i].walletId) {
+                    walletSpinner.setSelection(i)
+                }
+            }
+        }
+
+        TransactionTask(context!!, ::showLoader, ::afterLoadTransactionsTask).execute()
+    }
+
     private fun afterLoadTransactionsTask(transactionsResponse: ArrayList<FullTransaction>?) {
         transactions = transactionsResponse
         hiddenLoader()
@@ -90,7 +115,6 @@ class TransactionFragment : Fragment() {
             }
         }
 
-
         setupRecyclerViewTransactions()
     }
 
@@ -102,34 +126,7 @@ class TransactionFragment : Fragment() {
         loader.visibility = View.GONE
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (smartCashApplication == null)
-            smartCashApplication = SmartCashApplication(context!!)
 
-        val displayMetrics = this.resources.displayMetrics
-        walletSpinner.dropDownWidth = displayMetrics.widthPixels
-
-        activeUnderline = getView()!!.findViewById(R.id.all_transactions_underline)
-
-        val walletSpinner = getView()!!.findViewById<Spinner>(R.id.fragment_receive_wallet_spinner)
-        walletAdapter = WalletSpinnerAdapter(context!!, walletList!!)
-        walletSpinner.adapter = walletAdapter
-
-        val savedWallet = smartCashApplication!!.getWallet()
-
-        if (savedWallet != null) {
-            for (i in walletList!!.indices) {
-                if (savedWallet.walletId == walletList!![i].walletId) {
-                    walletSpinner.setSelection(i)
-                }
-            }
-        }
-
-        //ToDo: Transform to Async
-        //transactions = walletList!![0].transactions
-        TransactionTask(context!!, ::showLoader, ::afterLoadTransactionsTask).execute()
-    }
 
     @OnClick(R.id.btn_all_transactions, R.id.btn_received, R.id.btn_awaiting, R.id.btn_paid, R.id.btn_att)
     fun onViewClicked(view: View) {
@@ -162,7 +159,8 @@ class TransactionFragment : Fragment() {
         recyclerViewTransactions.layoutManager = linearLayoutManagerTransactions
         recyclerViewTransactions.adapter = transactionAdapter
 
-        transactionAdapter!!.setItems(transactions!!)
+        if(transactions!! != null)
+            transactionAdapter!!.setItems(transactions!!)
     }
 
     private fun updateData() {

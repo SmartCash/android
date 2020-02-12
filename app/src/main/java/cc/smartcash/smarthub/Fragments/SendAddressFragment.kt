@@ -28,9 +28,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import cc.smartcash.smarthub.Activities.MainActivity
 import cc.smartcash.smarthub.Adapters.WalletDialogAdapter
-import cc.smartcash.smarthub.Models.SendPayment
-import cc.smartcash.smarthub.Models.SmartTextRoot
-import cc.smartcash.smarthub.Models.WebWalletRootResponse
+import cc.smartcash.smarthub.Models.*
 import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.NetworkUtil
 import cc.smartcash.smarthub.Utils.SmartCashApplication
@@ -410,24 +408,24 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         setFeeOnButton(amountConverted.toString())
     }
 
-    //TODO: Make it an async task
     private fun updateData() {
-        ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
+        UpdateDataTask(context!!, ::showLoader, ::afterUpdateTask).execute()
+    }
 
-            it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
-                if (response != null) {
+    private fun afterUpdateTask() {
+        Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
+        hiddenLoader()
+        clearInputs()
 
-                    smartCashApplication!!.saveUser(activity!!, response)
-                    (Objects.requireNonNull<FragmentActivity>(activity) as MainActivity).setWalletValue()
+        navigateToTransaction()
+    }
 
-                    Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
-                    navigateToTransaction()
-                    clearInputs()
-                } else {
-                    Log.e(TAG, getString(R.string.send_message_error_return))
-                }
-            })
-        }
+    private fun showLoader() {
+        loader.visibility = View.VISIBLE
+    }
+
+    private fun hiddenLoader() {
+        loader.visibility = View.GONE
     }
 
     private fun navigateToTransaction() {
@@ -435,6 +433,8 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         nav.selectedItemId = R.id.nav_trans
         openFragment(TransactionFragment.newInstance())
     }
+
+
 
     private fun verifyPin(): String {
 
@@ -461,15 +461,15 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     }
 
     private fun afterSendByWebWallet(result: WebWalletRootResponse<String>?) {
-
         val hasError = Util.showWebWalletException(result, context!!)
 
         if (hasError.not()) {
             updateData()
             Log.d(TAG, result?.data)
+        } else{
+            hiddenLoader()
+            unlockSendButton()
         }
-
-        unlockSendButton()
     }
 
     private fun afterSendSmartByTextTask(smartTextRoot: SmartTextRoot?) {

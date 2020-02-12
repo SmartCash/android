@@ -93,7 +93,9 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
 
                     //Get Transactions from a new API
                     transactionsAddres = TransactionViewModel().getTransactions(it.address!!, appContext)
-                    it.transactions = transactionsAddres!!.txs
+
+                    if(transactionsAddres != null)
+                        it.transactions = transactionsAddres!!.txs
                 }
 
                 smartCashApplication.saveToken(appContext, token)
