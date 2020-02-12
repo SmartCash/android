@@ -228,6 +228,7 @@ class LoginActivity : AppCompatActivity(), INetworkChangeReceiver {
             Toast.makeText(applicationContext, "We don't have all necessary keys to proceed" + smartCashApplication!!.getKeysThatDoesNotExists(), Toast.LENGTH_LONG).show()
             return
         }
+
         val intent = Intent(applicationContext, PinActivity::class.java)
         intent.putExtra(KEYS.KEY_PASSWORD, txtPassword.text.toString())
         startActivity(intent)

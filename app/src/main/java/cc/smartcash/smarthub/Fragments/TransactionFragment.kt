@@ -5,10 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ProgressBar
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +22,7 @@ import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.ViewModels.UserViewModel
 import cc.smartcash.smarthub.tasks.TransactionTask
+import cc.smartcash.smarthub.tasks.UpdateDataTask
 import java.util.*
 
 class TransactionFragment : Fragment() {
@@ -54,6 +52,9 @@ class TransactionFragment : Fragment() {
 
     @BindView(R.id.login_main_loader)
     lateinit var loader: ProgressBar
+
+    @BindView(R.id.frameLayout)
+    lateinit var listTransactions: FrameLayout
 
     private var activeUnderline: View? = null
 
@@ -98,8 +99,6 @@ class TransactionFragment : Fragment() {
 
     private fun afterLoadTransactionsTask(transactionsResponse: ArrayList<FullTransaction>?) {
         transactions = transactionsResponse
-        hiddenLoader()
-
 
         walletSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -116,14 +115,17 @@ class TransactionFragment : Fragment() {
         }
 
         setupRecyclerViewTransactions()
+        hiddenLoader()
     }
 
     private fun showLoader() {
+        listTransactions.visibility = View.GONE
         loader.visibility = View.VISIBLE
     }
 
     private fun hiddenLoader() {
         loader.visibility = View.GONE
+        listTransactions.visibility = View.VISIBLE
     }
 
 
@@ -152,17 +154,22 @@ class TransactionFragment : Fragment() {
     }
 
     private fun setupRecyclerViewTransactions() {
-        val recyclerViewTransactions = activity!!.findViewById<RecyclerView>(R.id.transaction_recyclerview)
-        val linearLayoutManagerTransactions = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        transactionAdapter = TransactionAdapter(context!!, ArrayList(), smartCashApplication!!.getWallet()!!.address!!)
+        try{
+            val recyclerViewTransactions = activity!!.findViewById<RecyclerView>(R.id.transaction_recyclerview)
+            val linearLayoutManagerTransactions = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            transactionAdapter = TransactionAdapter(context!!, ArrayList(), smartCashApplication!!.getWallet()!!.address!!)
 
-        recyclerViewTransactions.layoutManager = linearLayoutManagerTransactions
-        recyclerViewTransactions.adapter = transactionAdapter
+            recyclerViewTransactions.layoutManager = linearLayoutManagerTransactions
+            recyclerViewTransactions.adapter = transactionAdapter
 
-        if(transactions!! != null)
-            transactionAdapter!!.setItems(transactions!!)
+            if(transactions!! != null)
+                transactionAdapter!!.setItems(transactions!!)
+        } catch (e: KotlinNullPointerException){
+            android.widget.Toast.makeText(activity, "Error on Load Transactions, Try Login Again!", Toast.LENGTH_LONG).show()
+        }
     }
 
+    /*
     private fun updateData() {
         ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
 
@@ -177,6 +184,16 @@ class TransactionFragment : Fragment() {
                 }
             })
         }
+    }
+     */
+
+    private fun updateData() {
+        UpdateDataTask(context!!, ::showLoader, ::afterUpdateTask).execute()
+    }
+
+    private fun afterUpdateTask() {
+        Toast.makeText(activity, getString(R.string.send_message_success_return), Toast.LENGTH_LONG).show()
+        hiddenLoader()
     }
 
     fun setTransactions(filtro: String?) {
