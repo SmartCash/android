@@ -169,23 +169,6 @@ class TransactionFragment : Fragment() {
         }
     }
 
-    /*
-    private fun updateData() {
-        ViewModelProviders.of(this).get<UserViewModel>(UserViewModel::class.java).also {
-
-            it.getUser(smartCashApplication!!.getToken()!!, activity!!).observe(this, androidx.lifecycle.Observer { response ->
-                if (response != null) {
-                    Toast.makeText(activity, getString(R.string.transaction_updated_message), Toast.LENGTH_LONG).show()
-
-                    smartCashApplication!!.saveUser(activity!!, response)
-                    (activity as MainActivity).setWalletValue()
-                } else {
-                    Log.e(TAG, getString(R.string.transaction_update_error_message))
-                }
-            })
-        }
-    }
-     */
 
     private fun updateData() {
         UpdateDataTask(context!!, ::showLoader, ::afterUpdateTask).execute()

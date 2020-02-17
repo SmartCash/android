@@ -2,6 +2,7 @@ package cc.smartcash.smarthub.Activities
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.Editable
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         Fresco.initialize(this)
         setContentView(R.layout.activity_main)
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if (smartCashApplication == null)
             smartCashApplication = SmartCashApplication(applicationContext)
