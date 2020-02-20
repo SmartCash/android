@@ -259,6 +259,7 @@ object Util {
             }
         }
 
+
         if (isNullOrEmpty(txtAmountFiat)) {
             txtAmountCrypto.setText(ZERO)
         } else {
@@ -271,8 +272,11 @@ object Util {
                 val ruleOfThree = amountInTheField / currentPrice
                 amountConverted = BigDecimal.valueOf(ruleOfThree)
             }
+
             txtAmountCrypto.setText(amountConverted.toString())
+
             val amountWithFee = getBigDecimal(txtAmountCrypto).add(mainFee)
+
             if (sendButton != null)
                 sendButton.text = context.getString(R.string.send_button_label).replace("%f", smartCashApplication.formatNumberByDefaultCrypto(java.lang.Double.parseDouble(amountWithFee.toString())))
         }
@@ -344,7 +348,12 @@ object Util {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if(isNullOrEmpty(txtAmountFiat)){
+                    txtAmountFiat.setText("0")
+                }
+
                 if (txtAmountFiat.isFocused) {
+
                     calculateFromFiatToSmart(
                             context,
                             smartCashApplication,
@@ -369,7 +378,12 @@ object Util {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (txtAmountCrypto.isFocused) {calculateFromSmartToFiat(
+                if(isNullOrEmpty(txtAmountCrypto)){
+                    txtAmountCrypto.setText("0")
+                }
+
+                if (txtAmountCrypto.isFocused) {
+                    calculateFromSmartToFiat(
                             context,
                             smartCashApplication,
                             amountLabel,

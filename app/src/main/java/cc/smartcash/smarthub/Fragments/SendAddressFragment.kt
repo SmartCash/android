@@ -453,6 +453,18 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     private fun unlockSendButton() {
         sendButton.isEnabled = true
         setFeeOnButton()
+
+        Util.setAmountListener(
+                context!!,
+                smartCashApplication!!,
+                amountLabel,
+                txtAmountFiat,
+                txtAmountCrypto,
+                mainFee,
+                sendButton,
+                null
+        )
+
         loader.visibility = View.GONE
     }
 
