@@ -47,8 +47,6 @@ class TransactionAdapter(private val context: Context, private var transactions:
         val fiatValue = app.formatNumberBySelectedCurrencyCode(app.getCurrentValueByRate(FullTransaction.getAmount(this.transactions!![i], address), actualSelectedCoin.value!!))
 
 
-
-
         transactionViewHolder.amount.text = app.formatNumberByDefaultCrypto(FullTransaction.getAmount(this.transactions!![i], address))
         transactionViewHolder.direction.text = FullTransaction.getDirection(this.transactions!![i], address)
 
@@ -113,6 +111,11 @@ class TransactionAdapter(private val context: Context, private var transactions:
             "Received" -> {
                 transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_receive)
                 val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.receiveColor)
+                transactionViewHolder.icon.background = wrappedDrawable
+            }
+            "From Mined" -> {
+                transactionViewHolder.direction.setBackgroundResource(R.drawable.bg_mined)
+                val wrappedDrawable = changeIconColor(R.drawable.ic_arrow_down, R.color.minedColor)
                 transactionViewHolder.icon.background = wrappedDrawable
             }
             "Awaiting" -> {

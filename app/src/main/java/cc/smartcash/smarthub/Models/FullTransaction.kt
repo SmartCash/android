@@ -9,6 +9,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 class FullTransaction constructor() {
     var vin: ArrayList<Any> = ArrayList()
     var vout: ArrayList<Any> = ArrayList()
@@ -19,6 +20,7 @@ class FullTransaction constructor() {
     var blockhash: String? = null
     var blockheight: Float = 0.toFloat()
     var confirmations: Float = 0.toFloat()
+    val isCoinBase : Boolean = false
 
     var time: Long = 0
     var blocktime: Long = 0
@@ -35,8 +37,12 @@ class FullTransaction constructor() {
                 val jsonString = gson.toJson(it)
                 val jObjResponse = JSONObject(jsonString.toString())
 
-                if(jObjResponse.get("addr").toString() == address)
-                    return "Sent"
+                try{
+                    if(jObjResponse.get("addr").toString() == address)
+                        return "Sent"
+                } catch(ex: Exception){
+                    return "From Mined"
+                }
             }
 
             return "Received"
@@ -78,11 +84,20 @@ class FullTransaction constructor() {
             return received
         }
 
+        private fun getMinedAmount(transaction: FullTransaction): Double {
+            val jsonString = gson.toJson( transaction.vout.get(0))
+            val output = Gson().fromJson(jsonString, Vout::class.java)
+            return output.value
+        }
+
+
         fun getAmount(transaction: FullTransaction, address: String): Double {
             val direction = getDirection(transaction, address)
 
             if (direction == "Received") {
                 return getReceivedAmount(transaction, address)
+            } else if(direction == "From Mined"){
+                return getMinedAmount(transaction)
             }
             return getSentAmount(transaction, address)
         }
