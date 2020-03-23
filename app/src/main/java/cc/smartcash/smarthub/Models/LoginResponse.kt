@@ -14,7 +14,7 @@ data class LoginResponse(
         var tokenType: String? = null,
 
         @get:JsonProperty("expires_in")
-        var expiresIn: Long? = null,
+        var expiresIn: String? = null,
 
         @get:JsonProperty("refresh_token")
         var refreshToken: String? = null
