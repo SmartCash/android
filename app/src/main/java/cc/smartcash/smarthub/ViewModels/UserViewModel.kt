@@ -358,6 +358,37 @@ class UserViewModel : ViewModel() {
             }
             return null
         }
+
+        fun loadSyncUser(token: String, context: Context) : User? {
+            var userResponse: User? = null
+            val isInternetOn = NetworkUtil.getInternetStatus(context)
+
+            if (isInternetOn) {
+                val call = WebWalletAPIConfig().webWalletAPIService.getUser("Bearer $token")
+                val response = call.execute()
+
+                if (response != null && response.isSuccessful && response.body() != null && response.body()!!.data != null) {
+
+                    userResponse = response.body()!!.data as User
+
+                    userResponse.wallet!!.forEach {
+                        var call = SAPIConfig().sapiService.getAddressBalance(it.address!!)
+                        var addressResponse = call.execute().body()
+
+                        it.balance = addressResponse?.balance
+                        it.totalReceived = addressResponse?.received
+                        it.totalSent = addressResponse?.sent!!.toDouble()
+
+                        //Get Transactions from a new API
+                        var transactionsAddres = TransactionViewModel().getTransactions(it.address!!, context)
+                        it.transactions = transactionsAddres!!.txs
+                    }
+                }
+            }
+
+            return userResponse
+        }
+
     }
 
 }

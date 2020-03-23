@@ -80,7 +80,7 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
     }
 
     companion object {
-        private var transactionsAddres: FullTransactionList? = FullTransactionList()
+        private var transactionsAddress: FullTransactionList? = FullTransactionList()
 
         fun saveUser(token: String, user: User?, appContext: Context, smartCashApplication: SmartCashApplication) {
             if (user != null) {
@@ -92,10 +92,14 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
                     it.totalSent = call?.sent!!.toDouble()
 
                     //Get Transactions from a new API
-                    transactionsAddres = TransactionViewModel().getTransactions(it.address!!, appContext)
+                    transactionsAddress = TransactionViewModel().getTransactions(it.address!!, appContext)
 
-                    if(transactionsAddres != null)
-                        it.transactions = transactionsAddres!!.txs
+                    if(transactionsAddress != null){
+                        if(transactionsAddress!!.txs.count() > 10)
+                            it.transactions = ArrayList(transactionsAddress!!.txs.take(10))
+                        else
+                            it.transactions = transactionsAddress!!.txs
+                    }
                 }
 
                 smartCashApplication.saveToken(appContext, token)

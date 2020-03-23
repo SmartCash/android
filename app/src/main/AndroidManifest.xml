@@ -30,7 +30,8 @@
         <activity
             android:name="cc.smartcash.smarthub.Activities.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/noAction">
+            android:theme="@style/noAction"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -40,16 +41,19 @@
 
         <activity
             android:name="cc.smartcash.smarthub.Activities.PinActivity"
-            android:theme="@style/noAction" />
+            android:theme="@style/noAction"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="cc.smartcash.smarthub.Activities.TransactionActivity"
-            android:label="" />
+            android:label=""
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="cc.smartcash.smarthub.Activities.RegisterActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/noAction" />
+            android:theme="@style/noAction"
+            android:screenOrientation="portrait"/>
 
         <receiver
             android:name="cc.smartcash.smarthub.NetworkChangeReceiver"
