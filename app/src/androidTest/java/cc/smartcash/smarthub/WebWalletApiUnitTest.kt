@@ -304,16 +304,15 @@ class WebWalletApiUnitTest {
     fun calculateFee() {
 
         val feeRequest = WalletPaymentFeeRequest()
-        feeRequest.fromAddress = "SQkTQxZ6KCTHJydEWE6sAyJm2Me4ryy8fF"
-        feeRequest.recurrenceType = 3
+        feeRequest.from = "SQkTQxZ6KCTHJydEWE6sAyJm2Me4ryy8fF"
 
-        val callFee = ApiUtil.walletService.getFee("Bearer ${getTokenByLogin()}", feeRequest)
+        val callFee = ApiUtil.walletService.getFee( feeRequest)
 
         try {
             val r = callFee.execute()
 
 
-            System.out.println(r.body()?.data.toString())
+            System.out.println(r.body()?.fee.toString())
 
         } catch (e: IOException) {
             Log.e(WalletViewModel.TAG, e.message)

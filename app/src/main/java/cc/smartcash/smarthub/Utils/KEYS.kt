@@ -32,6 +32,12 @@ object KEYS {
 
     const val CONFIG_TOKEN_SEND_BY_TEXT = "tokenSendByText"
 
+    const val CONFIG_SEND_API_KEY = "send_api_key"
+
+    const val CONFIG_SEND_API_SECRET = "send_api_secret"
+
+    const val CONFIG_MIN_FEE = "min_fee"
+
     const val KEY_SMARTTEXT_EMAIL = "EMAIL"
 
     const val KEY_SMARTTEXT_SMS = "SMS"

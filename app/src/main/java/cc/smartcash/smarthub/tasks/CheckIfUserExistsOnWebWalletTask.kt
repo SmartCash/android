@@ -26,7 +26,7 @@ class CheckIfUserExistsOnWebWalletTask(context: Context, pre: () -> Unit, pos: (
     }
 
     override fun doInBackground(vararg users: SendPayment): WebWalletRootResponse<Boolean>? {
-        return WalletViewModel.isUserAvailable(users[0].toAddress.toString())
+        return WalletViewModel.isUserAvailable(users[0].to.toString())
     }
 
     override fun onPostExecute(booleanWebWalletRootResponse: WebWalletRootResponse<Boolean>?) {

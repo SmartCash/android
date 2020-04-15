@@ -20,22 +20,18 @@ import android.view.Window
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import cc.smartcash.smarthub.Activities.MainActivity
 import cc.smartcash.smarthub.Adapters.WalletDialogAdapter
 import cc.smartcash.smarthub.Models.*
 import cc.smartcash.smarthub.R
+import cc.smartcash.smarthub.Utils.KEYS
 import cc.smartcash.smarthub.Utils.NetworkUtil
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.Util
-import cc.smartcash.smarthub.ViewModels.TransactionViewModel
-import cc.smartcash.smarthub.ViewModels.UserViewModel
-import cc.smartcash.smarthub.ViewModels.WalletViewModel
 import cc.smartcash.smarthub.tasks.*
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -99,14 +95,14 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
             val selectedWallet = smartCashApplication!!.getWallet()
             val sendPayment = SendPayment()
-            sendPayment.fromAddress = selectedWallet?.address
-            sendPayment.toAddress = txtToAddress.text.toString()
+            sendPayment.from = selectedWallet?.address
+            sendPayment.to = txtToAddress.text.toString()
             sendPayment.amount = amount
-            sendPayment.email = this.smartCashApplication!!.AppPreferences.Email
-            sendPayment.userKey = password
 
-            if (!Util.isNullOrEmpty(txtTwoFa))
-                sendPayment.code = Util.getString(txtTwoFa)
+            sendPayment.apiKey = Util.getProperty(KEYS.CONFIG_SEND_API_KEY, context!!)!!
+            sendPayment.apiSecret = Util.getProperty(KEYS.CONFIG_SEND_API_SECRET, context!!)!!
+            //TODO: Get PRIVATE KEY
+            sendPayment.privateKey = Util.encryptPKToSend(selectedWallet?.key)
 
             return sendPayment
         }
@@ -472,12 +468,12 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         lockSendButton()
     }
 
-    private fun afterSendByWebWallet(result: WebWalletRootResponse<String>?) {
-        val hasError = Util.showWebWalletException(result, context!!)
+    private fun afterSendByWebWallet(result: SendResponse?) {
+        val hasError = Util.showFeeException(result, context!!)
 
         if (hasError.not()) {
             updateData()
-            Log.d(TAG, result?.data)
+            Log.d(TAG, result?.txid)
         } else{
             hiddenLoader()
             unlockSendButton()
@@ -487,9 +483,10 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
     private fun afterSendSmartByTextTask(smartTextRoot: SmartTextRoot?) {
         if (smartTextRoot?.data != null) {
             val sendPaymentResultFromSendByText = Util.fillSendSendSmartByWebWalletRequestBySmartTextReponse(smartTextRoot)?.apply {
-                this.email = email
-                this.userKey = password
-                if (!Util.isNullOrEmpty(txtTwoFa)) this.code = Util.getString(txtTwoFa)
+                //TODO: SEND BY EMAIL
+                //this.email = email
+                //this.userKey = password
+                //if (!Util.isNullOrEmpty(txtTwoFa)) this.code = Util.getString(txtTwoFa)
             }
 
             SendSmartByWebWalletTask(context!!, ::beforeSendByWebWallet, ::afterSendByWebWallet).execute(sendPaymentResultFromSendByText)
@@ -514,12 +511,12 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
         }
     }
 
-    private fun afterCalculateFeeTask(fee: WebWalletRootResponse<Double>?) {
-        val hasError = Util.showWebWalletException(fee, context!!)
+    private fun afterCalculateFeeTask(fee: FeeResponse?) {
+        val hasError = Util.showFeeException(fee, context!!)
         if (hasError.not()) {
-            mainFee = BigDecimal.valueOf(fee?.data!!)
+            mainFee = BigDecimal.valueOf(fee?.fee!!)
             setFeeOnButton()
-            Log.d(TAG, fee.data.toString())
+            Log.d(TAG, fee.fee.toString())
         }
         unlockSendButton()
     }
@@ -538,9 +535,22 @@ class SendAddressFragment : Fragment(), QRCodeReaderView.OnQRCodeReadListener {
 
     private fun getCurrentFeeAndPrices() {
         if (isOnline) {
+
+
             val sendPaymetToCalculateFee = SendPayment()
-            sendPaymetToCalculateFee.fromAddress = smartCashApplication?.getWallet()!!.address
-            sendPaymetToCalculateFee.toAddress = Util.getString(txtToAddress)
+            sendPaymetToCalculateFee.from = smartCashApplication?.getWallet()!!.address
+            sendPaymetToCalculateFee.to = Util.getString(txtToAddress)
+
+            if (Util.getString(txtAmountCrypto) == "")
+                sendPaymetToCalculateFee.amount = 0.0
+            else
+                sendPaymetToCalculateFee.amount = java.lang.Double.parseDouble(Util.getString(txtAmountCrypto))
+            //TODO: Calculate a fee
+            sendPaymetToCalculateFee.apiKey = Util.getProperty(KEYS.CONFIG_SEND_API_KEY, context!!)
+            sendPaymetToCalculateFee.apiSecret = Util.getProperty(KEYS.CONFIG_SEND_API_SECRET, context!!)
+
+
+
             CalculateFeeTask(context!!, ::beforeSendByWebWallet, ::afterCalculateFeeTask).execute(sendPaymetToCalculateFee)
         }
     }

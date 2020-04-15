@@ -17,10 +17,14 @@ import org.json.JSONObject
 import retrofit2.Call
 import java.io.IOException
 import java.math.BigDecimal
+import java.security.MessageDigest
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
+
 
 object Util {
 
@@ -38,6 +42,27 @@ object Util {
             format.timeZone = TimeZone.getTimeZone(KEYS.KEY_DATE_TIMEZONE)
             return format.format(date)
         }
+
+    fun encryptPKToSend(plaintext: String?): String? {
+        try {
+            // Encrypt where jo is input, and query is output and ENCRPYTION_KEy is key
+            val input = plaintext?.toByteArray(charset("utf-8"))
+            val md: MessageDigest = MessageDigest.getInstance("MD5")
+            val thedigest: ByteArray = md.digest("7^4@hJFz!R14GaymGGjb&d&URF3VW1x6".toByteArray(charset("UTF-8")))
+            val skc = SecretKeySpec(thedigest, "AES")
+            val cipher: Cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, skc)
+            val cipherText = ByteArray(cipher.getOutputSize(input?.size!!))
+            var ctLength: Int = cipher.update(input, 0, input.size, cipherText, 0)
+            ctLength += cipher.doFinal(cipherText, ctLength)
+            //Base64.getEncoder().encodeToString(cipher.doFinal(plaintext.toByteArray()))
+
+            return android.util.Base64.encodeToString(cipher.doFinal(plaintext.toByteArray()), android.util.Base64.DEFAULT)
+
+        } catch (e: java.lang.Exception) {
+            return null
+        }
+    }
 
     private fun parseQrCodeWithValue(qrCodeString: String): String {
 
@@ -164,15 +189,15 @@ object Util {
 
     fun fillSmartTextRequest(sendPayment: SendPayment): SmartTextRequest {
         val smartTextRequest = SmartTextRequest()
-        smartTextRequest.addressRefunded = sendPayment.fromAddress
+        smartTextRequest.addressRefunded = sendPayment.from
         smartTextRequest.amountSmart = sendPayment.amount.toString()
         when {
-            isValidEmail(sendPayment.toAddress.toString()) -> {
-                smartTextRequest.destinationEmail = sendPayment.toAddress.toString()
+            isValidEmail(sendPayment.to.toString()) -> {
+                smartTextRequest.destinationEmail = sendPayment.to.toString()
                 smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_EMAIL
             }
-            PhoneNumberUtils.isGlobalPhoneNumber(sendPayment.toAddress.toString()) -> {
-                smartTextRequest.phoneNumber = sendPayment.toAddress.toString()
+            PhoneNumberUtils.isGlobalPhoneNumber(sendPayment.to.toString()) -> {
+                smartTextRequest.phoneNumber = sendPayment.to.toString()
                 smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_SMS
             }
             else -> smartTextRequest.typeSend = KEYS.KEY_SMARTTEXT_LINK
@@ -188,8 +213,8 @@ object Util {
 
             val sendPayment = SendPayment()
             sendPayment.amount = data!!.amountSmartWithFee
-            sendPayment.fromAddress = data.addressRefunded
-            sendPayment.toAddress = data.generatedAddress
+            sendPayment.from = data.addressRefunded
+            sendPayment.to = data.generatedAddress
 
             val order = StringBuilder()
             order.append("https://smartext.me/Order/" + data.orderID!!)
@@ -495,6 +520,39 @@ object Util {
         return responseWebWalletRootResponse
     }
 
+    fun <T> getGenericResponse(p: Call<T>): T? {
+        try {
+            val r = p.execute()
+            if (r.isSuccessful)
+                return r.body()
+        } catch (e: IOException) {
+            Log.e(LoginViewModel.TAG, e.message)
+        }
+        return null
+    }
+
+
+    fun showFeeException(result: FeeResponse?, context: Context): Boolean {
+        var hasError = false
+        val genericError = "The result is null on FEE API"
+        if (result?.fee == null) {
+            hasError = true
+            Toast.makeText(context, genericError, Toast.LENGTH_LONG).show()
+            return hasError
+        }
+        return hasError
+    }
+
+    fun showFeeException(result: SendResponse?, context: Context): Boolean {
+        var hasError = false
+        val genericError = "The result is null on SEND API"
+        if (result?.txid == null) {
+            hasError = true
+            Toast.makeText(context, genericError, Toast.LENGTH_LONG).show()
+            return hasError
+        }
+        return hasError
+    }
 
     fun <T> showWebWalletException(result: WebWalletRootResponse<T>?, context: Context): Boolean {
 

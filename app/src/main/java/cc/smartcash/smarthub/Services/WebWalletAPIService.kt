@@ -20,9 +20,6 @@ interface WebWalletAPIService {
                  @Field("client_ip") clientIp: String,
                  @Field("client_secret") clientSecret: String): Call<LoginResponse>
 
-    //@GET("user/my")
-    //fun getUser(@Header("Authorization") auth: String): Call<WebWalletRootResponse<User>>
-
     @GET("user/info")
     fun getUser(@Header("Authorization") auth: String): Call<WebWalletRootResponse<User>>
 

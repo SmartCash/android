@@ -98,7 +98,7 @@ class PinActivity : AppCompatActivity() {
                             .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                             .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                             .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes) { dialog, whichButton -> dialog.cancel() }
+                            .setPositiveButton(android.R.string.yes) { dialog, _ -> dialog.cancel() }
                             .setNegativeButton(android.R.string.no, null).show()
             }
         } else if (Util.compareString(txtPin, txtConfirmPin)) {
@@ -111,7 +111,7 @@ class PinActivity : AppCompatActivity() {
                         .setTitle(getString(R.string.pin_wrong_pin_dialog_title))
                         .setMessage(getString(R.string.pin_wrong_pin_dialog_message))
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton("OK") { dialog, id ->
+                        .setPositiveButton("OK") { _, _ ->
                             finish()
                         }
                 return

@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.StrictMode
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -23,9 +22,6 @@ import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.KEYS
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.Util
-import cc.smartcash.smarthub.ViewModels.TransactionViewModel
-import cc.smartcash.smarthub.ViewModels.WalletViewModel
-import cc.smartcash.smarthub.tasks.LoginTask
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*

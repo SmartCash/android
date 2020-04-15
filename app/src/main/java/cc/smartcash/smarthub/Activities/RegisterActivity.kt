@@ -213,7 +213,7 @@ class RegisterActivity : AppCompatActivity() {
                     val token = LoginViewModel.getSyncToken(userLogin, applicationContext)
 
                     if (token.valid!!) {
-                        val userLoginResponse = LoginViewModel.getSyncUser(token.data!!, applicationContext)
+                        val userLoginResponse = LoginViewModel.getSyncUser(token.data!!, applicationContext, userLogin)
                         encryptAndSaveMSK(newUserResponse, userLoginResponse.data)
                         encryptAndSavePassword(users[0])
 

@@ -2,10 +2,7 @@ package cc.smartcash.smarthub.ViewModels
 
 import android.content.Context
 import android.util.Log
-import cc.smartcash.smarthub.Models.User
-import cc.smartcash.smarthub.Models.UserLogin
-import cc.smartcash.smarthub.Models.WebWalletException
-import cc.smartcash.smarthub.Models.WebWalletRootResponse
+import cc.smartcash.smarthub.Models.*
 import cc.smartcash.smarthub.Utils.*
 import com.google.gson.Gson
 import java.io.IOException
@@ -59,12 +56,12 @@ object LoginViewModel {
         return responseWebWalletRootResponse
     }
 
-    fun getSyncUser(token: String, context: Context): WebWalletRootResponse<User?> {
+    fun getSyncUser(token: String, context: Context, userLogin: UserLogin): WebWalletRootResponse<User?> {
         var responseWebWalletRootResponse: WebWalletRootResponse<User?> = WebWalletRootResponse()
         val isInternetOn = NetworkUtil.getInternetStatus(context)
         if (isInternetOn) {
             try {
-                val callUser = ApiUtil.userService.getUser("Bearer $token")
+                val callUser = ApiUtil.userService.getUser("Bearer $token", InfoRequest(userLogin.password!!))
                 responseWebWalletRootResponse = Util.getWebWalletResponse(callUser)
 
             } catch (e: IOException) {

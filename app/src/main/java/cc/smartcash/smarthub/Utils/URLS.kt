@@ -20,4 +20,6 @@ object URLS {
 
     const val URL_API_SMARTTEXT = "https://smartext.me/"
 
+    const val URL_SEND = "https://send.smartcash.org/"
+
 }

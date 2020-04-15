@@ -53,7 +53,7 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
         }
         if (!Util.isNullOrEmpty(token)) {
 
-            val user = LoginViewModel.getSyncUser(token!!, this.appContext)
+            val user = LoginViewModel.getSyncUser(token!!, this.appContext, users[0])
 
             return if (user.valid!!) {
                 saveUser(token, user.data, appContext, smartCashApplication)
@@ -86,7 +86,7 @@ class LoginTask(context: Context, pre: () -> Unit, pos: (user: WebWalletRootResp
             if (user != null) {
                 //Get Balance from a new API
                 user.wallet!!.forEach {
-                   var call = WalletViewModel().getBalance(it.address!!)
+                   val call = WalletViewModel().getBalance(it.address!!)
                     it.balance = call?.balance
                     it.totalReceived = call?.received
                     it.totalSent = call?.sent!!.toDouble()

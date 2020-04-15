@@ -12,11 +12,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import cc.smartcash.smarthub.*
+import cc.smartcash.smarthub.INetworkChangeReceiver
 import cc.smartcash.smarthub.Models.Coin
 import cc.smartcash.smarthub.Models.User
 import cc.smartcash.smarthub.Models.UserLogin
 import cc.smartcash.smarthub.Models.WebWalletRootResponse
+import cc.smartcash.smarthub.NetworkChangeReceiver
+import cc.smartcash.smarthub.NetworkUtil
+import cc.smartcash.smarthub.R
 import cc.smartcash.smarthub.Utils.KEYS
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.Utils.URLS

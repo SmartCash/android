@@ -3,12 +3,12 @@ package cc.smartcash.smarthub.tasks
 import android.content.Context
 import android.os.AsyncTask
 import cc.smartcash.smarthub.Models.SendPayment
-import cc.smartcash.smarthub.Models.WebWalletRootResponse
+import cc.smartcash.smarthub.Models.SendResponse
 import cc.smartcash.smarthub.Utils.SmartCashApplication
 import cc.smartcash.smarthub.ViewModels.WalletViewModel
 
 
-class SendSmartByWebWalletTask(context: Context, pre: () -> Unit, pos: (result: WebWalletRootResponse<String>?) -> Unit) : AsyncTask<SendPayment, Int, WebWalletRootResponse<String>>() {
+class SendSmartByWebWalletTask(context: Context, pre: () -> Unit, pos: (result: SendResponse?) -> Unit) : AsyncTask<SendPayment, Int, SendResponse>() {
 
     private var appContext: Context = context
     private var smartCashApplication: SmartCashApplication
@@ -25,11 +25,11 @@ class SendSmartByWebWalletTask(context: Context, pre: () -> Unit, pos: (result: 
         preLoad
     }
 
-    override fun doInBackground(vararg sendPayments: SendPayment): WebWalletRootResponse<String>? {
-        return WalletViewModel.sendSyncTransaction(appContext, smartCashApplication.getToken()!!, sendPayments[0])
+    override fun doInBackground(vararg sendPayments: SendPayment): SendResponse? {
+        return WalletViewModel.sendSyncTransaction(sendPayments[0])
     }
 
-    override fun onPostExecute(result: WebWalletRootResponse<String>?) {
+    override fun onPostExecute(result: SendResponse?) {
         super.onPostExecute(result)
         posLoad(result)
     }

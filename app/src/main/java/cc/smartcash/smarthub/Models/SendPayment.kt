@@ -7,17 +7,16 @@ import java.io.Serializable
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class SendPayment(
 
-        @SerializedName("FromAddress")
-        var fromAddress: String? = null,
-        @SerializedName("ToAddress")
-        var toAddress: String? = null,
-        @SerializedName("Amount")
+        @SerializedName("from")
+        var from: String? = null,
+        @SerializedName("to")
+        var to: String? = null,
+        @SerializedName("amount")
         var amount: Double? = null,
-        @SerializedName("UserKey")
-        var userKey: String? = null,
-        @SerializedName("code")
-        var code: String? = null,
-        @SerializedName("Email")
-        var email: String? = null
-
+        @SerializedName("api_key")
+        var apiKey: String? = null,
+        @SerializedName("api_secret")
+        var apiSecret: String? = null,
+        @SerializedName("key")
+        var privateKey: String? = null
 ) : Serializable

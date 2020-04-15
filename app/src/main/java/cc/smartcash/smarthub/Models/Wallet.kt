@@ -33,5 +33,7 @@ data class Wallet(
         @SerializedName("cardId")
         var cardId: BigInteger? = null,
         @SerializedName("transactions")
-        var transactions: ArrayList<FullTransaction>? = null
+        var transactions: ArrayList<FullTransaction>? = null,
+        @SerializedName("key")
+        var key: String? = null
 ) : Serializable

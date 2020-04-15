@@ -35,9 +35,10 @@ class SendSmartByTextTask(context: Context, sendPayment: SendPayment, pre: () ->
         super.onPostExecute(smartTextRoot)
         val sendPayment = smartTextRoot?.let { Util.fillSendSendSmartByWebWalletRequestBySmartTextReponse(it) }
         sendPayment?.apply {
-            this.email = sendPaymentRequest.email
-            this.userKey = sendPaymentRequest.userKey
-            this.code = sendPaymentRequest.code
+            //TODO: Send to Email test error
+            //this.email = sendPaymentRequest.email
+            //this.userKey = sendPaymentRequest.userKey
+            //this.code = sendPaymentRequest.code
         }
         posLoad(smartTextRoot)
     }

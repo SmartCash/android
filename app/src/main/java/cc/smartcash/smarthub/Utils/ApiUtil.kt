@@ -10,12 +10,7 @@ object ApiUtil {
         get() = RetrofitConfig.getClient(URLS.URL_API_WEBWALLET).create(UserLoginService::class.java)
 
     val walletService: WalletService
-        get() = RetrofitConfig.getClient(URLS.URL_API_WEBWALLET).create(WalletService::class.java)
-
-    /*
-    val currentPricesService: CurrentPricesService
-        get() = RetrofitConfig.getClient(URLS.URL_CURRENT_PRICE_API).create(CurrentPricesService::class.java)
-    */
+        get() = RetrofitConfig.getClient(URLS.URL_SEND).create(WalletService::class.java)
 
     val currentPricesService: CurrentPricesService
         get() = RetrofitConfig.getClient(URLS.URL_API_PRICE_COINGECKO).create(CurrentPricesService::class.java)
